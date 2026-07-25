@@ -62,9 +62,9 @@
       <div class="panel">
         <div class="panel-top">
           <span class="panel-label">Your progress</span>
-          <span class="panel-figure" id="progressVal">78%</span>
+          <span class="panel-figure" id="progressVal">0%</span>
         </div>
-        <div class="bar"><span id="progressBar"></span></div>
+        <div class="bar"><span id="progressBar" style="width: 0%;"></span></div>
         <div class="panel-lesson">
           <div class="play" onclick="togglePlay(this)">▶</div>
           <div>
@@ -395,11 +395,11 @@
       const bar = document.getElementById('progressBar');
       const val = document.getElementById('progressVal');
       if (playing) {
-        bar.style.width = '100%';
-        val.textContent = '100%';
+        bar.style.width = '2%';
+        val.textContent = '2%';
       } else {
-        bar.style.width = '78%';
-        val.textContent = '78%';
+        bar.style.width = '0%';
+        val.textContent = '0%';
       }
     }
 
