@@ -1,1 +1,505 @@
-the first code of the landing page
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mech Spec LMS — Learning & Web Security Platform</title>
+  <meta name="description" content="Discover Mech Spec LMS, the secure learning management platform built by Mech Spec Technologies. Master Web Security, AI, and Software Engineering.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="Index.css">
+</head>
+<body>
+
+  <!-- Masthead / Navbar -->
+  <header class="masthead">
+    <div class="wrap">
+      <a class="brand" href="#">
+        <span class="brand-mark">M</span>
+        <span>
+          <span class="brand-name">Mech Spec LMS</span>
+          <span class="brand-sub">Security by Design</span>
+        </span>
+      </a>
+
+      <nav class="nav">
+        <a href="#" class="current">Home</a>
+        <a href="#courses">Courses</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#security">Security</a>
+      </nav>
+
+      <div class="actions">
+        <a class="btn btn-ghost" href="LoginPage.html">Log in</a>
+        <a class="btn btn-gold" href="SignupPage.html">Sign up</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <div class="badge-security">
+          <span>🔒</span> Secured Architecture & Built-in RBAC
+        </div>
+        <h1>Learn skills.<br>Advance your <em>future.</em></h1>
+        <p class="lede">
+          High-quality engineering and cybersecurity courses taught by industry experts. Learn at your own pace on a Security-First platform.
+        </p>
+        <div class="hero-buttons">
+          <a href="#courses" class="btn btn-gold">Explore courses →</a>
+          <a href="#security" class="btn btn-ghost">Our security approach</a>
+        </div>
+      </div>
+
+      <!-- Interactive Progress Panel -->
+      <div class="panel">
+        <div class="panel-top">
+          <span class="panel-label">Your progress</span>
+          <span class="panel-figure" id="progressVal">78%</span>
+        </div>
+        <div class="bar"><span id="progressBar"></span></div>
+        <div class="panel-lesson">
+          <div class="play" onclick="togglePlay(this)">▶</div>
+          <div>
+            <div class="lesson-name">Web Security Basics & OWASP</div>
+            <div class="lesson-meta">Lesson 4 of 12 &middot; 50 min left</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Highlights -->
+  <section class="features" id="security">
+    <div class="wrap">
+      <div class="feature">
+        <span class="dot"></span>
+        <h3>Expert Instructors</h3>
+        <p>Learn from seasoned professionals working in the field.</p>
+      </div>
+      <div class="feature">
+        <span class="dot"></span>
+        <h3>Learn at Your Pace</h3>
+        <p>Start, pause, and pick up right where you left off.</p>
+      </div>
+      <div class="feature">
+        <span class="dot"></span>
+        <h3>Verified Certificates</h3>
+        <p>Finish a course and earn a recognized certificate.</p>
+      </div>
+      <div class="feature">
+        <span class="dot"></span>
+        <h3>Security by Design</h3>
+        <p>RBAC protection, bcrypt hashing, and integrated security auditing.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Course Showcase Section -->
+  <section class="section" id="courses">
+    <div class="wrap">
+      <div class="heading">
+        <h2>Featured Courses</h2>
+        <p>Explore top-rated courses across software development, AI, and cybersecurity.</p>
+      </div>
+
+      <div class="course-filter">
+        <button class="filter-btn active" onclick="filterCourses('all', this)">All Courses</button>
+        <button class="filter-btn" onclick="filterCourses('security', this)">Web Security</button>
+        <button class="filter-btn" onclick="filterCourses('dev', this)">Development</button>
+        <button class="filter-btn" onclick="filterCourses('ai', this)">Artificial Intelligence</button>
+      </div>
+
+      <div class="course-grid">
+        <!-- Course 1 -->
+        <div class="course-card" data-cat="security">
+          <div class="card-img" style="background-image: linear-gradient(180deg, rgba(11,23,40,0.2), rgba(11,23,40,0.8)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80');">
+            <span class="card-badge">Web Security</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">OWASP Top 10 & Penetration Testing</h3>
+            <p class="card-desc">Master SQL injection prevention, XSS mitigations, and secure session management.</p>
+            <div class="card-footer">
+              <span class="price-tag">$39</span>
+              <button class="btn btn-outline" href="SignupPage.html">Enroll Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="course-card" data-cat="dev">
+          <div class="card-img" style="background-image: linear-gradient(180deg, rgba(11,23,40,0.2), rgba(11,23,40,0.8)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80');">
+            <span class="card-badge">Development</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Secure Node.js & Express Architecture</h3>
+            <p class="card-desc">Build robust REST APIs with JWT authentication, input validation, and Helmet headers.</p>
+            <div class="card-footer">
+              <span class="price-tag">$29</span>
+              <button class="btn btn-outline" href="SignupPage.html">Enroll Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 3 -->
+        <div class="course-card" data-cat="ai">
+          <div class="card-img" style="background-image: linear-gradient(180deg, rgba(11,23,40,0.2), rgba(11,23,40,0.8)), url('https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=600&q=80');">
+            <span class="card-badge">Artificial Intelligence</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">Integrating AI Assistants in Your Apps</h3>
+            <p class="card-desc">Develop intelligent user support chatbots with built-in security and privacy controls.</p>
+            <div class="card-footer">
+              <span class="price-tag">$49</span>
+              <button class="btn btn-outline" href="SignupPage.html">Enroll Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="section section-alt" id="pricing">
+    <div class="wrap">
+      <div class="heading">
+        <h2>Simple, Transparent Pricing</h2>
+        <p>Start free. Upgrade to Pro when you want full access.</p>
+      </div>
+
+      <div class="billing-toggle">
+        <span>Monthly billing</span>
+        <label class="switch">
+          <input type="checkbox" id="billingCheck" onchange="toggleBilling()">
+          <span class="slider"></span>
+        </label>
+        <span>Annual billing <span class="discount-badge">-20%</span></span>
+      </div>
+
+      <div class="plans">
+        <!-- Free Plan -->
+        <div class="plan">
+          <div class="plan-name">Free</div>
+          <p class="plan-note">Everything you need to get started.</p>
+          <div class="price"><b>$0</b><span>/ forever</span></div>
+          <ul>
+            <li>Access to all free courses</li>
+            <li>Preview lessons on paid courses</li>
+            <li>Personal progress tracking</li>
+            <li>Community support</li>
+          </ul>
+          <button class="btn btn-outline btn-block" href="SignupPage.html">Create free account</button>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="plan plan-featured">
+          <span class="tag">Most Popular</span>
+          <div class="plan-name">Pro LMS</div>
+          <p class="plan-note">Full access to every course and certificate.</p>
+          <div class="price"><b id="proPrice">$19</b><span id="proPeriod">/ month</span></div>
+          <ul>
+            <li>Unlimited access to every course</li>
+            <li>Verified certificates on completion</li>
+            <li>Priority 24/7 AI Support Assistant</li>
+            <li>Cancel anytime with no commitments</li>
+          </ul>
+          <button class="btn btn-gold btn-block" href="SignupPage.html">Go Pro</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="section section-alt" id="testimonials">
+    <div class="wrap">
+      <div class="heading">
+        <h2>What Our Learners Say</h2>
+        <p>Read positive feedback from professionals and students trained by Mech Spec Technologies.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <!-- Testimonial 1 -->
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Mech Spec Tech transformed how our engineering team approaches web application security. The hands-on OWASP labs and interactive security metrics are second to none!"</p>
+          <div class="testimonial-author">
+            <div class="faceless-avatar" style="background: linear-gradient(135deg, #06b6d4 0%, #1e40af 100%)">
+              <svg class="faceless-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <div class="author-info">
+              <h4 class="author-name">Alex R.</h4>
+              <span class="author-role">Cybersecurity Analyst &middot; FinTech Security Lab</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"The Security-by-Design philosophy is embedded everywhere. Learning secure Node.js architecture here gave me the skills to safeguard our production APIs against real-world threats."</p>
+          <div class="testimonial-author">
+            <div class="faceless-avatar" style="background: linear-gradient(135deg, #f7c331 0%, #d97706 100%)">
+              <svg class="faceless-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <div class="author-info">
+              <h4 class="author-name">Sophia M.</h4>
+              <span class="author-role">Full-Stack Developer &middot; CloudScale Systems</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Outstanding LMS platform! The AI support assistant answered my technical questions instantly, and the progress tracking tools keep me engaged every single day."</p>
+          <div class="testimonial-author">
+            <div class="faceless-avatar" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%)">
+              <svg class="faceless-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <div class="author-info">
+              <h4 class="author-name">David K.</h4>
+              <span class="author-role">DevOps &amp; Cloud Engineer &middot; Nexus Solutions</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call To Action -->
+  <section class="cta">
+    <div class="wrap">
+      <div>
+        <h2>Start your learning journey today</h2>
+        <p>Create your account in under a minute. No credit card required.</p>
+      </div>
+      <a class="btn btn-gold" href="SignupPage.html">Get Started For Free →</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-left">
+        <div class="footer-brand">
+          <span class="brand-mark">M</span>
+          <span>Mech Spec LMS</span>
+        </div>
+        <p class="footer-tagline">Empowering future engineers and cybersecurity experts with Security-by-Design training.</p>
+      </div>
+
+      <nav class="footer-links">
+        <a href="#courses">Courses</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#security">Security</a>
+      </nav>
+
+      <div class="footer-socials">
+        <span class="social-label">Follow Us</span>
+        <div class="social-icons">
+          <!-- LinkedIn -->
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+            </svg>
+          </a>
+          <!-- Facebook -->
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-link" title="Facebook">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/>
+            </svg>
+          </a>
+          <!-- Instagram -->
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-legal">&copy; 2026 Mech Spec Technologies. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <!-- Floating AI Assistant Widget -->
+  <div class="ai-widget">
+    <div class="ai-chat-box" id="aiChatBox">
+      <div class="ai-chat-header">
+        <span>🤖 Mech Spec Support Assistant</span>
+        <span style="cursor:pointer" onclick="toggleAIChat()">✕</span>
+      </div>
+      <div class="ai-chat-body" id="aiChatBody">
+        <div class="ai-msg bot">Hello! I am the Mech Spec support assistant. How can I help you today? (e.g., "How to register?", "How to purchase a course?")</div>
+      </div>
+      <div class="ai-chat-footer">
+        <input type="text" id="aiInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') sendAIMessage()">
+        <button onclick="sendAIMessage()">Send</button>
+      </div>
+    </div>
+    <div class="ai-btn" onclick="toggleAIChat()" title="AI Support Chat">💬</div>
+  </div>
+
+  <!-- Modal Auth -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h3 class="modal-title" id="modalTitle">Sign up</h3>
+      <p class="modal-sub" id="modalSub">Join the Mech Spec LMS secure platform</p>
+
+      <form onsubmit="event.preventDefault(); alert('Form submitted successfully (Demo Mode)'); closeModal();">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="your.email@domain.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="passInput" placeholder="••••••••" required oninput="checkStrength(this.value)">
+          <div class="strength-meter"><span id="strengthBar"></span></div>
+        </div>
+
+        <button type="submit" class="btn btn-gold btn-block" id="modalSubmitBtn">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript Interactions -->
+  <script>
+    // Toggle Play/Pause on progress panel
+    let playing = false;
+    function togglePlay(btn) {
+      playing = !playing;
+      btn.textContent = playing ? '❚❚' : '▶';
+      const bar = document.getElementById('progressBar');
+      const val = document.getElementById('progressVal');
+      if (playing) {
+        bar.style.width = '100%';
+        val.textContent = '100%';
+      } else {
+        bar.style.width = '78%';
+        val.textContent = '78%';
+      }
+    }
+
+    // Filter Courses
+    function filterCourses(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cards = document.querySelectorAll('.course-card');
+      cards.forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Billing Toggle
+    function toggleBilling() {
+      const isAnnual = document.getElementById('billingCheck').checked;
+      document.getElementById('proPrice').textContent = isAnnual ? '$15' : '$19';
+      document.getElementById('proPeriod').textContent = isAnnual ? '/ month (billed annually)' : '/ month';
+    }
+
+    // AI Chat Bot
+    function toggleAIChat() {
+      const box = document.getElementById('aiChatBox');
+      box.classList.toggle('open');
+    }
+
+    function sendAIMessage() {
+      const input = document.getElementById('aiInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const body = document.getElementById('aiChatBody');
+      
+      // User message
+      const uMsg = document.createElement('div');
+      uMsg.className = 'ai-msg user';
+      uMsg.textContent = text;
+      body.appendChild(uMsg);
+
+      input.value = '';
+      body.scrollTop = body.scrollHeight;
+
+      // Bot answer simulation in English
+      setTimeout(() => {
+        const bMsg = document.createElement('div');
+        bMsg.className = 'ai-msg bot';
+        
+        const lower = text.toLowerCase();
+        if (lower.includes('register') || lower.includes('account') || lower.includes('sign up')) {
+          bMsg.textContent = "To register, click the 'Sign up' button at the top right, enter your email address and a strong password.";
+        } else if (lower.includes('buy') || lower.includes('course') || lower.includes('pay') || lower.includes('purchase')) {
+          bMsg.textContent = "To purchase a course, browse our catalog, click 'Enroll Now', and follow the simulated checkout process.";
+        } else if (lower.includes('password')) {
+          bMsg.textContent = "You can evaluate password strength during registration via our real-time visual strength meter.";
+        } else {
+          bMsg.textContent = "I am the Mech Spec support assistant. Feel free to ask me any questions about registration, courses, or navigation!";
+        }
+        
+        body.appendChild(bMsg);
+        body.scrollTop = body.scrollHeight;
+      }, 600);
+    }
+
+    // Auth Modal & Password Strength
+    function openModal(type) {
+      const overlay = document.getElementById('modalOverlay');
+      const title = document.getElementById('modalTitle');
+      const btn = document.getElementById('modalSubmitBtn');
+      
+      if (type === 'login') {
+        title.textContent = 'Log in';
+        btn.textContent = 'Log in';
+      } else {
+        title.textContent = 'Sign up';
+        btn.textContent = 'Create Account';
+      }
+      
+      overlay.classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function checkStrength(val) {
+      const bar = document.getElementById('strengthBar');
+      let score = 0;
+      if (val.length >= 6) score += 33;
+      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score += 34;
+      if (/[^A-Za-z0-9]/.test(val) && val.length >= 8) score += 33;
+
+      bar.style.width = score + '%';
+      if (score <= 33) bar.style.backgroundColor = '#ef4444';
+      else if (score <= 67) bar.style.backgroundColor = '#f59e0b';
+      else bar.style.backgroundColor = '#10b981';
+    }
+  </script>
+</body>
+</html>

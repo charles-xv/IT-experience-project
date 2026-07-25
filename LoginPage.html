@@ -1,1 +1,43 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Log In - Mech Spec LMS</title>
+  <link rel="stylesheet" href="Index.css">
+  <link rel="stylesheet" href="LoginPage.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; height: 100vh; background: var(--navy-950); }
+    .auth-container { background: var(--paper); padding: 40px; border-radius: var(--radius-lg); width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); border: 1px solid var(--line); }
+    .auth-container h2 { margin-bottom: 24px; text-align: center; color: white; }
+    .auth-container .form-group { margin-bottom: 16px; }
+    .auth-container label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--muted); }
+    .auth-container input { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: rgba(255,255,255,0.05); color: white; }
+    .auth-container input:focus { outline: none; border-color: var(--cyan); background: rgba(6, 182, 212, 0.05); }
+    .auth-container button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--gold); color: var(--navy-950); font-weight: 700; cursor: pointer; margin-top: 16px; }
+    .auth-container button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(247, 195, 49, 0.3); }
+    .auth-container .switch-link { text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--muted); }
+    .auth-container .switch-link a { color: var(--cyan); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Log In</h2>
+    <form>
+      
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••" required>
+      </div>
+      <button type="submit">Log In</button>
+    </form>
+    <div class="switch-link">
+      <a href="Index.html">← Back to Home</a><br><br>
+      Don't have an account? <a href="SignupPage.html">Sign up</a>
+    </div>
+  </div>
+</body>
+</html>
