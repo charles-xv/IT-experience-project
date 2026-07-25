@@ -35,8 +35,8 @@
       </nav>
 
       <div class="actions">
-        <a class="btn btn-ghost" href="LoginPage.html">Log in</a>
-        <a class="btn btn-gold" href="SignupPage.html">Sign up</button>
+        <a class="btn btn-ghost" href="LoginPage.php">Log in</a>
+        <a class="btn btn-gold" href="SignupPage.php">Sign up</a>
       </div>
     </div>
   </header>
@@ -58,18 +58,46 @@
         </div>
       </div>
 
-      <!-- Interactive Progress Panel -->
-      <div class="panel">
-        <div class="panel-top">
-          <span class="panel-label">Your progress</span>
-          <span class="panel-figure" id="progressVal">0%</span>
+      <!-- Animated Security Shield -->
+      <div class="shield-panel">
+        <div class="shield-stage">
+          <svg class="shield-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Security shield">
+            <defs>
+              <linearGradient id="shieldFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(6,182,212,0.12)"/>
+                <stop offset="100%" stop-color="rgba(16,185,129,0.06)"/>
+              </linearGradient>
+              <clipPath id="shieldClip">
+                <path d="M100 10 L180 42 V108 C180 158 144 196 100 210 C56 196 20 158 20 108 V42 Z"/>
+              </clipPath>
+            </defs>
+
+            <path class="shield-body" d="M100 10 L180 42 V108 C180 158 144 196 100 210 C56 196 20 158 20 108 V42 Z" fill="url(#shieldFill)"/>
+
+            <g clip-path="url(#shieldClip)">
+              <line class="scan-line" x1="20" y1="0" x2="180" y2="0"/>
+            </g>
+
+            <path class="shield-outline" d="M100 10 L180 42 V108 C180 158 144 196 100 210 C56 196 20 158 20 108 V42 Z" fill="none"/>
+
+            <path class="shield-check" d="M74 110 L92 130 L128 86" fill="none"/>
+          </svg>
         </div>
-        <div class="bar"><span id="progressBar" style="width: 0%;"></span></div>
-        <div class="panel-lesson">
-          <div class="play" onclick="togglePlay(this)">▶</div>
-          <div>
-            <div class="lesson-name">Web Security Basics & OWASP</div>
-            <div class="lesson-meta">Lesson 4 of 12 &middot; 50 min left</div>
+
+        <div class="shield-status">
+          <span class="shield-dot"></span>
+          <span class="shield-status-text" id="shieldStatus">Verifying secure session…</span>
+        </div>
+
+        <div class="shield-meta">
+          <div class="shield-meta-row">
+            <span>RBAC access control</span><span class="shield-ok">Active</span>
+          </div>
+          <div class="shield-meta-row">
+            <span>bcrypt password hashing</span><span class="shield-ok">Enforced</span>
+          </div>
+          <div class="shield-meta-row">
+            <span>Brute-force rate limiting</span><span class="shield-ok">On</span>
           </div>
         </div>
       </div>
@@ -120,7 +148,7 @@
       <div class="course-grid">
         <!-- Course 1 -->
         <div class="course-card" data-cat="security">
-          <div class="card-img" style="background-image: linear-gradient(180deg, rgba(11,23,40,0.2), rgba(11,23,40,0.8)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80');">
+          <div class="card-img card-img-1">
             <span class="card-badge">Web Security</span>
           </div>
           <div class="card-body">
@@ -128,14 +156,14 @@
             <p class="card-desc">Master SQL injection prevention, XSS mitigations, and secure session management.</p>
             <div class="card-footer">
               <span class="price-tag">$39</span>
-              <button class="btn btn-outline" href="SignupPage.html">Enroll Now</button>
+              <a class="btn btn-outline" href="SignupPage.php">Enroll Now</a>
             </div>
           </div>
         </div>
 
         <!-- Course 2 -->
         <div class="course-card" data-cat="dev">
-          <div class="card-img" style="background-image: linear-gradient(180deg, rgba(11,23,40,0.2), rgba(11,23,40,0.8)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80');">
+          <div class="card-img card-img-2">
             <span class="card-badge">Development</span>
           </div>
           <div class="card-body">
@@ -143,14 +171,14 @@
             <p class="card-desc">Build robust REST APIs with JWT authentication, input validation, and Helmet headers.</p>
             <div class="card-footer">
               <span class="price-tag">$29</span>
-              <button class="btn btn-outline" href="SignupPage.html">Enroll Now</button>
+              <a class="btn btn-outline" href="SignupPage.php">Enroll Now</a>
             </div>
           </div>
         </div>
 
         <!-- Course 3 -->
         <div class="course-card" data-cat="ai">
-          <div class="card-img" style="background-image: linear-gradient(180deg, rgba(11,23,40,0.2), rgba(11,23,40,0.8)), url('https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=600&q=80');">
+          <div class="card-img card-img-3">
             <span class="card-badge">Artificial Intelligence</span>
           </div>
           <div class="card-body">
@@ -158,7 +186,7 @@
             <p class="card-desc">Develop intelligent user support chatbots with built-in security and privacy controls.</p>
             <div class="card-footer">
               <span class="price-tag">$49</span>
-              <button class="btn btn-outline" href="SignupPage.html">Enroll Now</button>
+              <a class="btn btn-outline" href="SignupPage.php">Enroll Now</a>
             </div>
           </div>
         </div>
@@ -177,7 +205,7 @@
       <div class="billing-toggle">
         <span>Monthly billing</span>
         <label class="switch">
-          <input type="checkbox" id="billingCheck" onchange="toggleBilling()">
+          <input type="checkbox" id="billingCheck" onchange="toggleBilling()" aria-label="Toggle annual billing">
           <span class="slider"></span>
         </label>
         <span>Annual billing <span class="discount-badge">-20%</span></span>
@@ -195,7 +223,7 @@
             <li>Personal progress tracking</li>
             <li>Community support</li>
           </ul>
-          <button class="btn btn-outline btn-block" href="SignupPage.html">Create free account</button>
+          <a class="btn btn-outline btn-block" href="SignupPage.php">Create free account</a>
         </div>
 
         <!-- Pro Plan -->
@@ -210,7 +238,7 @@
             <li>Priority 24/7 AI Support Assistant</li>
             <li>Cancel anytime with no commitments</li>
           </ul>
-          <button class="btn btn-gold btn-block" href="SignupPage.html">Go Pro</button>
+          <a class="btn btn-gold btn-block" href="SignupPage.php">Go Pro</a>
         </div>
       </div>
     </div>
@@ -230,7 +258,7 @@
           <div class="stars">★★★★★</div>
           <p class="testimonial-text">"Mech Spec Tech transformed how our engineering team approaches web application security. The hands-on OWASP labs and interactive security metrics are second to none!"</p>
           <div class="testimonial-author">
-            <div class="faceless-avatar" style="background: linear-gradient(135deg, #06b6d4 0%, #1e40af 100%)">
+            <div class="faceless-avatar avatar-cyan">
               <svg class="faceless-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
@@ -248,7 +276,7 @@
           <div class="stars">★★★★★</div>
           <p class="testimonial-text">"The Security-by-Design philosophy is embedded everywhere. Learning secure Node.js architecture here gave me the skills to safeguard our production APIs against real-world threats."</p>
           <div class="testimonial-author">
-            <div class="faceless-avatar" style="background: linear-gradient(135deg, #f7c331 0%, #d97706 100%)">
+            <div class="faceless-avatar avatar-gold">
               <svg class="faceless-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
@@ -266,7 +294,7 @@
           <div class="stars">★★★★★</div>
           <p class="testimonial-text">"Outstanding LMS platform! The AI support assistant answered my technical questions instantly, and the progress tracking tools keep me engaged every single day."</p>
           <div class="testimonial-author">
-            <div class="faceless-avatar" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%)">
+            <div class="faceless-avatar avatar-emerald">
               <svg class="faceless-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
@@ -289,7 +317,7 @@
         <h2>Start your learning journey today</h2>
         <p>Create your account in under a minute. No credit card required.</p>
       </div>
-      <a class="btn btn-gold" href="SignupPage.html">Get Started For Free →</a>
+      <a class="btn btn-gold" href="SignupPage.php">Get Started For Free →</a>
     </div>
   </section>
 
@@ -348,7 +376,7 @@
     <div class="ai-chat-box" id="aiChatBox">
       <div class="ai-chat-header">
         <span>🤖 Mech Spec Support Assistant</span>
-        <span style="cursor:pointer" onclick="toggleAIChat()">✕</span>
+        <span class="ai-close" onclick="toggleAIChat()">✕</span>
       </div>
       <div class="ai-chat-body" id="aiChatBody">
         <div class="ai-msg bot">Hello! I am the Mech Spec support assistant. How can I help you today? (e.g., "How to register?", "How to purchase a course?")</div>
@@ -370,12 +398,12 @@
 
       <form onsubmit="event.preventDefault(); alert('Form submitted successfully (Demo Mode)'); closeModal();">
         <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" placeholder="your.email@domain.com" required>
+          <label for="modalEmail">Email Address</label>
+          <input type="email" id="modalEmail" placeholder="your.email@domain.com" required>
         </div>
 
         <div class="form-group">
-          <label>Password</label>
+          <label for="passInput">Password</label>
           <input type="password" id="passInput" placeholder="••••••••" required oninput="checkStrength(this.value)">
           <div class="strength-meter"><span id="strengthBar"></span></div>
         </div>
@@ -386,120 +414,6 @@
   </div>
 
   <!-- JavaScript Interactions -->
-  <script>
-    // Toggle Play/Pause on progress panel
-    let playing = false;
-    function togglePlay(btn) {
-      playing = !playing;
-      btn.textContent = playing ? '❚❚' : '▶';
-      const bar = document.getElementById('progressBar');
-      const val = document.getElementById('progressVal');
-      if (playing) {
-        bar.style.width = '2%';
-        val.textContent = '2%';
-      } else {
-        bar.style.width = '0%';
-        val.textContent = '0%';
-      }
-    }
-
-    // Filter Courses
-    function filterCourses(cat, btn) {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const cards = document.querySelectorAll('.course-card');
-      cards.forEach(card => {
-        if (cat === 'all' || card.dataset.cat === cat) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // Billing Toggle
-    function toggleBilling() {
-      const isAnnual = document.getElementById('billingCheck').checked;
-      document.getElementById('proPrice').textContent = isAnnual ? '$15' : '$19';
-      document.getElementById('proPeriod').textContent = isAnnual ? '/ month (billed annually)' : '/ month';
-    }
-
-    // AI Chat Bot
-    function toggleAIChat() {
-      const box = document.getElementById('aiChatBox');
-      box.classList.toggle('open');
-    }
-
-    function sendAIMessage() {
-      const input = document.getElementById('aiInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const body = document.getElementById('aiChatBody');
-      
-      // User message
-      const uMsg = document.createElement('div');
-      uMsg.className = 'ai-msg user';
-      uMsg.textContent = text;
-      body.appendChild(uMsg);
-
-      input.value = '';
-      body.scrollTop = body.scrollHeight;
-
-      // Bot answer simulation in English
-      setTimeout(() => {
-        const bMsg = document.createElement('div');
-        bMsg.className = 'ai-msg bot';
-        
-        const lower = text.toLowerCase();
-        if (lower.includes('register') || lower.includes('account') || lower.includes('sign up')) {
-          bMsg.textContent = "To register, click the 'Sign up' button at the top right, enter your email address and a strong password.";
-        } else if (lower.includes('buy') || lower.includes('course') || lower.includes('pay') || lower.includes('purchase')) {
-          bMsg.textContent = "To purchase a course, browse our catalog, click 'Enroll Now', and follow the simulated checkout process.";
-        } else if (lower.includes('password')) {
-          bMsg.textContent = "You can evaluate password strength during registration via our real-time visual strength meter.";
-        } else {
-          bMsg.textContent = "I am the Mech Spec support assistant. Feel free to ask me any questions about registration, courses, or navigation!";
-        }
-        
-        body.appendChild(bMsg);
-        body.scrollTop = body.scrollHeight;
-      }, 600);
-    }
-
-    // Auth Modal & Password Strength
-    function openModal(type) {
-      const overlay = document.getElementById('modalOverlay');
-      const title = document.getElementById('modalTitle');
-      const btn = document.getElementById('modalSubmitBtn');
-      
-      if (type === 'login') {
-        title.textContent = 'Log in';
-        btn.textContent = 'Log in';
-      } else {
-        title.textContent = 'Sign up';
-        btn.textContent = 'Create Account';
-      }
-      
-      overlay.classList.add('active');
-    }
-
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('active');
-    }
-
-    function checkStrength(val) {
-      const bar = document.getElementById('strengthBar');
-      let score = 0;
-      if (val.length >= 6) score += 33;
-      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score += 34;
-      if (/[^A-Za-z0-9]/.test(val) && val.length >= 8) score += 33;
-
-      bar.style.width = score + '%';
-      if (score <= 33) bar.style.backgroundColor = '#ef4444';
-      else if (score <= 67) bar.style.backgroundColor = '#f59e0b';
-      else bar.style.backgroundColor = '#10b981';
-    }
-  </script>
+  <script src="Index.js"></script>
 </body>
 </html>
