@@ -1,3 +1,53 @@
+// Navbar active link — moves the gold underline to the section you're viewing
+// (or the one you click), instead of being stuck on Home.
+const navLinks = document.querySelectorAll(".nav a");
+
+// While a click-scroll is animating, the scroll handler is paused so it can't
+// fight the click and snap the underline back.
+let clickLock = false;
+let clickLockTimer = null;
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", () => {
+    navLinks.forEach((l) => l.classList.remove("current"));
+    link.classList.add("current");
+    clickLock = true;
+    clearTimeout(clickLockTimer);
+    clickLockTimer = setTimeout(() => {
+      clickLock = false;
+    }, 800);
+  });
+});
+
+// Update on scroll: highlight whichever section currently sits under the top
+// of the viewport. Only sections that have a matching nav link are tracked, so
+// the underline always lands on a real link.
+const navHrefs = Array.from(navLinks).map((l) => l.getAttribute("href"));
+const sections = navHrefs
+  .filter((h) => h && h.startsWith("#") && h.length > 1)
+  .map((h) => document.getElementById(h.slice(1)))
+  .filter(Boolean);
+
+function updateActiveLink() {
+  if (clickLock) return;
+  const marker = window.scrollY + 150;
+  let currentHref = "#";
+  for (const sec of sections) {
+    if (marker >= sec.offsetTop) currentHref = "#" + sec.id;
+  }
+  // Near the very bottom, force the last section (short final sections never
+  // reach the marker otherwise).
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 4) {
+    currentHref = "#" + sections[sections.length - 1].id;
+  }
+  navLinks.forEach((l) => {
+    l.classList.toggle("current", l.getAttribute("href") === currentHref);
+  });
+}
+
+window.addEventListener("scroll", updateActiveLink);
+window.addEventListener("load", updateActiveLink);
+
 // Cycle the security shield status text so the panel feels live
 const shieldMessages = [
   "Verifying secure session\u2026",

@@ -1,0 +1,370 @@
+/* Shared styles for the login and signup split-card layout.
+   Colours come from the variables defined in Index.css (loaded first). */
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(6, 182, 212, 0.08),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(247, 195, 49, 0.06),
+      transparent 40%
+    ),
+    var(--navy-950);
+  padding: 24px;
+}
+
+.auth-card {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  width: 100%;
+  max-width: 680px;
+  background: var(--navy-900);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Left brand panel */
+.auth-aside {
+  background: linear-gradient(160deg, var(--navy-800), var(--navy-900));
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--line-dark);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.auth-brand .brand-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: var(--gold);
+  color: var(--navy-950);
+  font-weight: 800;
+  font-size: 1.4rem;
+  border-radius: 12px;
+  box-shadow: 0 0 24px var(--gold-glow);
+}
+
+.auth-brand-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.auth-brand-name span {
+  color: var(--gold);
+}
+
+.auth-aside p {
+  color: var(--muted-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 240px;
+}
+
+/* Right form panel */
+.auth-form-panel {
+  padding: 36px 32px;
+}
+
+.auth-form-panel h2 {
+  color: #fff;
+  font-size: 1.45rem;
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 22px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+  color: var(--muted-light);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.form-group input::placeholder {
+  color: var(--muted);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: rgba(247, 195, 49, 0.05);
+}
+
+.form-group select option {
+  background: var(--navy-800);
+  color: #fff;
+}
+
+/* Role toggle (signup) */
+.role-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.role-option:hover {
+  border-color: var(--gold);
+}
+
+.role-option.active {
+  border-color: var(--gold);
+  background: rgba(247, 195, 49, 0.1);
+  color: var(--gold);
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--gold);
+  color: var(--navy-950);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.15s ease;
+}
+
+.auth-btn:hover {
+  background: var(--gold-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px var(--gold-glow);
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.auth-switch a {
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-back {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.auth-back:hover {
+  color: var(--gold);
+}
+
+/* Message banner (filled by PHP) */
+.form-message {
+  margin-bottom: 18px;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  text-align: center;
+}
+.form-message.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-message.error {
+    animation: none;
+  }
+}
+.form-message.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--emerald-accent);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Mobile-first: below 720px the card becomes a single column and the brand
+   panel collapses to a slim header bar so the form is what fills the screen. */
+@media (max-width: 720px) {
+  body {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 32px;
+  }
+
+  .auth-card {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .auth-aside {
+    border-right: none;
+    border-bottom: 1px solid var(--line-dark);
+    padding: 22px 24px;
+    text-align: center;
+    align-items: center;
+  }
+
+  .auth-brand {
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  /* Hide the tagline on phones — it just pushes the form down */
+  .auth-aside p {
+    display: none;
+  }
+
+  .auth-form-panel {
+    padding: 26px 22px;
+  }
+
+  .auth-form-panel h2 {
+    font-size: 1.35rem;
+  }
+
+  /* Role toggle stays two-up but tightens */
+  .role-toggle {
+    gap: 8px;
+  }
+  .role-option {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Very small phones — keep everything comfortably tappable */
+@media (max-width: 380px) {
+  .auth-form-panel {
+    padding: 22px 18px;
+  }
+  .role-toggle {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Password show/hide toggle ===== */
+.password-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+/* Room on the right so text doesn't run under the eye button */
+.password-wrap input {
+  width: 100%;
+  padding-right: 46px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.password-toggle:hover {
+  color: var(--gold);
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Show the open eye by default, hide the closed one. Swap when revealed. */
+.password-toggle .eye-closed {
+  display: none;
+}
+.password-toggle.revealed .eye-open {
+  display: none;
+}
+.password-toggle.revealed .eye-closed {
+  display: block;
+}

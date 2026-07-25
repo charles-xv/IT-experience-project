@@ -1,0 +1,238 @@
+/* Dashboard styling. Uses the shared variables from Index.css. */
+
+.dash-body {
+  background: var(--navy-950);
+  min-height: 100vh;
+  color: #fff;
+}
+
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: var(--navy-900);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.dash-brand .brand-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: var(--gold);
+  color: var(--navy-950);
+  border-radius: 9px;
+  font-size: 1.1rem;
+}
+
+.dash-gold {
+  color: var(--gold);
+}
+
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.9rem;
+}
+
+.dash-role-pill {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dash-role-student {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--cyan-accent);
+}
+.dash-role-instructor {
+  background: rgba(247, 195, 49, 0.15);
+  color: var(--gold);
+}
+.dash-role-admin {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--emerald-accent);
+}
+
+.dash-name {
+  color: var(--muted-light);
+}
+
+.dash-logout {
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--line-dark);
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  transition: all 0.15s ease;
+}
+.dash-logout:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.dash-main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 48px 28px;
+}
+
+.dash-main h1 {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.dash-sub {
+  color: var(--muted-light);
+  margin-bottom: 36px;
+}
+
+.dash-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.dash-card {
+  background: var(--navy-900);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius-lg);
+  padding: 26px 24px;
+  transition: all 0.15s ease;
+}
+
+.dash-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+
+.dash-card h3 {
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.dash-card p {
+  color: var(--muted-light);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .dash-header {
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+  }
+  .dash-main {
+    padding: 32px 18px;
+  }
+}
+
+/* ===== Logout confirmation modal ===== */
+.logout-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 13, 25, 0.7);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.logout-modal.open {
+  display: flex;
+}
+
+.logout-card {
+  background: var(--navy-900);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius-lg);
+  padding: 30px 28px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  animation: modalPop 0.18s ease;
+}
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.logout-card h3 {
+  color: #fff;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.logout-card p {
+  color: var(--muted-light);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.logout-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.logout-cancel,
+.logout-confirm {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: 1px solid var(--line-dark);
+  transition: all 0.15s ease;
+}
+
+.logout-cancel {
+  background: transparent;
+  color: var(--muted-light);
+}
+.logout-cancel:hover {
+  border-color: var(--muted-light);
+  color: #fff;
+}
+
+.logout-confirm {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+}
+.logout-confirm:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logout-card {
+    animation: none;
+  }
+}
