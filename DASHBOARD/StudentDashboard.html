@@ -3,511 +3,334 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mech Spec LMS — Student Dashboard</title>
+<title>Mech Spec LMS — My Learning</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
   :root{
-    --bg-top:#0f1420;
-    --bg-bottom:#1a2338;
-    --sidebar:#13141e;
-    --card:#191b28;
-    --card-hi:#20222f;
-    --line:#272938;
-    --text:#f2f2f6;
-    --muted:#8b8da3;
-    --muted-2:#5f6178;
+    --bg:#0f1420;
+    --nav:#131a29;
+    --sidebar:#111726;
+    --card:#171f30;
+    --card-hi:#1c2438;
+    --line:#242c40;
+    --text:#f2f3f6;
+    --muted:#8b93a8;
+    --muted-2:#5f6880;
     --amber:#f2b705;
-    --amber-light:#ffd23f;
-    --amber-dark:#c79400;
-    --teal:#22d3c0;
+    --amber-dk:#171a13;
     --danger:#f16c7a;
-    --radius:16px;
+    --radius:14px;
   }
-
   *{box-sizing:border-box; margin:0; padding:0;}
   html,body{height:100%;}
   body{
-    background:linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-    color:var(--text);
+    background:var(--bg); color:var(--text);
     font-family:'Inter', sans-serif;
-    display:flex;
     min-height:100vh;
-    -webkit-font-smoothing:antialiased;
   }
   h1,h2,h3,.display{font-family:'Sora', sans-serif;}
-  .mono{font-family:'JetBrains Mono', monospace;}
   a{color:inherit; text-decoration:none;}
-  ::-webkit-scrollbar{height:8px; width:8px;}
-  ::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px;}
 
-  /* ---------- Sidebar ---------- */
+  /* ---- Top nav ---- */
+  .topnav{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px; padding:0 24px;
+    background:var(--nav); border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:10;
+  }
+  .brand{display:flex; align-items:center; gap:9px; font-family:'Sora'; font-weight:700; font-size:16px;}
+  .brand .mark{
+    width:26px; height:26px; border-radius:7px; background:var(--amber);
+    color:var(--amber-dk); display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:14px;
+  }
+  .brand .lms{color:var(--amber);}
+  .crumb{font-size:13px; color:var(--muted); margin-left:26px;}
+  .crumb b{color:var(--text); font-weight:600;}
+  .nav-right{display:flex; align-items:center; gap:16px; margin-left:auto;}
+  .mode-pill{
+    background:rgba(242,183,5,.14); color:var(--amber); font-weight:700; font-size:11px;
+    letter-spacing:.04em; padding:6px 12px; border-radius:20px; text-transform:uppercase;
+  }
+  .user-block{display:flex; align-items:center; gap:10px;}
+  .user-text{text-align:right;}
+  .user-text .un{font-size:13px; font-weight:700;}
+  .user-text .ue{font-size:11px; color:var(--muted);}
+  .user-avatar{
+    width:34px; height:34px; border-radius:50%; background:var(--amber); color:var(--amber-dk);
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0;
+  }
+
+  /* ---- Layout ---- */
+  .shell{display:flex; min-height:calc(100vh - 64px);}
   .sidebar{
-    width:230px;
-    flex-shrink:0;
-    background:var(--sidebar);
-    border-right:1px solid var(--line);
-    padding:24px 16px;
-    display:flex;
-    flex-direction:column;
-    gap:28px;
+    width:220px; flex-shrink:0; background:var(--sidebar); border-right:1px solid var(--line);
+    padding:18px 12px; display:flex; flex-direction:column;
   }
-  .logo{
-    display:flex; align-items:center; gap:10px;
-    font-family:'Sora'; font-weight:700; font-size:15.5px;
-    padding:0 8px;
-    letter-spacing:.01em;
-  }
-  .logo .brand-mark{
-    width:30px; height:30px; border-radius:9px;
-    background:var(--amber);
-    color:#fff;
-    display:flex; align-items:center; justify-content:center;
-    font-weight:800; font-size:14.5px;
-    flex-shrink:0;
-    box-shadow:0 4px 12px rgba(242,183,5,.35);
-  }
-  .logo .wordmark{color:var(--text);}
-  .logo .wordmark .lms{color:var(--amber);}
-
-  nav{display:flex; flex-direction:column; gap:2px;}
-  .nav-label{font-size:11px; letter-spacing:.08em; color:var(--muted-2); font-weight:600; padding:0 12px; margin-bottom:6px; text-transform:uppercase;}
+  nav.sidenav{display:flex; flex-direction:column; gap:2px;}
   .nav-item{
-    display:flex; align-items:center; gap:11px;
-    padding:10px 12px; border-radius:10px;
-    color:var(--muted); font-size:14px; font-weight:500;
-    cursor:pointer; transition:.15s;
+    display:flex; align-items:center; gap:11px; padding:11px 13px; border-radius:10px;
+    color:var(--muted); font-size:14px; font-weight:500; cursor:pointer; transition:.15s;
+    border-left:3px solid transparent;
   }
-  .nav-item svg{width:18px; height:18px; flex-shrink:0;}
+  .nav-item svg{width:17px; height:17px; flex-shrink:0;}
   .nav-item:hover{background:var(--card); color:var(--text);}
-  .nav-item.active{background:var(--amber); color:#fff;}
-  .nav-item.active svg{stroke:#fff;}
+  .nav-item.active{background:var(--card-hi); color:var(--amber); border-left:3px solid var(--amber); font-weight:600;}
+  .sidebar-bottom{margin-top:auto; padding-top:12px; border-top:1px solid var(--line);}
+  .logout{color:var(--danger);}
 
-  .streak-mini{
-    margin-top:auto;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:14px;
-  }
-  .streak-mini .flame{font-size:20px;}
-  .streak-mini .num{font-family:'Sora'; font-weight:700; font-size:19px; margin:4px 0 2px;}
-  .streak-mini .lbl{font-size:11.5px; color:var(--muted);}
+  .main{flex:1; padding:30px 34px; min-width:0;}
 
-  /* ---------- Main ---------- */
-  .main{
-    flex:1;
-    padding:26px 28px;
-    min-width:0;
-    overflow-x:hidden;
-  }
-  .topbar{
-    display:flex; justify-content:space-between; align-items:center;
-    margin-bottom:22px;
-  }
-  .search{
-    display:flex; align-items:center; gap:10px;
-    background:var(--card); border:1px solid var(--line);
-    border-radius:10px; padding:9px 14px;
-    color:var(--muted-2); font-size:13.5px;
-    width:280px;
-  }
-  .search svg{width:15px; height:15px; flex-shrink:0;}
+  .welcome h1{font-size:24px; font-weight:700;}
+  .welcome p{font-size:13.5px; color:var(--muted); margin-top:6px;}
 
-  .hero{
-    position:relative;
-    border-radius:20px;
-    padding:28px 30px;
-    background:
-      radial-gradient(circle at 88% 15%, rgba(255,255,255,.14), transparent 42%),
-      linear-gradient(120deg, var(--amber-dark) 0%, var(--amber) 50%, var(--amber-light) 100%);
-    overflow:hidden;
-    margin-bottom:22px;
-  }
-  .hero::after{
-    content:"";
-    position:absolute; right:-40px; top:-60px;
-    width:220px; height:220px; border-radius:50%;
-    border:1px solid rgba(255,255,255,.15);
-  }
-  .hero-top{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;}
-  .hero h1{font-size:23px; font-weight:700;}
-  .hero p{font-size:13.5px; color:rgba(255,255,255,.82); margin-top:6px; max-width:420px;}
-  .resume-card{
-    background:rgba(15,14,30,.35);
-    backdrop-filter:blur(6px);
-    border:1px solid rgba(255,255,255,.18);
-    border-radius:14px;
-    padding:12px 16px;
-    display:flex; align-items:center; gap:14px;
-    min-width:280px;
-  }
-  .resume-thumb{width:44px; height:44px; border-radius:9px; background:#12132090; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px;}
-  .resume-card .rt{font-size:11px; color:rgba(255,255,255,.7); text-transform:uppercase; letter-spacing:.05em;}
-  .resume-card .rn{font-size:13.5px; font-weight:600; margin:2px 0 6px;}
-  .mini-bar{height:5px; background:rgba(255,255,255,.22); border-radius:6px; width:150px; overflow:hidden;}
-  .mini-bar span{display:block; height:100%; background:#fff; border-radius:6px;}
-  .resume-btn{
-    margin-left:auto; background:var(--bg-top); color:var(--amber-light); font-weight:700; font-size:12.5px;
-    padding:9px 14px; border-radius:9px; white-space:nowrap; flex-shrink:0;
-  }
-
-  /* stats */
-  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:26px;}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:26px 0 32px;}
   .stat-card{
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    padding:16px 18px;
+    padding:20px 22px;
   }
-  .stat-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
-  .stat-icon{
-    width:32px; height:32px; border-radius:9px;
-    display:flex; align-items:center; justify-content:center; font-size:15px;
-  }
-  .stat-num{font-family:'Sora'; font-size:24px; font-weight:700;}
-  .stat-lbl{font-size:12.5px; color:var(--muted); margin-top:3px;}
-  .stat-delta{font-size:11px; font-weight:600; padding:3px 7px; border-radius:6px;}
+  .stat-lbl{font-size:12.5px; color:var(--muted); margin-bottom:10px;}
+  .stat-num{font-family:'Sora'; font-size:28px; font-weight:800;}
 
-  /* sections */
-  .section{margin-bottom:28px;}
-  .section-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
-  .section-head h2{font-size:16.5px; font-weight:700;}
-  .see-all{font-size:12.5px; color:var(--amber-light); font-weight:600;}
+  .section-title{font-size:17px; font-weight:700; margin-bottom:16px;}
 
-  .row-scroll{display:flex; gap:16px; overflow-x:auto; padding-bottom:6px;}
-  .clx-card{
-    flex:0 0 250px;
-    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    overflow:hidden; transition:.15s;
-  }
-  .clx-card:hover{border-color:var(--amber); transform:translateY(-2px);}
-  .clx-thumb{height:100px; position:relative; display:flex; align-items:flex-end; padding:10px; font-size:26px;}
-  .clx-body{padding:13px 14px 15px;}
-  .clx-cat{font-size:10.5px; color:var(--teal); font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
-  .clx-title{font-size:14px; font-weight:600; margin:5px 0 10px; line-height:1.3;}
-  .prog-track{height:6px; background:var(--line); border-radius:6px; overflow:hidden; margin-bottom:7px;}
-  .prog-fill{height:100%; border-radius:6px; background:linear-gradient(90deg,var(--amber-dark),var(--amber-light));}
-  .clx-meta{display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted);}
-
-  .browse-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
-  .browse-card{
+  .course-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:34px;}
+  .course-card{
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
     transition:.15s;
   }
-  .browse-card:hover{border-color:var(--amber); transform:translateY(-2px);}
-  .browse-thumb{height:96px; display:flex; align-items:flex-end; justify-content:flex-start; padding:10px; font-size:24px; position:relative;}
+  .course-card:hover{border-color:var(--amber); transform:translateY(-2px);}
+  .course-thumb{height:120px; position:relative; overflow:hidden;}
+  .course-thumb .ph{width:100%; height:100%; display:block;}
+  .course-body{padding:16px 18px 18px;}
+  .course-title{font-size:15px; font-weight:700; margin-bottom:6px;}
+  .course-desc{font-size:12.5px; color:var(--muted); line-height:1.5; margin-bottom:16px; min-height:38px;}
+  .btn-resume{
+    display:inline-block; width:100%; text-align:center; background:var(--card-hi); color:var(--text);
+    font-weight:700; font-size:13px; padding:10px 0; border-radius:9px; border:1px solid var(--line);
+    transition:.15s;
+  }
+  .btn-resume:hover{background:var(--amber); color:var(--amber-dk); border-color:var(--amber);}
+
+  .browse-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  .browse-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+  .browse-thumb{height:110px; position:relative;}
   .price-tag{
-    position:absolute; top:9px; right:9px; font-size:10.5px; font-weight:700;
-    background:rgba(15,14,26,.55); backdrop-filter:blur(4px); padding:3px 8px; border-radius:7px;
+    position:absolute; top:10px; right:10px; font-size:10.5px; font-weight:700;
+    background:rgba(15,20,32,.7); padding:3px 9px; border-radius:7px; color:var(--amber);
   }
-  .browse-body{padding:13px 14px 14px;}
-  .browse-cat{font-size:10.5px; color:var(--amber); font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
-  .browse-title{font-size:14px; font-weight:600; margin:5px 0 8px; line-height:1.3;}
-  .browse-foot{display:flex; justify-content:space-between; align-items:center; margin-top:6px;}
-  .rating{font-size:12px; color:var(--muted); display:flex; align-items:center; gap:4px;}
-  .enroll-btn{
-    font-size:12px; font-weight:700; color:var(--amber-light);
-    border:1px solid var(--amber); padding:5px 11px; border-radius:8px;
+  .browse-body{padding:15px 17px 17px;}
+  .browse-title{font-size:14.5px; font-weight:700; margin-bottom:6px;}
+  .browse-meta{font-size:11.5px; color:var(--muted); margin-bottom:12px;}
+  .btn-enroll{
+    display:inline-block; width:100%; text-align:center; background:transparent; color:var(--amber);
+    font-weight:700; font-size:12.5px; padding:9px 0; border-radius:9px; border:1px solid var(--amber);
   }
 
-  /* ---------- Right panel ---------- */
-  .panel{
-    width:260px; flex-shrink:0;
-    background:var(--sidebar); border-left:1px solid var(--line);
-    padding:26px 20px;
-  }
-  .profile{text-align:center; margin-bottom:22px;}
-  .avatar{
-    width:64px; height:64px; border-radius:50%; margin:0 auto 12px;
-    background:linear-gradient(135deg,var(--amber),var(--teal));
-    display:flex; align-items:center; justify-content:center;
-    font-family:'Sora'; font-weight:700; font-size:22px;
-  }
-  .profile .name{font-weight:600; font-size:15px;}
-  .profile .email{font-size:12px; color:var(--muted); margin-top:3px;}
-
-  .panel-card{
-    background:var(--card); border:1px solid var(--line); border-radius:14px;
-    padding:16px; margin-bottom:16px;
-  }
-  .panel-card h3{font-size:12.5px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;}
-  .panel-card h3 span{font-size:11px; color:var(--muted); font-weight:500;}
-
-  /* streak heatmap - signature element */
-  .heatmap{display:grid; grid-template-columns:repeat(13,1fr); gap:3px;}
-  .hcell{aspect-ratio:1; border-radius:3px; background:var(--line);}
-  .heat-legend{display:flex; align-items:center; justify-content:flex-end; gap:4px; margin-top:9px; font-size:10px; color:var(--muted-2);}
-  .heat-legend .hcell{width:8px; height:8px; aspect-ratio:unset;}
-
-  .deadline{display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); font-size:12.5px;}
-  .deadline:last-child{border:none; padding-bottom:0;}
-  .dot{width:7px; height:7px; border-radius:50%; margin-top:5px; flex-shrink:0;}
-  .deadline .dtitle{font-weight:600;}
-  .deadline .dsub{color:var(--muted); font-size:11px; margin-top:2px;}
-
-
-  @media (max-width:1100px){
-    .panel{display:none;}
-    .browse-grid{grid-template-columns:repeat(2,1fr);}
-    .stats{grid-template-columns:repeat(2,1fr);}
-  }
-  @media (max-width:760px){
+  @media (max-width:1000px){
     .sidebar{display:none;}
-    .browse-grid{grid-template-columns:1fr;}
     .stats{grid-template-columns:1fr 1fr;}
-    .hero-top{flex-direction:column;}
+    .course-grid, .browse-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:640px){
+    .stats, .course-grid, .browse-grid{grid-template-columns:1fr;}
+    .crumb{display:none;}
   }
 </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="logo"><div class="brand-mark">M</div><span class="wordmark">Mech Spec <span class="lms">LMS</span></span></div>
-    <nav>
-      <div class="nav-label">Menu</div>
-      <div class="nav-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
-        Overview
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        My Courses
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        Browse Courses
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Settings
-      </div>
-    </nav>
-
-    <div class="streak-mini">
-      <div class="flame">🔥</div>
-      <div class="num mono">12</div>
-      <div class="lbl">day learning streak</div>
+  <div class="topnav">
+    <div style="display:flex; align-items:center;">
+      <div class="brand"><div class="mark">M</div>Mech Spec<span class="lms">&nbsp;LMS</span></div>
+      <div class="crumb">Dashboard / <b>My Learning</b></div>
     </div>
-  </aside>
-
-  <!-- Main -->
-  <main class="main">
-    <div class="topbar">
-      <div class="search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        Search courses, lessons...
+    <div class="nav-right">
+      <div class="mode-pill">Student Mode</div>
+      <div class="user-block">
+        <div class="user-text">
+          <div class="un">Daniel</div>
+          <div class="ue">student@example.com</div>
+        </div>
+        <div class="user-avatar">S</div>
       </div>
     </div>
+  </div>
 
-    <!-- Hero -->
-    <div class="hero">
-      <div class="hero-top">
-        <div>
-          <h1>Welcome back, Ada 👋</h1>
-          <p>You've completed 3 of 5 enrolled courses. Keep your 12-day streak alive — one lesson today keeps it going.</p>
+  <div class="shell">
+    <aside class="sidebar">
+      <nav class="sidenav">
+        <div class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          My Learning
         </div>
-        <div class="resume-card">
-          <div class="resume-thumb">🔐</div>
-          <div style="flex:1">
-            <div class="rt">Continue where you left off</div>
-            <div class="rn">Applied Cryptography with Python</div>
-            <div class="mini-bar"><span style="width:64%"></span></div>
-          </div>
-          <div class="resume-btn">Resume</div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M8.5 14.5 4 21l3-1 1.3 2.8 2.4-5.6M15.5 14.5 20 21l-3-1-1.3 2.8-2.4-5.6"/></svg>
+          Certificates
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Discussions
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="nav-item logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          Log Out
         </div>
       </div>
-    </div>
+    </aside>
 
-    <!-- Stats -->
-    <div class="stats">
-      <div class="stat-card">
-        <div class="stat-top">
-          <div class="stat-icon" style="background:rgba(242,183,5,.15); color:var(--amber);">📚</div>
-          <div class="stat-delta" style="background:rgba(242,183,5,.15); color:var(--amber);">5 total</div>
-        </div>
-        <div class="stat-num mono">5</div>
-        <div class="stat-lbl">Enrolled courses</div>
+    <main class="main">
+      <div class="welcome">
+        <h1>Welcome back, Daniel! 👋</h1>
+        <p>You have completed 3 lessons this week. Keep up the great work.</p>
       </div>
-      <div class="stat-card">
-        <div class="stat-top">
-          <div class="stat-icon" style="background:rgba(34,211,192,.15); color:var(--teal);">✅</div>
-          <div class="stat-delta" style="background:rgba(34,211,192,.15); color:var(--teal);">60%</div>
-        </div>
-        <div class="stat-num mono">3</div>
-        <div class="stat-lbl">Completed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-top">
-          <div class="stat-icon" style="background:rgba(241,108,122,.15); color:var(--danger);">⏱</div>
-          <div class="stat-delta" style="background:rgba(241,108,122,.15); color:var(--danger);">this week</div>
-        </div>
-        <div class="stat-num mono">14.5<span style="font-size:13px; color:var(--muted);">h</span></div>
-        <div class="stat-lbl">Hours learned</div>
-      </div>
-    </div>
 
-    <!-- Continue Learning -->
-    <div class="section">
-      <div class="section-head">
-        <h2>Continue learning</h2>
-        <a class="see-all" href="#">See all</a>
-      </div>
-      <div class="row-scroll">
-        <div class="clx-card">
-          <div class="clx-thumb" style="background:linear-gradient(135deg,#3b3565,#5b4bdb);">🔐</div>
-          <div class="clx-body">
-            <div class="clx-cat">Security</div>
-            <div class="clx-title">Applied Cryptography with Python</div>
-            <div class="prog-track"><div class="prog-fill" style="width:64%"></div></div>
-            <div class="clx-meta"><span>64% complete</span><span>7/11 lessons</span></div>
-          </div>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-lbl">Overall Progress</div>
+          <div class="stat-num">75%</div>
         </div>
-        <div class="clx-card">
-          <div class="clx-thumb" style="background:linear-gradient(135deg,#134e4a,#0d9488);">🎨</div>
-          <div class="clx-body">
-            <div class="clx-cat">Design</div>
-            <div class="clx-title">Figma for Web Design</div>
-            <div class="prog-track"><div class="prog-fill" style="width:30%"></div></div>
-            <div class="clx-meta"><span>30% complete</span><span>3/10 lessons</span></div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Completed Courses</div>
+          <div class="stat-num">2</div>
         </div>
-        <div class="clx-card">
-          <div class="clx-thumb" style="background:linear-gradient(135deg,#402a12,#a8631d);">📊</div>
-          <div class="clx-body">
-            <div class="clx-cat">Data</div>
-            <div class="clx-title">Data Analysis with Excel</div>
-            <div class="prog-track"><div class="prog-fill" style="width:88%"></div></div>
-            <div class="clx-meta"><span>88% complete</span><span>7/8 lessons</span></div>
-          </div>
-        </div>
-        <div class="clx-card">
-          <div class="clx-thumb" style="background:linear-gradient(135deg,#1e2a4a,#2f5aa8);">💻</div>
-          <div class="clx-body">
-            <div class="clx-cat">Development</div>
-            <div class="clx-title">Web Dev Fundamentals</div>
-            <div class="prog-track"><div class="prog-fill" style="width:15%"></div></div>
-            <div class="clx-meta"><span>15% complete</span><span>3/20 lessons</span></div>
-          </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Certificates Earned</div>
+          <div class="stat-num">1</div>
         </div>
       </div>
-    </div>
 
-    <!-- Browse Courses -->
-    <div class="section">
-      <div class="section-head">
-        <h2>Browse courses</h2>
-        <a class="see-all" href="#">See all</a>
+      <div class="section-title">Continue Learning</div>
+      <div class="course-grid">
+        <div class="course-card">
+          <div class="course-thumb">
+            <svg class="ph" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid slice">
+              <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0d3b3f"/><stop offset="100%" stop-color="#0a1420"/>
+              </linearGradient></defs>
+              <rect width="300" height="120" fill="url(#g1)"/>
+              <g stroke="#22d3c0" stroke-width="1" opacity="0.5">
+                <path d="M0 30 H80 V60 H160 V20 H300"/>
+                <path d="M0 90 H60 V70 H220 V100 H300"/>
+                <circle cx="80" cy="30" r="3" fill="#22d3c0"/>
+                <circle cx="160" cy="60" r="3" fill="#22d3c0"/>
+                <circle cx="220" cy="100" r="3" fill="#22d3c0"/>
+              </g>
+            </svg>
+          </div>
+          <div class="course-body">
+            <div class="course-title">Web Security Basics</div>
+            <div class="course-desc">Learn how to identify and patch common vulnerabilities like XSS and SQLi.</div>
+            <a class="btn-resume" href="#">Resume Lesson</a>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-thumb">
+            <svg class="ph" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid slice">
+              <rect width="300" height="120" fill="#0a0d0a"/>
+              <g fill="#f2b705" opacity="0.55" font-family="monospace" font-size="11">
+                <text x="4" y="14">01 10 11</text>
+                <text x="4" y="30">10 01 11</text>
+                <text x="4" y="46">11 00 10</text>
+                <text x="4" y="62">01 11 00</text>
+                <text x="4" y="78">10 10 01</text>
+                <text x="4" y="94">00 11 10</text>
+                <text x="4" y="110">11 01 00</text>
+                <text x="150" y="20">10 00 11</text>
+                <text x="150" y="40">01 10 00</text>
+                <text x="150" y="60">11 01 10</text>
+                <text x="150" y="80">00 10 01</text>
+                <text x="150" y="100">10 11 01</text>
+              </g>
+            </svg>
+          </div>
+          <div class="course-body">
+            <div class="course-title">Advanced Cryptography</div>
+            <div class="course-desc">Deep dive into hashing algorithms and modern encryption protocols.</div>
+            <a class="btn-resume" href="#">Resume Lesson</a>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-thumb">
+            <svg class="ph" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid slice">
+              <defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1a2338"/><stop offset="100%" stop-color="#0f1420"/>
+              </linearGradient></defs>
+              <rect width="300" height="120" fill="url(#g3)"/>
+              <g fill="none" stroke="#f2b705" stroke-width="1.4" opacity="0.6">
+                <rect x="20" y="20" width="60" height="40" rx="4"/>
+                <rect x="100" y="50" width="60" height="40" rx="4"/>
+                <rect x="200" y="15" width="60" height="40" rx="4"/>
+                <path d="M80 40 H100 M160 70 H200"/>
+              </g>
+            </svg>
+          </div>
+          <div class="course-body">
+            <div class="course-title">Data Analysis with Excel</div>
+            <div class="course-desc">Master formulas, pivot tables, and dashboards for real-world data.</div>
+            <a class="btn-resume" href="#">Resume Lesson</a>
+          </div>
+        </div>
       </div>
+
+      <div class="section-title">Browse Courses</div>
       <div class="browse-grid">
         <div class="browse-card">
-          <div class="browse-thumb" style="background:linear-gradient(135deg,#3b2560,#7c3aed);">🕵️</div>
+          <div class="browse-thumb">
+            <svg class="ph" viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice" style="width:100%; height:100%; display:block;">
+              <rect width="300" height="110" fill="#1a2338"/>
+              <circle cx="150" cy="55" r="30" fill="none" stroke="#f2b705" stroke-width="2" opacity="0.5"/>
+            </svg>
+            <div class="price-tag">Free</div>
+          </div>
           <div class="browse-body">
-            <div class="browse-cat">Security</div>
             <div class="browse-title">Introduction to Cryptography</div>
-            <div class="browse-foot">
-              <span class="rating">⭐ 4.8 · 210 students</span>
-            </div>
-            <div class="browse-foot">
-              <span class="mono" style="font-weight:700;">Free</span>
-              <span class="enroll-btn">Enroll</span>
-            </div>
+            <div class="browse-meta">⭐ 4.8 · 210 students</div>
+            <a class="btn-enroll" href="#">Enroll</a>
           </div>
         </div>
         <div class="browse-card">
-          <div class="browse-thumb" style="background:linear-gradient(135deg,#0f3d3a,#0f9b8e);">📈</div>
+          <div class="browse-thumb">
+            <svg class="ph" viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice" style="width:100%; height:100%; display:block;">
+              <rect width="300" height="110" fill="#14231f"/>
+              <path d="M0 90 L60 60 L120 75 L180 40 L240 55 L300 20" stroke="#22d3c0" stroke-width="2" fill="none" opacity="0.6"/>
+            </svg>
+            <div class="price-tag">$19</div>
+          </div>
           <div class="browse-body">
-            <div class="browse-cat">Business</div>
             <div class="browse-title">Growth Marketing Essentials</div>
-            <div class="browse-foot">
-              <span class="rating">⭐ 4.6 · 98 students</span>
-            </div>
-            <div class="browse-foot">
-              <span class="mono" style="font-weight:700;">$19</span>
-              <span class="enroll-btn">Enroll</span>
-            </div>
+            <div class="browse-meta">⭐ 4.6 · 98 students</div>
+            <a class="btn-enroll" href="#">Enroll</a>
           </div>
         </div>
         <div class="browse-card">
-          <div class="browse-thumb" style="background:linear-gradient(135deg,#402525,#b8453f);">🧠</div>
+          <div class="browse-thumb">
+            <svg class="ph" viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice" style="width:100%; height:100%; display:block;">
+              <rect width="300" height="110" fill="#241a1a"/>
+              <circle cx="80" cy="55" r="18" fill="none" stroke="#f16c7a" stroke-width="2" opacity="0.5"/>
+              <circle cx="150" cy="55" r="26" fill="none" stroke="#f16c7a" stroke-width="2" opacity="0.5"/>
+              <circle cx="230" cy="55" r="14" fill="none" stroke="#f16c7a" stroke-width="2" opacity="0.5"/>
+            </svg>
+            <div class="price-tag">$25</div>
+          </div>
           <div class="browse-body">
-            <div class="browse-cat">AI &amp; ML</div>
             <div class="browse-title">Machine Learning Foundations</div>
-            <div class="browse-foot">
-              <span class="rating">⭐ 4.9 · 340 students</span>
-            </div>
-            <div class="browse-foot">
-              <span class="mono" style="font-weight:700;">$25</span>
-              <span class="enroll-btn">Enroll</span>
-            </div>
+            <div class="browse-meta">⭐ 4.9 · 340 students</div>
+            <a class="btn-enroll" href="#">Enroll</a>
           </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 
-  <!-- Right Panel -->
-  <aside class="panel">
-    <div class="profile">
-      <div class="avatar">A</div>
-      <div class="name">Ada Nwosu</div>
-      <div class="email">ada@mechspec.dev</div>
-    </div>
-
-    <div class="panel-card">
-      <h3>Learning activity <span>past 13 weeks</span></h3>
-      <div class="heatmap" id="heatmap"></div>
-      <div class="heat-legend">
-        less
-        <div class="hcell" style="background:var(--line);"></div>
-        <div class="hcell" style="background:#4d3b06;"></div>
-        <div class="hcell" style="background:var(--amber-dark);"></div>
-        <div class="hcell" style="background:var(--amber);"></div>
-        <div class="hcell" style="background:var(--amber-light);"></div>
-        more
-      </div>
-    </div>
-
-    <div class="panel-card">
-      <h3>Upcoming</h3>
-      <div class="deadline">
-        <div class="dot" style="background:var(--danger);"></div>
-        <div>
-          <div class="dtitle">Quiz: Symmetric Encryption</div>
-          <div class="dsub">Due tomorrow, 6:00 PM</div>
-        </div>
-      </div>
-      <div class="deadline">
-        <div class="dot" style="background:var(--amber);"></div>
-        <div>
-          <div class="dtitle">Assignment: Figma Wireframe</div>
-          <div class="dsub">Due in 4 days</div>
-        </div>
-      </div>
-      <div class="deadline">
-        <div class="dot" style="background:var(--teal);"></div>
-        <div>
-          <div class="dtitle">Live Q&amp;A: Excel Formulas</div>
-          <div class="dsub">Fri, 3:00 PM</div>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-<script>
-  // Signature element: learning-activity heatmap, seeded so it's stable but organic-looking
-  const grid = document.getElementById('heatmap');
-  const weeks = 13, days = 7;
-  const colors = ['var(--line)', '#4d3b06', 'var(--amber-dark)', 'var(--amber)', 'var(--amber-light)'];
-  let seed = 42;
-  function rand(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
-  for(let i=0;i<weeks*days;i++){
-    const cell = document.createElement('div');
-    cell.className = 'hcell';
-    const r = rand();
-    const level = r > 0.55 ? Math.min(4, Math.floor(r*5)) : 0;
-    cell.style.background = colors[level];
-    grid.appendChild(cell);
-  }
-</script>
 </body>
 </html>
