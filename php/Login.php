@@ -15,10 +15,24 @@ session_set_cookie_params([
 ]);
 session_start();
 require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/Helpers.php';
 
 // Tunable rate-limit settings — change in one place.
-const MAX_ATTEMPTS  = 3;    // failed tries allowed
-const LOCKOUT_MINS  = 15;   // window they're counted over, and how long a lock lasts
+const MAX_ATTEMPTS       = 3;   // failed tries before a lock is triggered
+const LOCKOUT_MINS       = 15;  // how long the lock itself lasts
+const COUNT_WINDOW_HOURS = 24;  // how far back failures are counted
+
+// Two separate windows, deliberately:
+//
+//   COUNT_WINDOW_HOURS decides which failures still count. Failures older
+//   than this are forgotten, so someone who mistyped twice last week starts
+//   clean today instead of being one slip away from a lock.
+//
+//   LOCKOUT_MINS decides how long the lock lasts once triggered.
+//
+// Using a single window for both is the common mistake: make it short and a
+// slow brute-force just waits it out between bursts; make it long and honest
+// users stay locked for hours. Splitting them fixes both ends.
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../LoginPage.php');
@@ -42,29 +56,36 @@ if ($email === '' || $password === '') {
 }
 
 try {
-    // --- Rate limit check (before we even look at the password) ---
-    // Count recent FAILED attempts for THIS email inside the window. We key on
-    // the email alone, not the IP: keying on IP too would lock every account
-    // that shares an IP (a whole school or office behind one address, or one
-    // person testing several accounts) the moment any single account fails.
+    // --- Rate limit check (before the password is even looked at) ---
+    // Two things are needed: how many failures still count, and when the most
+    // recent one happened. A lock is active only if the threshold has been hit
+    // AND the newest failure is still inside the lockout period.
     $limitCheck = $pdo->prepare(
-        'SELECT COUNT(*) AS fails
+        'SELECT COUNT(*) AS fails,
+                MAX(attempted_at) AS last_fail,
+                TIMESTAMPDIFF(SECOND, MAX(attempted_at), NOW()) AS secs_since_last
          FROM LoginAttempts
          WHERE successful = 0
            AND email = ?
-           AND attempted_at > (NOW() - INTERVAL ? MINUTE)'
+           AND attempted_at > (NOW() - INTERVAL ? HOUR)'
     );
-    $limitCheck->execute([$email, LOCKOUT_MINS]);
-    $recentFails = (int) $limitCheck->fetch()['fails'];
+    $limitCheck->execute([$email, COUNT_WINDOW_HOURS]);
+    $limitRow    = $limitCheck->fetch();
+    $recentFails = (int) $limitRow['fails'];
+    $secsSince   = $limitRow['secs_since_last'] === null ? PHP_INT_MAX : (int) $limitRow['secs_since_last'];
 
-    if ($recentFails >= MAX_ATTEMPTS) {
-        // Locked. We do NOT check the password at all while locked — that's what
-        // makes the lock meaningful against a brute-force script.
-        fail('Too many failed attempts. Please try again in ' . LOCKOUT_MINS . ' minutes.');
+    $lockActive = $recentFails >= MAX_ATTEMPTS && $secsSince < (LOCKOUT_MINS * 60);
+
+    if ($lockActive) {
+        // While locked the password is not checked at all — that is what makes
+        // the lock meaningful against an automated attack.
+        $minutesLeft = (int) ceil((LOCKOUT_MINS * 60 - $secsSince) / 60);
+        log_security_event($pdo, 'account_locked', null, "Locked login attempt for $email");
+        fail("Too many failed attempts. Please try again in $minutesLeft minute(s).");
     }
 
     // --- Look up the user ---
-    $stmt = $pdo->prepare('SELECT user_id, full_name, password_hash, role FROM Users WHERE email = ?');
+    $stmt = $pdo->prepare('SELECT user_id, full_name, email, password_hash, role, status FROM Users WHERE email = ?');
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
@@ -82,11 +103,19 @@ try {
     $log->execute([$email, $ip, $passwordOk ? 1 : 0]);
 
     if (!$passwordOk) {
-        $remaining = MAX_ATTEMPTS - ($recentFails + 1);
-        if ($remaining > 0) {
-            fail("Incorrect email or password. $remaining attempt(s) left.");
-        }
-        fail('Too many failed attempts. Please try again in ' . LOCKOUT_MINS . ' minutes.');
+        // One identical message whether the email is unknown or the password
+        // is wrong, and no attempts counter — telling an attacker how close
+        // they are to the lock is information they should not have.
+        log_security_event($pdo, 'failed_login', $user ? (int) $user['user_id'] : null, "Failed login for $email");
+        fail('Email or password is not correct.');
+    }
+
+    // A suspended account has a valid password but must not get in.
+    // Checked after the password so the message can't be used to discover
+    // which emails exist.
+    if (($user['status'] ?? 'active') === 'suspended') {
+        log_security_event($pdo, 'access_denied', (int) $user['user_id'], 'Suspended account attempted login');
+        fail('This account has been suspended. Please contact an administrator.');
     }
 
     // --- Success: establish the session ---
@@ -97,11 +126,18 @@ try {
 
     // session_regenerate_id prevents session fixation — a fresh ID is issued the
     // moment privilege changes (anonymous visitor becomes logged-in user).
+    // Record when they last signed in — the admin page uses this to spot
+    // accounts that have gone inactive.
+    $pdo->prepare('UPDATE Users SET last_login = NOW() WHERE user_id = ?')
+        ->execute([$user['user_id']]);
+    log_security_event($pdo, 'login_success', (int) $user['user_id']);
+
     session_regenerate_id(true);
     $_SESSION['user_id']   = $user['user_id'];
     $_SESSION['last_activity'] = time();
     $_SESSION['full_name'] = $user['full_name'];
     $_SESSION['role']      = $user['role'];
+    $_SESSION['email']     = $user['email'];
     unset($_SESSION['login_old']);
 
     // Route by role. This is the server-side decision — the browser never gets to

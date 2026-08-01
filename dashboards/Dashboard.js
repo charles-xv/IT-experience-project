@@ -1,31 +1,57 @@
-// Logout confirmation. Intercepts the log-out link and shows a themed modal
-// instead of leaving immediately, so an accidental click doesn't end the session.
-const logoutLink = document.querySelector(".dash-logout");
-const modal = document.getElementById("logoutModal");
-const confirmBtn = document.getElementById("logoutConfirm");
-const cancelBtn = document.getElementById("logoutCancel");
+// Shared dashboard behaviour: the logout confirmation and the progress bars.
 
-if (logoutLink && modal) {
-  const logoutUrl = logoutLink.getAttribute("href");
+// ---------------------------------------------------------------------
+//  Progress bars
+//  Each fill carries its percentage in data-progress rather than a style
+//  attribute, so no per-record inline styling ends up in the markup.
+// ---------------------------------------------------------------------
+document.querySelectorAll('.course-progress-fill').forEach(function (bar) {
+  var pct = parseInt(bar.dataset.progress, 10) || 0;
+  bar.style.width = Math.min(Math.max(pct, 0), 100) + '%';
+});
 
-  logoutLink.addEventListener("click", (e) => {
+// ---------------------------------------------------------------------
+//  Logout confirmation
+//  Intercepts the log-out link so an accidental click can't end the session.
+// ---------------------------------------------------------------------
+var logoutTrigger = document.getElementById('logoutTrigger');
+var logoutModal   = document.getElementById('logoutModal');
+var logoutCancel  = document.getElementById('logoutCancel');
+var logoutConfirm = document.getElementById('logoutConfirm');
+
+if (logoutTrigger && logoutModal) {
+  logoutTrigger.addEventListener('click', function (e) {
     e.preventDefault();
-    modal.classList.add("open");
+    logoutModal.classList.add('open');
   });
 
-  cancelBtn.addEventListener("click", () => modal.classList.remove("open"));
+  logoutCancel.addEventListener('click', function () {
+    logoutModal.classList.remove('open');
+  });
 
   // Clicking the dimmed backdrop (but not the card) also cancels.
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) modal.classList.remove("open");
+  logoutModal.addEventListener('click', function (e) {
+    if (e.target === logoutModal) logoutModal.classList.remove('open');
   });
 
-  // Escape key cancels too.
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") modal.classList.remove("open");
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') logoutModal.classList.remove('open');
   });
 
-  confirmBtn.addEventListener("click", () => {
-    window.location.href = logoutUrl;
+  logoutConfirm.addEventListener('click', function () {
+    window.location.href = '../php/Logout.php';
   });
 }
+
+
+// ---------------------------------------------------------------------
+//  Destructive row actions (admin Delete) ask for confirmation first.
+//  The message lives in data-confirm on the button.
+// ---------------------------------------------------------------------
+document.querySelectorAll('[data-confirm]').forEach(function (btn) {
+  btn.addEventListener('click', function (e) {
+    if (!window.confirm(btn.dataset.confirm)) {
+      e.preventDefault();
+    }
+  });
+});
