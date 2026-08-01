@@ -1,0 +1,20 @@
+# Admin credentials — never committed, so cloning the repo does not hand
+# anyone administrator access.
+database/create_admin.sql
+
+# Local database dumps. These DO contain real user rows, including personal
+# email addresses, so they must never reach the repository.
+*.sql.bak
+*_dump.sql
+*_backup.sql
+database/backup/
+
+# Editor and OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# PHP error logs — can leak file paths and query fragments
+*.log
+error_log
