@@ -1,0 +1,54 @@
+/* Shared loading bar. Included by the auth pages, which don't load
+   Index.css or Dashboard.css in full. */
+
+.route-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, #f7c331, #06b6d4);
+  box-shadow: 0 0 10px rgba(247, 195, 49, 0.6);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Leaving a page: run up to 90% and wait for the next page to finish it */
+.route-loading-bar.leaving {
+  opacity: 1;
+  animation: barLeave 900ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes barLeave {
+  0% {
+    width: 0;
+  }
+  55% {
+    width: 62%;
+  }
+  100% {
+    width: 90%;
+  }
+}
+
+/* Arriving on the next page: complete it */
+.route-loading-bar.arriving {
+  opacity: 1;
+  width: 90%;
+  transition: width 0.18s ease;
+}
+
+.route-loading-bar.done {
+  width: 100%;
+  opacity: 0;
+  transition:
+    width 0.18s ease,
+    opacity 0.3s ease 0.12s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-loading-bar {
+    display: none;
+  }
+}

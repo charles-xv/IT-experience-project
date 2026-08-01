@@ -31,6 +31,7 @@ $certificates = $stmt->fetchAll();
   <title>Certificates - Mech Spec LMS</title>
   <link rel="stylesheet" href="../Index.css">
   <link rel="stylesheet" href="Dashboard.css">
+  <link rel="stylesheet" href="../LoadingBar.css">
 </head>
 <body>
   <div class="app-layout">
@@ -88,13 +89,14 @@ $certificates = $stmt->fetchAll();
         <?php else: ?>
           <div class="cert-grid">
             <?php foreach ($certificates as $cert): ?>
-              <div class="cert-card">
+              <div class="cert-card" id="cert-<?= (int) $cert['certificate_id'] ?>">
                 <div class="cert-ribbon">Certificate of Completion</div>
                 <div class="cert-body">
                   <span class="cert-awarded">This certifies that</span>
                   <h3 class="cert-name"><?= e($name) ?></h3>
                   <span class="cert-awarded">has successfully completed</span>
                   <h4 class="cert-course"><?= e($cert['title']) ?></h4>
+                  <span class="cert-ref">Certificate No. MS-<?= str_pad((string) $cert['certificate_id'], 5, '0', STR_PAD_LEFT) ?></span>
                   <?php if ($cert['category']): ?>
                     <span class="course-tag"><?= e($cert['category']) ?></span>
                   <?php endif; ?>
@@ -102,6 +104,12 @@ $certificates = $stmt->fetchAll();
                 <div class="cert-footer">
                   <span>Instructor: <?= e($cert['instructor_name']) ?></span>
                   <span>Issued <?= e(date('d M Y', strtotime($cert['issued_at']))) ?></span>
+                </div>
+                <div class="cert-actions">
+                  <button class="cert-download"
+                          data-cert="cert-<?= (int) $cert['certificate_id'] ?>">
+                    ⬇ Download
+                  </button>
                 </div>
               </div>
             <?php endforeach; ?>
@@ -123,6 +131,8 @@ $certificates = $stmt->fetchAll();
     </div>
   </div>
 
+  <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
+  <script src="Certificates.js"></script>
 </body>
 </html>

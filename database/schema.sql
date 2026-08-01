@@ -177,18 +177,13 @@ CREATE TABLE PageVisits (
   INDEX idx_time (visited_at)
 ) ENGINE=InnoDB;
 
-
 -- ============================================================
---  Seed: the first admin.
---  There is nobody to promote the first admin, so it is inserted here.
---  Login:    admin@mechspec.local
---  Password: MechSpec@Admin2026
---  Change this password after the first login.
+--  NOTE: no administrator account is created here, deliberately.
+--
+--  Anyone who clones this repository can import this file and get a working
+--  database, but not administrator access. The admin account is created
+--  separately from a file that is not committed.
+--
+--  Next step: run seed_test_accounts.sql for the student and instructor
+--  logins, then add_courses.sql for the course catalogue.
 -- ============================================================
-INSERT INTO Users (full_name, email, password_hash, role, status) VALUES (
-  'Mech Spec Admin',
-  'admin@mechspec.local',
-  '$2y$10$MlG4OotazVQNCsKw18KHQ.gJj4509kJzjIDG3Gr0prMPFhqJle/cK',
-  'admin',
-  'active'
-);

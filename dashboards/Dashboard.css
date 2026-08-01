@@ -106,8 +106,26 @@ body {
   transition: color 0.2s;
   cursor: pointer;
 }
+.logout-btn {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease,
+    border-color 0.16s ease,
+    transform 0.12s ease;
+}
+
 .logout-btn:hover {
   color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.logout-btn:active {
+  transform: scale(0.97);
 }
 
 /* ===== MAIN CONTENT AREA ===== */
@@ -227,6 +245,7 @@ body {
   border: 1px solid var(--line-dark);
   border-radius: var(--radius-lg);
   padding: 24px;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
@@ -405,6 +424,7 @@ tr:hover td {
   position: fixed;
   inset: 0;
   background: rgba(7, 13, 25, 0.8);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   z-index: 999;
   align-items: center;
@@ -420,6 +440,7 @@ tr:hover td {
   padding: 32px;
   width: 360px;
   text-align: center;
+  animation: modalPop 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2);
 }
 .logout-card h3 {
   margin-top: 0;
@@ -481,7 +502,7 @@ tr:hover td {
     grid-template-columns: repeat(2, 1fr);
   }
   .course-grid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
 }
 
@@ -1205,5 +1226,379 @@ a.btn-small {
   }
   .detail-list dd {
     margin-bottom: 10px;
+  }
+}
+
+/* ============================================================
+   Interactivity
+   ============================================================ */
+
+/* Thin progress bar pinned to the top during navigation */
+/* Buttons mid-submit */
+.is-loading {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+/* Success notices fade themselves out */
+.form-notice {
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+.form-notice.fade-out {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* Cards ease in rather than snapping */
+.reveal {
+  animation: cardReveal 0.4s ease both;
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Used by the live search to hide non-matching cards */
+.is-hidden {
+  display: none !important;
+}
+
+/* Search box above the course grid */
+.search-row {
+  margin-bottom: 22px;
+  max-width: 420px;
+  position: relative;
+}
+
+.search-row input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 0.94rem;
+  font-family: inherit;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.search-row input::placeholder {
+  color: var(--muted);
+}
+
+.search-row input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(247, 195, 49, 0.12);
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* Interactive feedback on the things people click */
+.dash-course-card,
+.metric-card,
+.cert-card,
+.nav-item,
+.btn-block-cyan,
+.btn-submit,
+.btn-small,
+.row-btn {
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.dash-course-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cyan-accent);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+}
+
+.cert-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 32px rgba(247, 195, 49, 0.16);
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-block-cyan:active,
+.btn-submit:active,
+.btn-small:active {
+  transform: translateY(1px);
+}
+
+/* Table rows respond to the pointer */
+.table-widget tbody tr {
+  transition: background 0.14s ease;
+}
+.table-widget tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* Respect the system setting for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .dash-course-card:hover,
+  .metric-card:hover,
+  .cert-card:hover {
+    transform: none;
+  }
+}
+
+/* Certificate number and download action */
+.cert-ref {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+.cert-actions {
+  padding: 0 20px 18px;
+}
+
+.cert-download {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.16s ease;
+}
+
+.cert-download:hover {
+  background: rgba(247, 195, 49, 0.12);
+}
+
+/* Inline account editing in the admin users table */
+.edit-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.edit-input {
+  padding: 7px 10px;
+  border: 1px solid var(--line-dark);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 0.84rem;
+  font-family: inherit;
+  min-width: 130px;
+}
+
+.edit-input-wide {
+  min-width: 200px;
+}
+.edit-select {
+  min-width: 110px;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: rgba(247, 195, 49, 0.06);
+}
+
+.edit-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.edit-select option {
+  background: var(--navy-800);
+  color: #fff;
+}
+
+/* Read-only rows below the editable profile form */
+.detail-readonly {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line-dark);
+}
+
+/* Edit + Delete side by side in the instructor's course table */
+.row-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.row-actions .row-form {
+  margin: 0;
+}
+
+a.row-btn {
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   Modal entrance + shared confirmation dialog
+   ============================================================ */
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.9) translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes backdropFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The logout overlay was appearing instantly too */
+.logout-modal.open {
+  animation: backdropFade 0.2s ease;
+}
+
+/* --- Confirmation dialog, built by Dashboard.js --- */
+.confirm-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 13, 25, 0.82);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.confirm-modal.open {
+  display: flex;
+  animation: backdropFade 0.2s ease;
+}
+
+.confirm-card {
+  background: var(--navy-900);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  width: 400px;
+  max-width: 100%;
+  text-align: center;
+  animation: modalPop 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.confirm-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.14);
+  color: #ef4444;
+  font-size: 1.5rem;
+}
+
+.confirm-card h3 {
+  color: #fff;
+  font-size: 1.32rem;
+  margin: 0 0 10px;
+}
+
+.confirm-card p {
+  color: var(--muted-light);
+  font-size: 0.94rem;
+  line-height: 1.6;
+  margin: 0 0 26px;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.confirm-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    background 0.15s ease,
+    transform 0.12s ease;
+}
+
+.confirm-cancel {
+  background: transparent;
+  color: var(--muted-light);
+  border: 1px solid var(--line-dark);
+}
+.confirm-cancel:hover {
+  border-color: var(--muted-light);
+  color: #fff;
+}
+
+.confirm-go {
+  background: #ef4444;
+  color: #fff;
+  border: 1px solid #ef4444;
+}
+.confirm-go:hover {
+  background: #dc2626;
+}
+.confirm-go:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logout-card,
+  .confirm-card,
+  .logout-modal.open,
+  .confirm-modal.open {
+    animation: none;
   }
 }

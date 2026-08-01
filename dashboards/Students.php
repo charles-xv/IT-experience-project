@@ -1,4 +1,9 @@
 <?php
+// ============================================================
+//  Students — instructor view of everyone enrolled on their courses.
+//  Instructor only.
+// ============================================================
+
 require_once __DIR__ . '/../php/SessionGuard.php';
 require_once __DIR__ . '/../php/Database.php';
 require_once __DIR__ . '/../php/Helpers.php';
@@ -10,9 +15,9 @@ $instructorId = (int) $_SESSION['user_id'];
 $name  = $_SESSION['full_name'] ?? 'Instructor';
 $email = $_SESSION['email'] ?? '';
 
-// Every enrolment across this instructor's courses. The instructor_id filter
-// is the important part: without it an instructor would see the whole
-// platform's students, not just their own.
+// Every enrolment across this instructor's own courses. The instructor_id
+// filter is the ownership boundary — without it an instructor would see the
+// whole platform's students rather than only their own.
 $stmt = $pdo->prepare(
     'SELECT u.full_name, u.email,
             c.title AS course_title,
@@ -26,7 +31,7 @@ $stmt = $pdo->prepare(
 $stmt->execute([$instructorId]);
 $rows = $stmt->fetchAll();
 
-// Distinct people, since one student may appear on several courses.
+// Distinct people, since one student may appear on several of their courses.
 $stmt = $pdo->prepare(
     'SELECT COUNT(DISTINCT e.student_id) AS c
      FROM Enrollments e
@@ -35,6 +40,12 @@ $stmt = $pdo->prepare(
 );
 $stmt->execute([$instructorId]);
 $uniqueStudents = (int) $stmt->fetch()['c'];
+
+// How many have finished, for the summary line.
+$completed = 0;
+foreach ($rows as $r) {
+    if ($r['completed_at']) $completed++;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,10 +55,12 @@ $uniqueStudents = (int) $stmt->fetch()['c'];
   <title>Students - Mech Spec LMS</title>
   <link rel="stylesheet" href="../Index.css">
   <link rel="stylesheet" href="Dashboard.css">
+  <link rel="stylesheet" href="../LoadingBar.css">
 </head>
 <body>
   <div class="app-layout">
 
+    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <span class="brand-mark">M</span>
@@ -64,10 +77,13 @@ $uniqueStudents = (int) $stmt->fetch()['c'];
       </div>
     </aside>
 
+    <!-- MAIN -->
     <main class="main-wrapper">
 
       <header class="top-header">
-        <div class="breadcrumbs">Dashboard <span>/ Students</span></div>
+        <div class="breadcrumbs">
+          Dashboard <span>/ Students</span>
+        </div>
         <div class="header-actions">
           <span class="dash-role-pill dash-role-instructor">Instructor Mode</span>
           <div class="user-profile">
@@ -83,26 +99,53 @@ $uniqueStudents = (int) $stmt->fetch()['c'];
       <div class="dashboard-content">
         <h1 class="page-title">Your Students</h1>
         <p class="page-sub">
-          <?= $uniqueStudents ?> student<?= $uniqueStudents === 1 ? '' : 's' ?>
-          across <?= count($rows) ?> enrolment<?= count($rows) === 1 ? '' : 's' ?>.
+          <?php if (empty($rows)): ?>
+            No one has enrolled yet. Students appear here once they join a published course.
+          <?php else: ?>
+            <?= $uniqueStudents ?> student<?= $uniqueStudents === 1 ? '' : 's' ?>
+            across <?= count($rows) ?> enrolment<?= count($rows) === 1 ? '' : 's' ?>,
+            <?= $completed ?> completed.
+          <?php endif; ?>
         </p>
 
+        <!-- Summary cards -->
+        <div class="metrics-row">
+          <div class="metric-card gold">
+            <span class="metric-label">Unique Students</span>
+            <span class="metric-value"><?= $uniqueStudents ?></span>
+          </div>
+          <div class="metric-card cyan">
+            <span class="metric-label">Total Enrolments</span>
+            <span class="metric-value"><?= count($rows) ?></span>
+          </div>
+          <div class="metric-card emerald">
+            <span class="metric-label">Completed</span>
+            <span class="metric-value"><?= $completed ?></span>
+          </div>
+        </div>
+
+        <h2 class="section-heading">Enrolments</h2>
+
         <div class="table-widget">
-          <div class="table-header"><h3>Enrolments</h3></div>
+          <div class="table-header"><h3>All Enrolments</h3></div>
 
           <?php if (empty($rows)): ?>
             <div class="empty-state">
               <span class="empty-icon">👥</span>
               <h3>No students yet</h3>
-              <p>Students appear here once they enrol in one of your published courses.</p>
+              <p>Students appear here once they enrol in one of your published courses. Make sure at least one course is set to Published.</p>
               <a href="CreateCourse.php" class="btn-block-cyan empty-action">Create a Course</a>
             </div>
           <?php else: ?>
             <table>
               <thead>
                 <tr>
-                  <th>Student</th><th>Email</th><th>Course</th>
-                  <th>Progress</th><th>Status</th><th>Enrolled</th>
+                  <th>Student</th>
+                  <th>Email</th>
+                  <th>Course</th>
+                  <th>Progress</th>
+                  <th>Status</th>
+                  <th>Enrolled</th>
                 </tr>
               </thead>
               <tbody>
@@ -131,6 +174,7 @@ $uniqueStudents = (int) $stmt->fetch()['c'];
     </main>
   </div>
 
+  <!-- LOGOUT MODAL -->
   <div class="logout-modal" id="logoutModal">
     <div class="logout-card">
       <h3>Log out?</h3>
@@ -142,6 +186,7 @@ $uniqueStudents = (int) $stmt->fetch()['c'];
     </div>
   </div>
 
+  <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
 </body>
 </html>

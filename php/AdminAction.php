@@ -24,13 +24,13 @@ function back(string $key, string $message): void {
     exit;
 }
 
-if ($targetId <= 0 || !in_array($action, ['suspend', 'reinstate', 'delete'], true)) {
+if ($targetId <= 0 || !in_array($action, ['suspend', 'reinstate', 'delete', 'update_user'], true)) {
     back('admin_error', 'Invalid request.');
 }
 
 // An admin must not be able to suspend or delete themselves — that would
 // lock the platform out of its own administration.
-if ($targetId === $adminId) {
+if ($targetId === $adminId && $action !== 'update_user') {
     back('admin_error', 'You cannot perform that action on your own account.');
 }
 
@@ -50,6 +50,56 @@ try {
         if ($adminCount <= 1) {
             back('admin_error', 'You cannot remove the only administrator account.');
         }
+    }
+
+    if ($action === 'update_user') {
+        $newName  = trim($_POST['full_name'] ?? '');
+        $newEmail = trim($_POST['email'] ?? '');
+        $newRole  = $_POST['role'] ?? $target['role'];
+
+        if ($newName === '' || $newEmail === '') {
+            back('admin_error', 'Name and email cannot be empty.');
+        }
+
+        if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL)) {
+            back('admin_error', 'That is not a valid email address.');
+        }
+
+        if (!in_array($newRole, ['student', 'instructor', 'admin'], true)) {
+            back('admin_error', 'Invalid role.');
+        }
+
+        // An admin must not demote themselves out of the admin role — that
+        // would leave them unable to undo it.
+        if ($targetId === $adminId && $newRole !== 'admin') {
+            back('admin_error', 'You cannot change your own role.');
+        }
+
+        // The email is UNIQUE in the database, so check first for a clean
+        // message rather than a raw constraint error.
+        $dupe = $pdo->prepare('SELECT user_id FROM Users WHERE email = ? AND user_id != ?');
+        $dupe->execute([$newEmail, $targetId]);
+        if ($dupe->fetch()) {
+            back('admin_error', 'Another account already uses that email.');
+        }
+
+        $pdo->prepare('UPDATE Users SET full_name = ?, email = ?, role = ? WHERE user_id = ?')
+            ->execute([$newName, $newEmail, $newRole, $targetId]);
+
+        $changes = [];
+        if ($newEmail !== $target['email']) $changes[] = "email {$target['email']} -> $newEmail";
+        if ($newRole  !== $target['role'])  $changes[] = "role {$target['role']} -> $newRole";
+        log_security_event($pdo, 'account_updated', $adminId,
+            "Updated {$target['full_name']}" . ($changes ? ': ' . implode(', ', $changes) : ''));
+
+        // If the admin edited their own details, refresh the session so the
+        // header doesn't keep showing the old values.
+        if ($targetId === $adminId) {
+            $_SESSION['full_name'] = $newName;
+            $_SESSION['email']     = $newEmail;
+        }
+
+        back('admin_success', "$newName has been updated.");
     }
 
     if ($action === 'suspend') {

@@ -39,6 +39,7 @@ $courses = $stmt->fetchAll();
   <title>Browse Courses - Mech Spec LMS</title>
   <link rel="stylesheet" href="../Index.css">
   <link rel="stylesheet" href="Dashboard.css">
+  <link rel="stylesheet" href="../LoadingBar.css">
 </head>
 <body>
   <div class="app-layout">
@@ -95,6 +96,17 @@ $courses = $stmt->fetchAll();
             <p>There are no published courses right now. Check back once an instructor publishes one.</p>
           </div>
         <?php else: ?>
+          <div class="search-row">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="courseSearch" placeholder="Search courses, categories or instructors...">
+          </div>
+
+          <div class="empty-state is-hidden" id="searchEmpty">
+            <span class="empty-icon">🔍</span>
+            <h3>No matches</h3>
+            <p>No courses match that search. Try a different term.</p>
+          </div>
+
           <div class="course-grid">
             <?php foreach ($courses as $c): ?>
               <div class="dash-course-card">
@@ -145,6 +157,7 @@ $courses = $stmt->fetchAll();
     </div>
   </div>
 
+  <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
 </body>
 </html>

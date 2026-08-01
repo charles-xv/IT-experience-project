@@ -103,11 +103,22 @@ try {
     $log->execute([$email, $ip, $passwordOk ? 1 : 0]);
 
     if (!$passwordOk) {
-        // One identical message whether the email is unknown or the password
-        // is wrong, and no attempts counter — telling an attacker how close
-        // they are to the lock is information they should not have.
         log_security_event($pdo, 'failed_login', $user ? (int) $user['user_id'] : null, "Failed login for $email");
-        fail('Email or password is not correct.');
+
+        // Count THIS failure too. Without the +1 the lock only fired on the
+        // next attempt, which gave four tries instead of three.
+        $totalFails = $recentFails + 1;
+
+        if ($totalFails >= MAX_ATTEMPTS) {
+            log_security_event($pdo, 'account_locked', null, "Locked after $totalFails failures for $email");
+            fail('Too many failed attempts. Please try again in ' . LOCKOUT_MINS . ' minutes.');
+        }
+
+        // The wording is identical whether the email is unknown or the
+        // password is wrong, so it still can't be used to discover which
+        // addresses are registered.
+        $remaining = MAX_ATTEMPTS - $totalFails;
+        fail("Email or password is not correct. $remaining attempt(s) remaining.");
     }
 
     // A suspended account has a valid password but must not get in.

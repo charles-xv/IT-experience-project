@@ -1,9 +1,14 @@
 <?php
+// ============================================================
+//  Settings — shared by student, instructor and admin.
+//  No require_role() here on purpose: SessionGuard has already
+//  confirmed the person is logged in, and all three roles use
+//  this same page. The sidebar is built from their role below.
+// ============================================================
+
 require_once __DIR__ . '/../php/SessionGuard.php';
 require_once __DIR__ . '/../php/Database.php';
 require_once __DIR__ . '/../php/Helpers.php';
-// No require_role here on purpose — settings are shared by all three roles.
-// SessionGuard has already confirmed the person is logged in.
 
 log_page_visit($pdo, 'Settings');
 
@@ -16,14 +21,18 @@ $notice      = $_SESSION['settings_success'] ?? '';
 $noticeError = $_SESSION['settings_error'] ?? '';
 unset($_SESSION['settings_success'], $_SESSION['settings_error']);
 
-// Account details straight from the database rather than the session, so the
-// page reflects reality even if the session is stale.
-$stmt = $pdo->prepare('SELECT created_at, last_login FROM Users WHERE user_id = ?');
+// Read from the database rather than the session, so the page reflects
+// reality even if the session is holding stale values.
+$stmt = $pdo->prepare('SELECT full_name, email, created_at, last_login FROM Users WHERE user_id = ?');
 $stmt->execute([$userId]);
 $account = $stmt->fetch();
 
-// The sidebar differs per role, so it is built here rather than duplicated
-// into three near-identical settings pages.
+// Fall back to the session if the row somehow can't be read.
+$displayName  = $account['full_name'] ?? $name;
+$displayEmail = $account['email'] ?? $email;
+
+// Each role gets its own sidebar. Built here rather than duplicated into
+// three near-identical settings pages.
 $navByRole = [
     'student' => [
         ['StudentDashboard.php', '📚 My Learning'],
@@ -38,13 +47,16 @@ $navByRole = [
     'admin' => [
         ['AdminDashboard.php?tab=overview', '📊 Overview'],
         ['AdminDashboard.php?tab=users',    '👥 Users'],
+        ['AdminDashboard.php?tab=courses',  '📁 Courses'],
+        ['AdminDashboard.php?tab=visitors', '🌐 Visitor IPs'],
         ['AdminDashboard.php?tab=security', '🔐 Security Log'],
     ],
 ];
 $nav = $navByRole[$role] ?? $navByRole['student'];
 
-$avatarClass = $role === 'instructor' ? 'avatar avatar-instructor'
-             : ($role === 'admin' ? 'avatar avatar-admin' : 'avatar');
+$avatarClass = 'avatar';
+if ($role === 'instructor') $avatarClass = 'avatar avatar-instructor';
+if ($role === 'admin')      $avatarClass = 'avatar avatar-admin';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,10 +66,12 @@ $avatarClass = $role === 'instructor' ? 'avatar avatar-instructor'
   <title>Settings - Mech Spec LMS</title>
   <link rel="stylesheet" href="../Index.css">
   <link rel="stylesheet" href="Dashboard.css">
+  <link rel="stylesheet" href="../LoadingBar.css">
 </head>
 <body>
   <div class="app-layout">
 
+    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <span class="brand-mark">M</span>
@@ -74,18 +88,21 @@ $avatarClass = $role === 'instructor' ? 'avatar avatar-instructor'
       </div>
     </aside>
 
+    <!-- MAIN -->
     <main class="main-wrapper">
 
       <header class="top-header">
-        <div class="breadcrumbs">Dashboard <span>/ Settings</span></div>
+        <div class="breadcrumbs">
+          Dashboard <span>/ Settings</span>
+        </div>
         <div class="header-actions">
           <span class="dash-role-pill dash-role-<?= e($role) ?>"><?= ucfirst(e($role)) ?> Mode</span>
           <div class="user-profile">
             <div class="user-info">
-              <span class="user-name"><?= e($name) ?></span>
-              <span class="user-email"><?= e($email) ?></span>
+              <span class="user-name"><?= e($displayName) ?></span>
+              <span class="user-email"><?= e($displayEmail) ?></span>
             </div>
-            <div class="<?= $avatarClass ?>"><?= e(strtoupper(substr($name, 0, 1))) ?></div>
+            <div class="<?= $avatarClass ?>"><?= e(strtoupper(substr($displayName, 0, 1))) ?></div>
           </div>
         </div>
       </header>
@@ -103,22 +120,64 @@ $avatarClass = $role === 'instructor' ? 'avatar avatar-instructor'
 
         <div class="settings-grid">
 
+          <!-- ACCOUNT DETAILS -->
           <div class="form-panel">
             <h2 class="section-heading">Account</h2>
-            <dl class="detail-list">
-              <dt>Name</dt>       <dd><?= e($name) ?></dd>
-              <dt>Email</dt>      <dd><?= e($email) ?></dd>
-              <dt>Role</dt>       <dd><span class="status-badge status-<?= e($role) ?>"><?= ucfirst(e($role)) ?></span></dd>
-              <dt>Joined</dt>     <dd><?= e(date('d M Y', strtotime($account['created_at']))) ?></dd>
-              <dt>Last login</dt> <dd><?= $account['last_login'] ? e(date('d M Y, H:i', strtotime($account['last_login']))) : 'This is your first session' ?></dd>
+
+            <form method="POST" action="../php/UpdateProfile.php">
+
+              <div class="form-row">
+                <label for="full_name">Display Name</label>
+                <input type="text" id="full_name" name="full_name"
+                       value="<?= e($displayName) ?>" maxlength="120" required>
+              </div>
+
+              <div class="form-row">
+                <label for="new_email">Email Address</label>
+                <input type="email" id="new_email" name="email"
+                       value="<?= e($displayEmail) ?>" maxlength="190" required>
+              </div>
+
+              <div class="form-row">
+                <label for="confirm_pw">Confirm with your password</label>
+                <input type="password" id="confirm_pw" name="password"
+                       placeholder="Required to save changes" required>
+                <span class="form-hint">
+                  Your password is required because changing the email changes how
+                  you sign in. Without it, an unattended logged-in browser could move
+                  the account to a different address.
+                </span>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-submit">Save Changes</button>
+              </div>
+            </form>
+
+            <dl class="detail-list detail-readonly">
+              <dt>Role</dt>
+              <dd><span class="status-badge status-<?= e($role) ?>"><?= ucfirst(e($role)) ?></span></dd>
+
+              <dt>Joined</dt>
+              <dd><?= e(date('d M Y', strtotime($account['created_at']))) ?></dd>
+
+              <dt>Last login</dt>
+              <dd>
+                <?= $account['last_login']
+                      ? e(date('d M Y, H:i', strtotime($account['last_login'])))
+                      : 'This is your first session' ?>
+              </dd>
             </dl>
+
             <p class="form-hint">
-              Name, email and role can't be changed here. An administrator handles those.
+              Your role is set by an administrator and can't be changed here.
             </p>
           </div>
 
+          <!-- PASSWORD -->
           <div class="form-panel">
             <h2 class="section-heading">Change Password</h2>
+
             <form method="POST" action="../php/UpdatePassword.php">
 
               <div class="form-row">
@@ -136,6 +195,10 @@ $avatarClass = $role === 'instructor' ? 'avatar avatar-instructor'
                 <label for="confirm_password">Confirm New Password</label>
                 <input type="password" id="confirm_password" name="confirm_password"
                        minlength="8" required>
+                <span class="form-hint">
+                  Changing your password also clears any failed login attempts on
+                  the account and refreshes your session.
+                </span>
               </div>
 
               <div class="form-actions">
@@ -149,6 +212,7 @@ $avatarClass = $role === 'instructor' ? 'avatar avatar-instructor'
     </main>
   </div>
 
+  <!-- LOGOUT MODAL -->
   <div class="logout-modal" id="logoutModal">
     <div class="logout-card">
       <h3>Log out?</h3>
@@ -160,6 +224,7 @@ $avatarClass = $role === 'instructor' ? 'avatar avatar-instructor'
     </div>
   </div>
 
+  <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
 </body>
 </html>

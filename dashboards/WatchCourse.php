@@ -46,6 +46,7 @@ $isComplete = $course['completed_at'] !== null;
   <title><?= e($course['title']) ?> - Mech Spec LMS</title>
   <link rel="stylesheet" href="../Index.css">
   <link rel="stylesheet" href="Dashboard.css">
+  <link rel="stylesheet" href="../LoadingBar.css">
 </head>
 <body>
   <div class="app-layout">
@@ -148,6 +149,7 @@ $isComplete = $course['completed_at'] !== null;
     </div>
   </div>
 
+  <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
 </body>
 </html>

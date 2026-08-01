@@ -90,6 +90,7 @@ if ($tab === 'security') {
   <title>Admin Dashboard - Mech Spec LMS</title>
   <link rel="stylesheet" href="../Index.css">
   <link rel="stylesheet" href="Dashboard.css">
+  <link rel="stylesheet" href="../LoadingBar.css">
 </head>
 <body>
   <div class="app-layout">
@@ -105,6 +106,7 @@ if ($tab === 'security') {
         <a href="?tab=courses"  class="nav-item <?= $tab === 'courses' ? 'active' : '' ?>">📁 Courses</a>
         <a href="?tab=visitors" class="nav-item <?= $tab === 'visitors' ? 'active' : '' ?>">🌐 Visitor IPs</a>
         <a href="?tab=security" class="nav-item <?= $tab === 'security' ? 'active' : '' ?>">🔐 Security Log</a>
+        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
       </nav>
       <div class="sidebar-footer">
         <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
@@ -187,16 +189,32 @@ if ($tab === 'security') {
               <table>
                 <thead>
                   <tr>
-                    <th>Name</th><th>Email</th><th>Role</th><th>Status</th>
+                    <th colspan="3">Account (editable)</th><th>Status</th>
                     <th>Last Login</th><th>Joined</th><th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php foreach ($users as $u): ?>
                     <tr>
-                      <td><strong><?= e($u['full_name']) ?></strong></td>
-                      <td><?= e($u['email']) ?></td>
-                      <td><span class="status-badge status-<?= e($u['role']) ?>"><?= ucfirst(e($u['role'])) ?></span></td>
+                      <td colspan="3">
+                        <form method="POST" action="../php/AdminAction.php" class="edit-form">
+                          <input type="hidden" name="user_id" value="<?= (int) $u['user_id'] ?>">
+                          <input type="text" name="full_name" value="<?= e($u['full_name']) ?>"
+                                 class="edit-input" aria-label="Full name" required>
+                          <input type="email" name="email" value="<?= e($u['email']) ?>"
+                                 class="edit-input edit-input-wide" aria-label="Email" required>
+                          <select name="role" class="edit-input edit-select" aria-label="Role"
+                                  <?= (int) $u['user_id'] === $adminId ? 'disabled' : '' ?>>
+                            <?php foreach (['student', 'instructor', 'admin'] as $r): ?>
+                              <option value="<?= $r ?>" <?= $u['role'] === $r ? 'selected' : '' ?>><?= ucfirst($r) ?></option>
+                            <?php endforeach; ?>
+                          </select>
+                          <?php if ((int) $u['user_id'] === $adminId): ?>
+                            <input type="hidden" name="role" value="admin">
+                          <?php endif; ?>
+                          <button type="submit" name="action" value="update_user" class="row-btn ok">Save</button>
+                        </form>
+                      </td>
                       <td><span class="status-badge status-<?= e($u['status']) ?>"><?= ucfirst(e($u['status'])) ?></span></td>
                       <td><?= $u['last_login'] ? e(date('d M Y, H:i', strtotime($u['last_login']))) : 'Never' ?></td>
                       <td><?= e(date('d M Y', strtotime($u['created_at']))) ?></td>
@@ -349,6 +367,7 @@ if ($tab === 'security') {
     </div>
   </div>
 
+  <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
 </body>
 </html>

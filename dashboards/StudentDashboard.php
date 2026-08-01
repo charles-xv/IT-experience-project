@@ -36,13 +36,16 @@ $certificateCount = (int) $stmt->fetch()['c'];
 
 // The courses shown under "Continue Learning": everything this student is
 // enrolled in that isn't finished yet, most recent first.
+// Everything they are enrolled in — finished courses included. Filtering
+// completed ones out meant a student who finished their only course saw an
+// empty "no courses" panel while the metrics above said otherwise.
 $stmt = $pdo->prepare(
     'SELECT c.course_id, c.title, c.description, c.thumbnail_url,
-            c.youtube_video_id, e.progress_percent
+            c.youtube_video_id, e.progress_percent, e.completed_at
      FROM Enrollments e
      JOIN Courses c ON c.course_id = e.course_id
-     WHERE e.student_id = ? AND e.completed_at IS NULL
-     ORDER BY e.enrolled_at DESC'
+     WHERE e.student_id = ?
+     ORDER BY e.completed_at IS NOT NULL, e.enrolled_at DESC'
 );
 $stmt->execute([$studentId]);
 $activeCourses = $stmt->fetchAll();
@@ -57,6 +60,7 @@ $enrolledCount = (int) $metrics['enrolled_count'];
   <title>Student Dashboard - Mech Spec LMS</title>
   <link rel="stylesheet" href="../Index.css">
   <link rel="stylesheet" href="Dashboard.css">
+  <link rel="stylesheet" href="../LoadingBar.css">
 </head>
 <body>
   <div class="app-layout">
@@ -70,8 +74,8 @@ $enrolledCount = (int) $metrics['enrolled_count'];
       <nav class="sidebar-nav">
         <a href="StudentDashboard.php" class="nav-item active">📚 My Learning</a>
         <a href="BrowseCourses.php" class="nav-item">🔍 Browse Courses</a>
-        <a href="#" class="nav-item">🏆 Certificates</a>
-        <a href="#" class="nav-item">⚙️ Settings</a>
+        <a href="Certificates.php" class="nav-item">🏆 Certificates</a>
+        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
       </nav>
       <div class="sidebar-footer">
         <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
@@ -157,10 +161,19 @@ $enrolledCount = (int) $metrics['enrolled_count'];
                 </div>
                 <div class="course-body">
                   <h3><?= e($course['title']) ?></h3>
+                  <?php if ($course['completed_at']): ?>
+                    <span class="course-tag tag-done">✓ Completed</span>
+                  <?php endif; ?>
                   <p><?= e($course['description']) ?></p>
                   <a href="WatchCourse.php?id=<?= (int) $course['course_id'] ?>"
                      class="btn-block-cyan">
-                    <?= (int) $course['progress_percent'] > 0 ? 'Resume Course' : 'Start Course' ?>
+                    <?php if ($course['completed_at']): ?>
+                      Rewatch Course
+                    <?php elseif ((int) $course['progress_percent'] > 0): ?>
+                      Resume Course
+                    <?php else: ?>
+                      Start Course
+                    <?php endif; ?>
                   </a>
                 </div>
               </div>
@@ -184,6 +197,7 @@ $enrolledCount = (int) $metrics['enrolled_count'];
     </div>
   </div>
 
+  <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
 </body>
 </html>

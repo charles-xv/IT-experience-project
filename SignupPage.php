@@ -18,6 +18,7 @@ unset($_SESSION['signup_old']);
   <title>Create Account - Mech Spec LMS</title>
   <link rel="stylesheet" href="Index.css">
   <link rel="stylesheet" href="AuthPage.css">
+  <link rel="stylesheet" href="LoadingBar.css">
 </head>
 <body>
   <div class="auth-card">
@@ -30,7 +31,7 @@ unset($_SESSION['signup_old']);
     </aside>
 
     <div class="auth-form-panel">
-      <a href="Index.html" class="auth-back">← Back to Home</a>
+      <a href="Index.php" class="auth-back">← Back to Home</a>
       <h2>Create your account</h2>
       <p class="auth-subtitle">Join the secure learning platform</p>
 
@@ -81,5 +82,6 @@ unset($_SESSION['signup_old']);
   </div>
 
   <script src="AuthPage.js"></script>
+  <script src="LoadingBar.js"></script>
 </body>
 </html>

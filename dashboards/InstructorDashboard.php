@@ -61,6 +61,7 @@ $courses = $stmt->fetchAll();
   <title>Instructor Dashboard - Mech Spec LMS</title>
   <link rel="stylesheet" href="../Index.css">
   <link rel="stylesheet" href="Dashboard.css">
+  <link rel="stylesheet" href="../LoadingBar.css">
 </head>
 <body>
   <div class="app-layout">
@@ -73,8 +74,8 @@ $courses = $stmt->fetchAll();
       <nav class="sidebar-nav">
         <a href="InstructorDashboard.php" class="nav-item active">📊 Overview</a>
         <a href="CreateCourse.php" class="nav-item">➕ Create Course</a>
-        <a href="#" class="nav-item">👥 Students</a>
-        <a href="#" class="nav-item">⚙️ Settings</a>
+        <a href="Students.php" class="nav-item">👥 Students</a>
+        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
       </nav>
       <div class="sidebar-footer">
         <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
@@ -162,6 +163,7 @@ $courses = $stmt->fetchAll();
                   <th>Status</th>
                   <th>Students</th>
                   <th>Created</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -175,7 +177,19 @@ $courses = $stmt->fetchAll();
                       </span>
                     </td>
                     <td><?= (int) $c['student_count'] ?></td>
-                    <td><?= e(date('d M Y', strtotime($c['created_at']))) ?></td>
+                    <td class="cell-nowrap"><?= e(date('d M Y', strtotime($c['created_at']))) ?></td>
+                    <td>
+                      <div class="row-actions">
+                        <a href="EditCourse.php?id=<?= (int) $c['course_id'] ?>" class="row-btn ok">Edit</a>
+                        <form method="POST" action="../php/DeleteCourse.php" class="row-form">
+                          <input type="hidden" name="course_id" value="<?= (int) $c['course_id'] ?>">
+                          <button type="submit" class="row-btn danger"
+                                  data-confirm="Delete &quot;<?= e($c['title']) ?>&quot;? Enrolled students will lose access. This cannot be undone.">
+                            Delete
+                          </button>
+                        </form>
+                      </div>
+                    </td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
@@ -198,6 +212,7 @@ $courses = $stmt->fetchAll();
     </div>
   </div>
 
+  <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
 </body>
 </html>

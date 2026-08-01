@@ -1,3 +1,22 @@
+// Course filter on the landing page. The buttons carry data-filter and the
+// cards carry data-cat, both generated from the real category names, so this
+// works whatever categories the instructors actually create.
+document.querySelectorAll(".filter-btn").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var target = btn.dataset.filter;
+
+    document.querySelectorAll(".filter-btn").forEach(function (b) {
+      b.classList.remove("active");
+    });
+    btn.classList.add("active");
+
+    document.querySelectorAll(".course-card").forEach(function (card) {
+      var show = target === "all" || card.dataset.cat === target;
+      card.classList.toggle("is-hidden", !show);
+    });
+  });
+});
+
 // Navbar active link — moves the gold underline to the section you're viewing
 // (or the one you click), instead of being stuck on Home.
 const navLinks = document.querySelectorAll(".nav a");
@@ -66,22 +85,6 @@ if (shieldEl) {
       shieldEl.style.opacity = "1";
     }, 250);
   }, 3200);
-}
-
-// Filter Courses
-function filterCourses(cat, btn) {
-  document
-    .querySelectorAll(".filter-btn")
-    .forEach((b) => b.classList.remove("active"));
-  btn.classList.add("active");
-  const cards = document.querySelectorAll(".course-card");
-  cards.forEach((card) => {
-    if (cat === "all" || card.dataset.cat === cat) {
-      card.style.display = "flex";
-    } else {
-      card.style.display = "none";
-    }
-  });
 }
 
 // Billing Toggle
@@ -181,4 +184,41 @@ function checkStrength(val) {
   if (score <= 33) bar.style.backgroundColor = "#ef4444";
   else if (score <= 67) bar.style.backgroundColor = "#f59e0b";
   else bar.style.backgroundColor = "#10b981";
+}
+
+// =====================================================================
+//  Interactivity — the landing page had none of this; Dashboard.js only
+//  loads inside the dashboards.
+// =====================================================================
+
+// --- Reveal sections as they scroll into view ------------------------
+// Cheaper and smoother than listening to every scroll event.
+if ("IntersectionObserver" in window) {
+  var io = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 },
+  );
+
+  document
+    .querySelectorAll(".course-card, .feature, .plan, .testimonial, .heading")
+    .forEach(function (el, i) {
+      el.classList.add("on-scroll");
+      el.style.transitionDelay = (i % 3) * 70 + "ms";
+      io.observe(el);
+    });
+}
+
+// --- Header shrinks once you scroll ----------------------------------
+var masthead = document.querySelector(".masthead");
+if (masthead) {
+  window.addEventListener("scroll", function () {
+    masthead.classList.toggle("scrolled", window.scrollY > 40);
+  });
 }
