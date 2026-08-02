@@ -1,23 +1,29 @@
--- Adds THREE more courses alongside whatever you already have.
--- Nothing is deleted. Run once in phpMyAdmin -> SQL tab.
+-- ============================================================
+--  Course catalogue for Mech Spec LMS
 --
--- Mixed channels, no freeCodeCamp thumbnails:
---   SuperSimpleDev        · HTML & CSS Full Course
---   Programming with Mosh · JavaScript Tutorial for Beginners
---   Traversy Media        · JavaScript Crash Course
+--  Run this AFTER schema.sql and seed_test_accounts.sql.
+--  The instructor account must exist first, because each course is
+--  attached to it by email lookup rather than a hardcoded id — a
+--  hardcoded id would point at the wrong account (or nothing) on a
+--  different machine.
 --
--- Courses attach to the Test Instructor by email lookup, so this works
--- regardless of what user_id that account happens to have.
+--  Import once in phpMyAdmin -> SQL tab.
+-- ============================================================
 
 USE itexperience_db;
 
+-- Clears any earlier course rows so re-running this can't create duplicates.
+-- On a fresh install there is nothing to remove. Delete this line if you have
+-- courses of your own you want to keep.
+DELETE FROM Courses;
+
 INSERT INTO Courses (instructor_id, title, description, youtube_video_id, category, thumbnail_url, status)
 SELECT u.user_id,
-       'HTML & CSS Full Course',
-       'Build real pages from scratch. The box model, flexbox, CSS grid, positioning and responsive layouts, ending with a full YouTube clone you build yourself.',
-       'G3e-cpL7ofc',
-       'Development',
-       'https://img.youtube.com/vi/G3e-cpL7ofc/maxresdefault.jpg',
+       'Ethical Hacking',
+       'Think like an attacker to defend like a pro. Offensive security for defenders.',
+       '3FNYvj2U0HM',
+       'Web Security',
+       'https://img.youtube.com/vi/3FNYvj2U0HM/maxresdefault.jpg',
        'published'
 FROM Users u WHERE u.email = 'instructor@mechspec.local';
 
@@ -33,13 +39,14 @@ FROM Users u WHERE u.email = 'instructor@mechspec.local';
 
 INSERT INTO Courses (instructor_id, title, description, youtube_video_id, category, thumbnail_url, status)
 SELECT u.user_id,
-       'JavaScript Crash Course',
-       'A faster route through the essentials for anyone who already codes. Syntax, DOM manipulation and events, straight to the point.',
-       'hdI2bqOjy3c',
+       'HTML Crash Course for Beginners',
+       'A fast, practical introduction to HTML: how the web works, HTTP requests and responses, page structure, links, images and forms. Taught by Mosh Hamedani.',
+       'Eb3lOiukwAQ',
        'Development',
-       'https://img.youtube.com/vi/hdI2bqOjy3c/maxresdefault.jpg',
+       'https://img.youtube.com/vi/Eb3lOiukwAQ/maxresdefault.jpg',
        'published'
 FROM Users u WHERE u.email = 'instructor@mechspec.local';
 
--- Check what you now have:
+-- Should return 3 rows. If it returns 0, seed_test_accounts.sql was not run
+-- first, so there was no instructor for the courses to attach to.
 SELECT course_id, title, category, youtube_video_id, status FROM Courses ORDER BY course_id;

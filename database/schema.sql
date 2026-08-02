@@ -67,8 +67,9 @@ CREATE TABLE Courses (
   instructor_id INT NOT NULL,
   title         VARCHAR(180) NOT NULL,
   description   TEXT,
+  youtube_video_id VARCHAR(20) DEFAULT NULL, -- the 11-character ID from the YouTube URL; one video per course
   category      VARCHAR(80)  DEFAULT NULL,   -- 'Web Security', 'Development', 'Artificial Intelligence'
-  thumbnail_url VARCHAR(500) DEFAULT NULL,
+  thumbnail_url VARCHAR(500) DEFAULT NULL,   -- https://img.youtube.com/vi/<id>/maxresdefault.jpg
   status        ENUM('draft','published') NOT NULL DEFAULT 'draft',  -- only published courses show to students
   created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   -- If an instructor account is deleted, their courses go too.
