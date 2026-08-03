@@ -1,0 +1,220 @@
+# Mech Spec LMS — Technical Documentation
+
+**Secure Learning Management Platform — MVP**
+Mech Spec Technologies Challenge
+Prepared by Charles Nnanna
+
+---
+
+## 1. Overview
+
+Mech Spec LMS is a learning management platform where instructors publish and sell courses, students purchase and study them, and administrators oversee the platform. It was built as the MVP for the Mech Spec Technologies challenge.
+
+The system supports three roles — student, instructor and administrator — with access decided on the server for every request. The emphasis throughout has been on secure engineering practice rather than feature volume: what a user can see and do is enforced in PHP and SQL, never assumed from the interface.
+
+---
+
+## 2. Technology Stack
+
+| Layer | Technology | Reason |
+|---|---|---|
+| Frontend | HTML5, CSS3, vanilla JavaScript | No build step or framework dependency; the whole team can run it by opening a folder |
+| Backend | PHP 8.2 | Available in the target environment (XAMPP) and well suited to server-rendered pages |
+| Database | MySQL / MariaDB 10.4, InnoDB | Foreign keys and transactions, both required by the purchase flow |
+| Web server | Apache 2.4 | Bundled with XAMPP; standard PHP hosting target |
+| Data access | PDO with prepared statements | Parameter binding is the practical defence against SQL injection |
+| Video delivery | YouTube iframe embed | Removes the need for storage and streaming infrastructure at MVP stage |
+
+The stack was chosen for reproducibility. Any team member can clone the repository, import three SQL files and run the platform with no toolchain to install beyond XAMPP.
+
+---
+
+## 3. Architecture
+
+The application follows a three-tier structure with a dedicated security layer that every protected request passes through before reaching page or business logic.
+
+### 3.1 Request lifecycle
+
+A request to any protected page follows the same sequence:
+
+- `SessionGuard.php` confirms a valid session exists, or redirects to login
+- The idle timeout is checked — sessions older than 30 minutes of inactivity are destroyed
+- Cache-control headers are sent so the browser cannot serve the page from history after logout
+- `require_role()` confirms the user holds the role that page demands
+- Only then does the page query the database and render
+
+Handlers follow the same path but redirect rather than render, so the browser never re-submits a form on refresh.
+
+### 3.2 Separation of concerns
+
+| Directory | Contains | Characteristic |
+|---|---|---|
+| `/` (root) | Landing page, login, signup | Public entry points |
+| `/dashboards` | Role dashboards and user-facing pages | Output HTML; end in `</html>` |
+| `/php` | Handlers and shared services | Process and redirect; end in `exit` |
+| `/database` | Schema and seed scripts | Run once at setup |
+
+Database access is centralised in a single file, so credentials and connection settings exist in one place rather than drifting across the codebase.
+
+---
+
+## 4. Database Design
+
+Eleven tables, InnoDB throughout, with real foreign key constraints. Character set is `utf8mb4` so the full Unicode range is stored correctly.
+
+| Table | Purpose |
+|---|---|
+| `Users` | Accounts with role, status and last login |
+| `Courses` | Course records including price, category, video ID and publish status |
+| `Lessons` | Reserved for multi-lesson courses; one video per course at MVP stage |
+| `Enrollments` | Links a student to a course, with progress and completion |
+| `LessonProgress` | Per-lesson completion tracking |
+| `Certificates` | Issued automatically on course completion |
+| `CartItems` | A student's basket prior to checkout |
+| `Purchases` | One row per course bought, with the amount and a reference |
+| `LoginAttempts` | Feeds rate limiting and forms part of the audit trail |
+| `SecurityLogs` | Platform-wide security event log |
+| `PageVisits` | Visitor IP and page tracking for the administrator view |
+
+### 4.1 Design decisions worth noting
+
+**Money is stored as `DECIMAL(10,2)`, not `FLOAT`.** Binary floating point cannot represent 0.1 exactly, so totals accumulated in a float drift by fractions of a unit. Fixed-point storage is the standard for financial values.
+
+**Purchases record `amount_paid` at the time of sale** rather than reading the price from `Courses` later. If an instructor changes a price afterwards, historic receipts must not change with it.
+
+**`SecurityLogs` uses `ON DELETE SET NULL`, not `CASCADE`.** Deleting a user must not erase the record that their actions occurred — the audit trail survives the account.
+
+**Unique constraints prevent duplicate enrolments, cart entries and certificates** at the database level, so those cannot occur even if an application check were bypassed.
+
+---
+
+## 5. Security Implementation
+
+The brief asks for basic security. The following goes somewhat beyond that, because the platform handles credentials, role privileges and simulated transactions.
+
+### 5.1 Authentication
+
+- Passwords hashed with bcrypt via `password_hash()`; the plaintext is never stored or logged
+- Verification uses `password_verify()`, a one-way comparison — no decryption exists
+- Login messages are identical whether the email is unknown or the password is wrong, so the form cannot be used to discover which addresses are registered
+- The session ID is regenerated on successful login, closing session fixation
+
+### 5.2 Rate limiting
+
+Three failed attempts lock an account for fifteen minutes. Two separate windows are used deliberately:
+
+```
+MAX_ATTEMPTS = 3    LOCKOUT_MINS = 15    COUNT_WINDOW_HOURS = 24
+```
+
+The counting window decides which failures still count; the lockout window decides how long a lock lasts. A single window fails at one end or the other — make it short and a slow brute-force simply waits between bursts; make it long and honest users stay locked out for hours.
+
+While an account is locked the password is not checked at all. That is what makes the lock meaningful against an automated attempt rather than merely inconvenient.
+
+### 5.3 Authorisation
+
+Role-based access control is enforced server-side on every protected page. Hiding a link is treated as presentation, not security: ownership is written into the SQL itself.
+
+```sql
+WHERE course_id = ? AND instructor_id = ?
+```
+
+An instructor who edits the URL to another instructor's course id receives no row rather than someone else's data, and the attempt is written to the security log as an `access_denied` event.
+
+Administrators cannot suspend or delete their own account, and the final administrator cannot be removed — either would lock the platform out of its own administration.
+
+### 5.4 Injection and output handling
+
+- All queries use PDO prepared statements with bound parameters; no SQL is built by string concatenation
+- `PDO::ATTR_EMULATE_PREPARES` is disabled, so statements are genuinely prepared by the database rather than assembled client-side
+- Every value printed to a page passes through `htmlspecialchars()`, so a name containing markup displays as text instead of executing
+- Database errors are logged server-side and never echoed, since they leak table names and file paths
+
+### 5.5 Session handling
+
+- Session cookie set to `HttpOnly`, so JavaScript cannot read it
+- `SameSite=Lax`, limiting cross-site submission
+- Cookie lifetime 0 — the session ends when the browser closes
+- Thirty-minute idle timeout enforced server-side
+- `Cache-Control: no-store` on protected pages, so the back button cannot display a dashboard after logout
+- Logout clears the session data, destroys the session and expires the cookie
+
+### 5.6 Audit logging
+
+Security-relevant events are written to `SecurityLogs` with the actor, IP address, detail and timestamp. Events recorded include:
+
+`login_success`, `failed_login`, `account_locked`, `logout`, `signup`, `course_created`, `course_updated`, `course_deleted`, `course_enrolled`, `course_completed`, `purchase_completed`, `account_suspended`, `account_reinstated`, `account_deleted`, `profile_updated`, `password_changed`, `access_denied`
+
+The administrator dashboard surfaces this as a readable feed, which makes the security behaviour demonstrable rather than merely claimed.
+
+---
+
+## 6. Feature Walkthrough
+
+### 6.1 Student
+
+- Register and log in; role assigned at signup as student or instructor
+- Browse published courses with live search across title, category and instructor
+- Add paid courses to a cart; free courses enrol in a single click
+- Checkout through a simulated payment flow and receive a referenced receipt
+- Watch the course video, record progress and mark completion
+- Receive a certificate automatically on completion, downloadable as a print view
+
+### 6.2 Instructor
+
+- Create courses by pasting a YouTube link; video ID and thumbnail derived automatically
+- Set a price, category and description; save as draft or publish
+- Full CRUD — edit any detail, or delete a course with confirmation
+- View every student enrolled across their own courses with progress and completion
+- Dashboard metrics: unique students, published courses, drafts, total courses
+
+### 6.3 Administrator
+
+- Platform statistics — students, instructors, courses, enrolments, sales, simulated revenue, unique visitors
+- User management with inline editing of name, email and role
+- Suspend or reinstate accounts; a suspended account is refused at login
+- Remove inappropriate courses
+- Review all purchases with reference, amount and buyer
+- Review visitor IP activity and the full security event log
+
+---
+
+## 7. Purchase Flow
+
+Checkout is simulated — no payment gateway is integrated and no card data is stored or transmitted. Card fields are validated for shape and then discarded. What the flow does demonstrate is correct transactional handling.
+
+The order total is calculated on the server from the database. It is never posted by the browser, because a value submitted from the client can be edited before it is sent.
+
+Recording purchases, creating enrolments and clearing the cart happen inside a single transaction. If any step fails, the whole operation rolls back. Without that, a failure halfway through would leave a buyer charged but not enrolled, or enrolled with no purchase record.
+
+---
+
+## 8. Installation
+
+Prerequisites: XAMPP with Apache and MySQL, and Git.
+
+1. Clone the repository into `C:\xampp\htdocs`
+2. Start Apache and MySQL from the XAMPP control panel
+3. In phpMyAdmin, import `database/schema.sql`
+4. Import `database/seed_test_accounts.sql` for the student and instructor logins
+5. Import `database/add_courses.sql` for the course catalogue
+6. Open `http://localhost/IT-experience-project/Index.php`
+
+Import order matters. Courses attach to the instructor account by email lookup, so that account must exist before the course script runs.
+
+The administrator account is created from a separate script excluded from version control, so cloning the repository does not grant administrative access.
+
+---
+
+## 9. Known Limitations
+
+Stated plainly, since an honest account of what is incomplete is more useful than an inflated one.
+
+- The database connects as `root` with an empty password, the XAMPP default. A restricted MySQL user is the correct configuration and is documented in the connection file
+- There is no email verification, so an account can be created with an address the user does not own
+- There is no password reset flow; a user who forgets their password requires administrator help
+- Courses hold a single video. The `Lessons` table exists but is unused, so multi-module courses are not yet supported
+- Learning objectives are not captured as a distinct field
+- Thumbnails are derived from the YouTube video rather than uploaded
+- The support assistant answers from keyword matching rather than a language model
+- The application has not been deployed or scanned with an external security tool

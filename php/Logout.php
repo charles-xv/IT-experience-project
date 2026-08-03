@@ -4,6 +4,13 @@
 // stops a leftover session identifier from being reused.
 session_start();
 
+// Logged before the session is cleared, while the user id is still known.
+if (!empty($_SESSION['user_id'])) {
+    require_once __DIR__ . '/Database.php';
+    require_once __DIR__ . '/Helpers.php';
+    log_security_event($pdo, 'logout', (int) $_SESSION['user_id']);
+}
+
 $_SESSION = [];
 
 // Expire the session cookie in the browser by re-issuing it with a past date.

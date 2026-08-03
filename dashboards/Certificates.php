@@ -44,6 +44,7 @@ $certificates = $stmt->fetchAll();
       <nav class="sidebar-nav">
         <a href="StudentDashboard.php" class="nav-item">📚 My Learning</a>
         <a href="BrowseCourses.php" class="nav-item">🔍 Browse Courses</a>
+        <a href="Cart.php" class="nav-item">🛒 Cart</a>
         <a href="Certificates.php" class="nav-item active">🏆 Certificates</a>
         <a href="Settings.php" class="nav-item">⚙️ Settings</a>
       </nav>

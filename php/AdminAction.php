@@ -24,8 +24,45 @@ function back(string $key, string $message): void {
     exit;
 }
 
-if ($targetId <= 0 || !in_array($action, ['suspend', 'reinstate', 'delete', 'update_user'], true)) {
+if ($targetId <= 0 || !in_array($action, ['suspend', 'reinstate', 'delete', 'update_user', 'delete_course'], true)) {
     back('admin_error', 'Invalid request.');
+}
+
+// Removing an inappropriate course. Handled before the user lookup below,
+// because the target here is a course, not a user.
+if ($action === 'delete_course') {
+    $courseId = (int) ($_POST['course_id'] ?? 0);
+    if ($courseId <= 0) {
+        $_SESSION['admin_error'] = 'Invalid course.';
+        header('Location: ../dashboards/AdminDashboard.php?tab=courses');
+        exit;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT c.title, u.full_name AS owner
+             FROM Courses c JOIN Users u ON u.user_id = c.instructor_id
+             WHERE c.course_id = ?'
+        );
+        $stmt->execute([$courseId]);
+        $course = $stmt->fetch();
+
+        if (!$course) {
+            $_SESSION['admin_error'] = 'That course no longer exists.';
+        } else {
+            // Logged before the delete, while the title is still readable.
+            log_security_event($pdo, 'course_removed', $adminId,
+                "Admin removed \"{$course['title']}\" (owner: {$course['owner']})");
+            $pdo->prepare('DELETE FROM Courses WHERE course_id = ?')->execute([$courseId]);
+            $_SESSION['admin_success'] = "\"{$course['title']}\" has been removed.";
+        }
+    } catch (PDOException $e) {
+        error_log('Admin course delete failed: ' . $e->getMessage());
+        $_SESSION['admin_error'] = 'Something went wrong removing the course.';
+    }
+
+    header('Location: ../dashboards/AdminDashboard.php?tab=courses');
+    exit;
 }
 
 // An admin must not be able to suspend or delete themselves — that would

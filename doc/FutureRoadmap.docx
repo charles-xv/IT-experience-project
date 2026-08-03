@@ -1,0 +1,131 @@
+# Mech Spec LMS — Future Roadmap
+
+**From MVP to production-ready platform**
+Mech Spec Technologies Challenge
+Prepared by Charles Nnanna
+
+---
+
+## 1. Purpose
+
+The MVP demonstrates the core product: instructors publish and sell courses, students purchase and learn, administrators oversee the platform. This document sets out how it would evolve into a system capable of running in production at scale.
+
+The phases are ordered by dependency and risk rather than by visibility. Security and reliability work comes before growth features, because retrofitting either into a live platform with real users and real money is substantially harder than building it in.
+
+---
+
+## 2. Phase 1 — Production Readiness
+
+*Timeframe: immediate. Nothing here adds a feature; all of it is required before the platform could responsibly hold real accounts.*
+
+### 2.1 Harden the database account
+
+The application currently connects as `root`. A restricted user with `SELECT`, `INSERT`, `UPDATE` and `DELETE` on this database alone — and no `DROP` or `ALTER` — contains the blast radius of any injection that were ever found. This is a configuration change, not a code change, and is the single highest-value item on this list.
+
+### 2.2 Email verification and password reset
+
+- Single-use tokens with a short expiry, stored hashed
+- Unverified accounts blocked at login
+- Reset flow that is enumeration-safe — an identical response whether or not the address exists
+- A successful reset clears any active lockout, so a locked-out owner can recover
+
+### 2.3 Move secrets out of the codebase
+
+Database credentials and any future API keys belong in environment variables read at runtime, not in a file inside the repository. Configuration should differ between development and production without a code change.
+
+### 2.4 HTTPS and transport security
+
+- TLS certificate with automatic renewal
+- `Secure` flag added to the session cookie so it is never sent unencrypted
+- HTTP Strict Transport Security header
+- Content Security Policy to constrain what the page may load and execute
+
+### 2.5 CSRF protection
+
+Every state-changing form should carry a per-session token verified server-side. `SameSite=Lax` provides partial cover today, but tokens are the complete defence and are inexpensive to add.
+
+### 2.6 Security testing
+
+An automated scan with OWASP ZAP against a deployed instance, with findings triaged, patched and rescanned. A before-and-after comparison is the clearest evidence that the security work holds up under examination rather than only in description.
+
+---
+
+## 3. Phase 2 — Product Depth
+
+*Timeframe: next. Features that make the platform genuinely usable by real instructors and students.*
+
+### 3.1 Multi-lesson courses
+
+The `Lessons` table already exists for this. Courses become modules containing ordered lessons, each with its own video, duration and completion state. Progress then reflects lessons completed rather than a single course-level flag, and instructors can release content in sequence.
+
+### 3.2 Richer course metadata
+
+- Learning objectives as a structured, listed field
+- Prerequisites and difficulty level
+- Estimated duration derived from lesson lengths
+- Uploaded thumbnails with server-side type and size validation
+
+### 3.3 Real payment integration
+
+Replace the simulated checkout with a gateway appropriate to the market — Paystack or Flutterwave for Nigeria, Stripe internationally. The critical design point is that the application never touches card data: the gateway tokenises it, and the platform stores only a reference.
+
+This phase also introduces instructor payouts, platform commission, refunds and invoices — the parts of monetisation the MVP represents only as a recorded amount.
+
+### 3.4 Instructor profiles
+
+Biography, photograph, credentials and a public profile page listing their courses. Instructors are the supply side of a marketplace, and buyers assess courses partly by who teaches them.
+
+### 3.5 Reviews and ratings
+
+Ratings restricted to students who actually enrolled, so the signal cannot be manufactured. Aggregate scores then drive sorting and discovery.
+
+### 3.6 A genuine support assistant
+
+The current assistant matches keywords. Replacing it with a language model grounded in the platform documentation would let it answer questions it has not been explicitly written for, while remaining scoped to platform usage rather than academic tutoring.
+
+---
+
+## 4. Phase 3 — Scale
+
+*Timeframe: as load requires. These changes are not warranted at MVP volume and would be premature complexity today, but they are the direction the architecture is prepared for.*
+
+### 4.1 Separate the tiers
+
+Application servers behind a load balancer, with the database on its own host. Sessions move from local files to a shared store such as Redis, so any server can handle any request and horizontal scaling becomes possible.
+
+### 4.2 Caching
+
+- Redis for session storage and frequently read data such as the course catalogue
+- A CDN for static assets and thumbnails
+- Query result caching for the administrator statistics, which are read often and change slowly
+
+### 4.3 Media independence
+
+YouTube embedding was the right decision at MVP stage — it removed an entire infrastructure problem. At scale it becomes a constraint: no control over availability, no protection of paid content, and no viewing analytics. Object storage with a streaming service and signed, expiring URLs replaces it, so paid video cannot be shared outside the platform.
+
+### 4.4 Background processing
+
+A job queue for work that should not block a request: sending email, generating certificate PDFs, processing uploads, and compiling reports.
+
+### 4.5 Observability
+
+- Centralised structured logging rather than server error files
+- Application performance monitoring with alerting on error rate and latency
+- Uptime monitoring against the critical paths: login, checkout, video playback
+- Automated database backups with a tested restore procedure
+
+### 4.6 API layer
+
+A documented REST or GraphQL API would decouple the frontend from PHP page rendering and open the way to mobile applications. This is also the natural point to introduce token-based authentication alongside sessions.
+
+---
+
+## 5. Summary
+
+| Phase | Focus | Representative work |
+|---|---|---|
+| 1 | Production readiness | Restricted database user, email verification, password reset, HTTPS, CSRF tokens, security scan |
+| 2 | Product depth | Multi-lesson courses, real payments and payouts, instructor profiles, reviews, LLM assistant |
+| 3 | Scale | Separated tiers, Redis, CDN, own media pipeline, job queue, monitoring, public API |
+
+The ordering reflects a single principle: **correctness and safety before reach.** A platform that handles money and personal data earns the right to grow by first being trustworthy at small scale.

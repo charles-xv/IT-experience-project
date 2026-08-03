@@ -17,7 +17,7 @@ $courseId = (int) ($_GET['id'] ?? 0);
 // The instructor_id filter is the ownership check: an instructor who edits
 // the URL to another person's course id simply gets no row back.
 $stmt = $pdo->prepare(
-    'SELECT course_id, title, description, category, youtube_video_id, status
+    'SELECT course_id, title, description, category, price, youtube_video_id, status
      FROM Courses
      WHERE course_id = ? AND instructor_id = ?'
 );
@@ -40,6 +40,7 @@ $val = [
     'description' => $old['description'] ?? $course['description'],
     'category'    => $old['category']    ?? $course['category'],
     'youtube_url' => $old['youtube_url'] ?? 'https://www.youtube.com/watch?v=' . $course['youtube_video_id'],
+    'price'       => $old['price']       ?? $course['price'],
     'status'      => $old['status']      ?? $course['status'],
 ];
 ?>
@@ -62,7 +63,7 @@ $val = [
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="InstructorDashboard.php" class="nav-item">📊 Overview</a>
+        <a href="InstructorDashboard.php" class="nav-item active">📊 Overview</a>
         <a href="CreateCourse.php" class="nav-item">➕ Create Course</a>
         <a href="Students.php" class="nav-item">👥 Students</a>
         <a href="Settings.php" class="nav-item">⚙️ Settings</a>
@@ -131,6 +132,16 @@ $val = [
               </select>
             </div>
 
+
+            <div class="form-row">
+              <label for="price">Price (USD)</label>
+              <input type="number" id="price" name="price" step="0.01" min="0"
+                     placeholder="0.00" value="<?= e($val['price']) ?>" required>
+              <span class="form-hint">
+                Enter 0 to make the course free — students enrol without checkout.
+                Any amount above 0 sends them through the purchase flow.
+              </span>
+            </div>
             <div class="form-row">
               <label for="youtube_url">YouTube Link</label>
               <input type="url" id="youtube_url" name="youtube_url"

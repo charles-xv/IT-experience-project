@@ -18,6 +18,7 @@ $title       = trim($_POST['title'] ?? '');
 $description = trim($_POST['description'] ?? '');
 $category    = trim($_POST['category'] ?? '');
 $youtubeUrl  = trim($_POST['youtube_url'] ?? '');
+$price       = (float) ($_POST['price'] ?? 0);
 $status      = $_POST['status'] ?? 'draft';
 
 $_SESSION['course_old'] = [
@@ -25,6 +26,7 @@ $_SESSION['course_old'] = [
     'description' => $description,
     'category'    => $category,
     'youtube_url' => $youtubeUrl,
+    'price'       => $price,
     'status'      => $status,
 ];
 
@@ -60,6 +62,13 @@ if (!in_array($status, ['draft', 'published'], true)) {
     fail('Invalid publish status.', $courseId);
 }
 
+if ($price < 0) {
+    fail('Price cannot be negative.', $courseId);
+}
+if ($price > 99999.99) {
+    fail('That price is too high.', $courseId);
+}
+
 try {
     // Ownership is enforced in the WHERE clause, so a tampered course_id
     // updates nothing rather than someone else's course.
@@ -75,13 +84,14 @@ try {
     $pdo->prepare(
         'UPDATE Courses
          SET title = ?, description = ?, youtube_video_id = ?, category = ?,
-             thumbnail_url = ?, status = ?
+             price = ?, thumbnail_url = ?, status = ?
          WHERE course_id = ? AND instructor_id = ?'
     )->execute([
         $title,
         $description,
         $videoId,
         $category !== '' ? $category : null,
+        $price,
         "https://img.youtube.com/vi/$videoId/maxresdefault.jpg",
         $status,
         $courseId,

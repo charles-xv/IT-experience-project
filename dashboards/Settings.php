@@ -33,10 +33,15 @@ $displayEmail = $account['email'] ?? $email;
 
 // Each role gets its own sidebar. Built here rather than duplicated into
 // three near-identical settings pages.
+// These must mirror the sidebars on the real dashboards exactly. This page
+// builds its own nav rather than sharing theirs, which is why entries added
+// to a dashboard have to be added here too — Cart and Purchases were both
+// missed that way. Anything added to a dashboard sidebar belongs here as well.
 $navByRole = [
     'student' => [
         ['StudentDashboard.php', '📚 My Learning'],
         ['BrowseCourses.php',    '🔍 Browse Courses'],
+        ['Cart.php',             '🛒 Cart'],
         ['Certificates.php',     '🏆 Certificates'],
     ],
     'instructor' => [
@@ -45,11 +50,12 @@ $navByRole = [
         ['Students.php',            '👥 Students'],
     ],
     'admin' => [
-        ['AdminDashboard.php?tab=overview', '📊 Overview'],
-        ['AdminDashboard.php?tab=users',    '👥 Users'],
-        ['AdminDashboard.php?tab=courses',  '📁 Courses'],
-        ['AdminDashboard.php?tab=visitors', '🌐 Visitor IPs'],
-        ['AdminDashboard.php?tab=security', '🔐 Security Log'],
+        ['AdminDashboard.php?tab=overview',  '📊 Overview'],
+        ['AdminDashboard.php?tab=users',     '👥 Users'],
+        ['AdminDashboard.php?tab=courses',   '📁 Courses'],
+        ['AdminDashboard.php?tab=purchases', '💳 Purchases'],
+        ['AdminDashboard.php?tab=visitors',  '🌐 Visitor IPs'],
+        ['AdminDashboard.php?tab=security',  '🔐 Security Log'],
     ],
 ];
 $nav = $navByRole[$role] ?? $navByRole['student'];
@@ -227,4 +233,4 @@ if ($role === 'admin')      $avatarClass = 'avatar avatar-admin';
   <script src="../LoadingBar.js"></script>
   <script src="Dashboard.js"></script>
 </body>
-</html>
+</html> 

@@ -16,7 +16,7 @@ unset($_SESSION['admin_success'], $_SESSION['admin_error']);
 
 // Which panel is showing. Kept in the URL so a refresh stays put.
 $tab = $_GET['tab'] ?? 'overview';
-if (!in_array($tab, ['overview', 'users', 'courses', 'visitors', 'security'], true)) {
+if (!in_array($tab, ['overview', 'users', 'courses', 'purchases', 'visitors', 'security'], true)) {
     $tab = 'overview';
 }
 
@@ -30,11 +30,13 @@ $counts = $pdo->query(
         (SELECT COUNT(*) FROM Users WHERE status = "suspended")  AS suspended,
         (SELECT COUNT(*) FROM Courses)                           AS courses,
         (SELECT COUNT(*) FROM Enrollments)                       AS enrollments,
-        (SELECT COUNT(DISTINCT ip_address) FROM PageVisits)      AS unique_visitors'
+        (SELECT COUNT(DISTINCT ip_address) FROM PageVisits)      AS unique_visitors,
+        (SELECT COUNT(*) FROM Purchases)                         AS sales,
+        (SELECT COALESCE(SUM(amount_paid), 0) FROM Purchases)     AS revenue'
 )->fetch();
 
 // Data for whichever tab is open. Loaded per-tab so the page stays quick.
-$users = $coursesList = $visitors = $securityLog = [];
+$users = $coursesList = $visitors = $securityLog = $purchases = [];
 
 if ($tab === 'users') {
     $users = $pdo->query(
@@ -46,12 +48,25 @@ if ($tab === 'users') {
 
 if ($tab === 'courses') {
     $coursesList = $pdo->query(
-        'SELECT c.course_id, c.title, c.category, c.status, c.created_at,
+        'SELECT c.course_id, c.title, c.category, c.price, c.status, c.created_at,
                 u.full_name AS instructor_name,
                 (SELECT COUNT(*) FROM Enrollments e WHERE e.course_id = c.course_id) AS student_count
          FROM Courses c
          JOIN Users u ON u.user_id = c.instructor_id
          ORDER BY c.created_at DESC'
+    )->fetchAll();
+}
+
+if ($tab === 'purchases') {
+    $purchases = $pdo->query(
+        'SELECT p.reference, p.amount_paid, p.purchased_at,
+                u.full_name AS student_name, u.email,
+                c.title AS course_title
+         FROM Purchases p
+         JOIN Users   u ON u.user_id   = p.student_id
+         JOIN Courses c ON c.course_id = p.course_id
+         ORDER BY p.purchased_at DESC
+         LIMIT 100'
     )->fetchAll();
 }
 
@@ -104,6 +119,7 @@ if ($tab === 'security') {
         <a href="?tab=overview" class="nav-item <?= $tab === 'overview' ? 'active' : '' ?>">📊 Overview</a>
         <a href="?tab=users"    class="nav-item <?= $tab === 'users' ? 'active' : '' ?>">👥 Users</a>
         <a href="?tab=courses"  class="nav-item <?= $tab === 'courses' ? 'active' : '' ?>">📁 Courses</a>
+        <a href="?tab=purchases" class="nav-item <?= $tab === 'purchases' ? 'active' : '' ?>">💳 Purchases</a>
         <a href="?tab=visitors" class="nav-item <?= $tab === 'visitors' ? 'active' : '' ?>">🌐 Visitor IPs</a>
         <a href="?tab=security" class="nav-item <?= $tab === 'security' ? 'active' : '' ?>">🔐 Security Log</a>
         <a href="Settings.php" class="nav-item">⚙️ Settings</a>
@@ -169,6 +185,14 @@ if ($tab === 'security') {
             <div class="metric-card emerald">
               <span class="metric-label">Suspended Accounts</span>
               <span class="metric-value"><?= (int) $counts['suspended'] ?></span>
+            </div>
+            <div class="metric-card cyan">
+              <span class="metric-label">Sales</span>
+              <span class="metric-value"><?= (int) $counts['sales'] ?></span>
+            </div>
+            <div class="metric-card gold">
+              <span class="metric-label">Revenue (simulated)</span>
+              <span class="metric-value">$<?= number_format((float) $counts['revenue'], 2) ?></span>
             </div>
           </div>
 
@@ -257,7 +281,7 @@ if ($tab === 'security') {
             <?php else: ?>
               <table>
                 <thead>
-                  <tr><th>Title</th><th>Instructor</th><th>Category</th><th>Status</th><th>Students</th><th>Created</th></tr>
+                  <tr><th>Title</th><th>Instructor</th><th>Category</th><th>Price</th><th>Status</th><th>Students</th><th>Created</th><th>Actions</th></tr>
                 </thead>
                 <tbody>
                   <?php foreach ($coursesList as $c): ?>
@@ -265,9 +289,55 @@ if ($tab === 'security') {
                       <td><strong><?= e($c['title']) ?></strong></td>
                       <td><?= e($c['instructor_name']) ?></td>
                       <td><?= $c['category'] ? e($c['category']) : '—' ?></td>
+                      <td class="cell-nowrap">
+                        <?= (float) $c['price'] <= 0 ? 'Free' : '$' . number_format((float) $c['price'], 2) ?>
+                      </td>
                       <td><span class="status-badge status-<?= e($c['status']) ?>"><?= ucfirst(e($c['status'])) ?></span></td>
                       <td><?= (int) $c['student_count'] ?></td>
-                      <td><?= e(date('d M Y', strtotime($c['created_at']))) ?></td>
+                      <td class="cell-nowrap"><?= e(date('d M Y', strtotime($c['created_at']))) ?></td>
+                      <td>
+                        <form method="POST" action="../php/AdminAction.php" class="row-form">
+                          <input type="hidden" name="course_id" value="<?= (int) $c['course_id'] ?>">
+                          <button type="submit" name="action" value="delete_course" class="row-btn danger"
+                                  data-confirm="Remove &quot;<?= e($c['title']) ?>&quot;? Enrolled students will lose access. This cannot be undone.">
+                            Remove
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            <?php endif; ?>
+          </div>
+
+        <!-- ================= PURCHASES ================= -->
+        <?php elseif ($tab === 'purchases'): ?>
+          <h1 class="page-title">Purchases</h1>
+          <p class="page-sub">Simulated transactions across the platform. Latest 100.</p>
+
+          <div class="table-widget">
+            <div class="table-header"><h3>Transactions</h3></div>
+            <?php if (empty($purchases)): ?>
+              <div class="empty-state">
+                <span class="empty-icon">💳</span>
+                <h3>No purchases yet</h3>
+                <p>Transactions appear here once a student checks out a paid course.</p>
+              </div>
+            <?php else: ?>
+              <table>
+                <thead>
+                  <tr><th>Reference</th><th>Student</th><th>Email</th><th>Course</th><th>Amount</th><th>When</th></tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($purchases as $p): ?>
+                    <tr>
+                      <td><code><?= e($p['reference']) ?></code></td>
+                      <td><strong><?= e($p['student_name']) ?></strong></td>
+                      <td><?= e($p['email']) ?></td>
+                      <td><?= e($p['course_title']) ?></td>
+                      <td class="cell-nowrap">$<?= number_format((float) $p['amount_paid'], 2) ?></td>
+                      <td class="cell-nowrap"><?= e(date('d M Y, H:i', strtotime($p['purchased_at']))) ?></td>
                     </tr>
                   <?php endforeach; ?>
                 </tbody>

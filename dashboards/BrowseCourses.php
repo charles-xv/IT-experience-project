@@ -18,7 +18,7 @@ unset($_SESSION['enrol_success'], $_SESSION['enrol_error']);
 // The LEFT JOIN tells us whether this student is already enrolled, so the
 // button can say Enrol or Continue without a second query per card.
 $stmt = $pdo->prepare(
-    'SELECT c.course_id, c.title, c.description, c.category, c.thumbnail_url,
+    'SELECT c.course_id, c.title, c.description, c.category, c.thumbnail_url, c.price,
             u.full_name AS instructor_name,
             e.enrollment_id,
             (SELECT COUNT(*) FROM Enrollments x WHERE x.course_id = c.course_id) AS student_count
@@ -52,6 +52,7 @@ $courses = $stmt->fetchAll();
       <nav class="sidebar-nav">
         <a href="StudentDashboard.php" class="nav-item">📚 My Learning</a>
         <a href="BrowseCourses.php" class="nav-item active">🔍 Browse Courses</a>
+        <a href="Cart.php" class="nav-item">🛒 Cart</a>
         <a href="Certificates.php" class="nav-item">🏆 Certificates</a>
         <a href="Settings.php" class="nav-item">⚙️ Settings</a>
       </nav>
@@ -128,12 +129,22 @@ $courses = $stmt->fetchAll();
                     <?= (int) $c['student_count'] ?> enrolled
                   </span>
 
+                  <div class="price-row">
+                    <?php if ((float) $c['price'] <= 0): ?>
+                      <span class="price-free">Free</span>
+                    <?php else: ?>
+                      <span class="price-tag">$<?= number_format((float) $c['price'], 2) ?></span>
+                    <?php endif; ?>
+                  </div>
+
                   <?php if ($c['enrollment_id']): ?>
                     <a href="WatchCourse.php?id=<?= (int) $c['course_id'] ?>" class="btn-block-cyan">Continue Course</a>
                   <?php else: ?>
-                    <form method="POST" action="../php/EnrollCourse.php" class="enrol-form">
+                    <form method="POST" action="../php/AddToCart.php" class="enrol-form">
                       <input type="hidden" name="course_id" value="<?= (int) $c['course_id'] ?>">
-                      <button type="submit" class="btn-block-cyan">Enrol Now</button>
+                      <button type="submit" class="btn-block-cyan">
+                        <?= (float) $c['price'] <= 0 ? 'Enrol Free' : 'Add to Cart' ?>
+                      </button>
                     </form>
                   <?php endif; ?>
                 </div>

@@ -65,7 +65,7 @@ unset($_SESSION['course_old']);
 
       <div class="dashboard-content">
         <h1 class="page-title">Create a Course</h1>
-        <p class="page-sub">Paste a YouTube link — the video and its thumbnail are pulled in automatically.</p>
+        <p class="page-sub">Paste a YouTube link the video and its thumbnail are pulled in automatically.</p>
 
         <?php if ($error): ?>
           <div class="form-notice error"><?= e($error) ?></div>
@@ -103,13 +103,23 @@ unset($_SESSION['course_old']);
               </select>
             </div>
 
+
+            <div class="form-row">
+              <label for="price">Price (USD)</label>
+              <input type="number" id="price" name="price" step="0.01" min="0"
+                     placeholder="0.00" value="<?= e($old['price'] ?? '0.00') ?>" required>
+              <span class="form-hint">
+                Enter 0 to make the course free students enrol without checkout.
+                Any amount above 0 sends them through the purchase flow.
+              </span>
+            </div>
             <div class="form-row">
               <label for="youtube_url">YouTube Link</label>
               <input type="url" id="youtube_url" name="youtube_url"
                      placeholder="https://www.youtube.com/watch?v=..."
                      value="<?= e($old['youtube_url'] ?? '') ?>" required>
               <span class="form-hint">
-                Paste the full link. Any YouTube format works — watch, youtu.be, or embed.
+                Paste the full link. Any YouTube format works watch, youtu.be, or embed.
                 The thumbnail is generated from the video, so you don't upload one.
               </span>
             </div>
@@ -118,10 +128,10 @@ unset($_SESSION['course_old']);
               <label for="status">Publish Status</label>
               <select id="status" name="status">
                 <option value="draft" <?= ($old['status'] ?? 'draft') === 'draft' ? 'selected' : '' ?>>
-                  Draft — only you can see it
+                  Draft only you can see it
                 </option>
                 <option value="published" <?= ($old['status'] ?? '') === 'published' ? 'selected' : '' ?>>
-                  Published — students can enrol
+                  Published students can enrol
                 </option>
               </select>
             </div>

@@ -19,6 +19,7 @@ $title       = trim($_POST['title'] ?? '');
 $description = trim($_POST['description'] ?? '');
 $category    = trim($_POST['category'] ?? '');
 $youtubeUrl  = trim($_POST['youtube_url'] ?? '');
+$price       = (float) ($_POST['price'] ?? 0);
 $status      = $_POST['status'] ?? 'draft';
 
 // Keep what was typed so a failed submit doesn't wipe the form.
@@ -27,6 +28,7 @@ $_SESSION['course_old'] = [
     'description' => $description,
     'category'    => $category,
     'youtube_url' => $youtubeUrl,
+    'price'       => $price,
     'status'      => $status,
 ];
 
@@ -82,6 +84,14 @@ if (!in_array($status, ['draft', 'published'], true)) {
     fail('Invalid publish status.');
 }
 
+// A negative price would credit the buyer at checkout instead of charging them.
+if ($price < 0) {
+    fail('Price cannot be negative.');
+}
+if ($price > 99999.99) {
+    fail('That price is too high.');
+}
+
 // maxresdefault is a true 16:9 image. hqdefault is 4:3 with black bars baked
 // in, which is why it looks squeezed inside a widescreen card.
 $thumbnailUrl = "https://img.youtube.com/vi/$videoId/maxresdefault.jpg";
@@ -91,8 +101,8 @@ $thumbnailUrl = "https://img.youtube.com/vi/$videoId/maxresdefault.jpg";
 try {
     $stmt = $pdo->prepare(
         'INSERT INTO Courses
-            (instructor_id, title, description, youtube_video_id, category, thumbnail_url, status)
-         VALUES (?, ?, ?, ?, ?, ?, ?)'
+            (instructor_id, title, description, youtube_video_id, category, price, thumbnail_url, status)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     );
     $stmt->execute([
         $instructorId,
@@ -100,6 +110,7 @@ try {
         $description,
         $videoId,
         $category !== '' ? $category : null,
+        $price,
         $thumbnailUrl,
         $status,
     ]);
