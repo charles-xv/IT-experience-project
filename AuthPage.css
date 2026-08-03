@@ -368,3 +368,63 @@ body {
 .password-toggle.revealed .eye-closed {
   display: block;
 }
+/* Forgot-password link above the login button */
+.forgot-row {
+  text-align: right;
+  margin-bottom: 4px;
+}
+/* Forgot-password link above the login button */
+/* This link sits between the password field and the Log In button. It was
+   using --muted on a dark panel, which is roughly the same value as the
+   background — legible in theory, invisible in practice. */
+.forgot-row {
+  text-align: right;
+  margin-top: -6px;
+  margin-bottom: 14px;
+}
+
+.forgot-row a {
+  color: var(--muted-light);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 4px 2px;
+  transition: color 0.16s ease;
+}
+
+.forgot-row a:hover,
+.forgot-row a:focus-visible {
+  color: var(--gold);
+  text-decoration: underline;
+}
+
+/* Development-only reset link panel. Styled distinctly so it is obvious
+   this is a local shortcut, not part of the real user experience. */
+.form-message.dev-link {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px dashed rgba(6, 182, 212, 0.45);
+  color: var(--muted-light);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-message.dev-link strong {
+  color: var(--cyan-accent);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.form-message.dev-link span {
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.form-message.dev-link a {
+  color: var(--gold);
+  font-size: 0.8rem;
+  word-break: break-all;
+  font-family: ui-monospace, Menlo, monospace;
+}

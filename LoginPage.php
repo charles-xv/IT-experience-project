@@ -58,6 +58,7 @@ unset($_SESSION['login_old']);
           </div>
         </div>
 
+        <div class="forgot-row"><a href="ForgotPassword.php">Forgot password?</a></div>
         <button type="submit" class="auth-btn">Log In</button>
       </form>
 

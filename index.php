@@ -45,6 +45,20 @@ $dashboards = [
 ];
 $myDashboard = $dashboards[$role] ?? 'LoginPage.php';
 $totalStudents = (int) $pdo->query('SELECT COUNT(*) AS c FROM Users WHERE role = "student"')->fetch()['c'];
+
+// Pricing is read from the catalogue rather than hardcoded, so the section can
+// never advertise a figure the platform does not actually charge.
+$priceRow = $pdo->query(
+    'SELECT COALESCE(MIN(NULLIF(price, 0)), 0)      AS lowest_paid,
+            COALESCE(SUM(price = 0), 0)             AS free_count,
+            COALESCE(SUM(price > 0), 0)             AS paid_count
+     FROM Courses
+     WHERE status = "published"'
+)->fetch();
+
+$lowestPaid = (float) ($priceRow['lowest_paid'] ?? 0);
+$freeCount  = (int)   ($priceRow['free_count'] ?? 0);
+$paidCount  = (int)   ($priceRow['paid_count'] ?? 0);
 $totalCourses  = count($featured);
 ?>
 <!doctype html>
@@ -186,7 +200,7 @@ $totalCourses  = count($featured);
           <p>
             Too many online courses are started and never completed. Mech Spec LMS
             works the other way round: short practical lessons, a clear order to
-            follow, and visible progress so what you learn turns into something
+            follow, and visible progress — so what you learn turns into something
             you can point to.
           </p>
         </div>
@@ -282,60 +296,65 @@ $totalCourses  = count($featured);
     <section class="section section-alt" id="pricing">
       <div class="wrap">
         <div class="heading">
-          <h2>Simple, Transparent Pricing</h2>
-          <p>Start free. Upgrade to Pro when you want full access.</p>
-        </div>
-
-        <div class="billing-toggle">
-          <span>Monthly billing</span>
-          <label class="switch">
-            <input
-              type="checkbox"
-              id="billingCheck"
-              onchange="toggleBilling()"
-              aria-label="Toggle annual billing"
-            />
-            <span class="slider"></span>
-          </label>
-          <span>Annual billing <span class="discount-badge">-20%</span></span>
+          <h2>Pay per course. No subscription.</h2>
+          <p>
+            Buy the courses you want and keep them. Nothing recurring, nothing
+            to cancel.
+          </p>
         </div>
 
         <div class="plans">
-          <!-- Free Plan -->
+
+          <!-- Free tier -->
           <div class="plan">
-            <div class="plan-name">Free</div>
-            <p class="plan-note">Everything you need to get started.</p>
+            <div class="plan-name">Free courses</div>
+            <p class="plan-note">Start learning today at no cost.</p>
             <div class="price"><b>$0</b><span>/ forever</span></div>
             <ul>
-              <li>Access to all free courses</li>
-              <li>Preview lessons on paid courses</li>
+              <li>
+                <?= $freeCount > 0
+                      ? 'Full access to ' . $freeCount . ' free course' . ($freeCount === 1 ? '' : 's')
+                      : 'Full access to every free course' ?>
+              </li>
               <li>Personal progress tracking</li>
+              <li>Certificate on completion</li>
               <li>Community support</li>
             </ul>
-            <a class="btn btn-outline btn-block" href="SignupPage.php"
-              >Create free account</a
-            >
+            <a class="btn btn-outline btn-block" href="SignupPage.php">Create free account</a>
           </div>
 
-          <!-- Pro Plan -->
+          <!-- Paid tier -->
           <div class="plan plan-featured">
-            <span class="tag">Most Popular</span>
-            <div class="plan-name">Pro LMS</div>
-            <p class="plan-note">
-              Full access to every course and certificate.
-            </p>
+            <span class="tag">Lifetime access</span>
+            <div class="plan-name">Paid courses</div>
+            <p class="plan-note">One payment. Yours to keep.</p>
             <div class="price">
-              <b id="proPrice">$19</b><span id="proPeriod">/ month</span>
+              <?php if ($lowestPaid > 0): ?>
+                <span class="price-from">from</span>
+                <b>$<?= number_format($lowestPaid, 2) ?></b><span>/ course</span>
+              <?php else: ?>
+                <b>Coming soon</b>
+              <?php endif; ?>
             </div>
             <ul>
-              <li>Unlimited access to every course</li>
-              <li>Verified certificates on completion</li>
+              <li>Buy only the courses you want</li>
+              <li>Lifetime access, no recurring fee</li>
+              <li>Verified certificate on completion</li>
               <li>Priority 24/7 AI Support Assistant</li>
-              <li>Cancel anytime with no commitments</li>
             </ul>
-            <a class="btn btn-gold btn-block" href="SignupPage.php">Go Pro</a>
+            <a class="btn btn-gold btn-block" href="#courses">Browse the catalogue</a>
           </div>
+
         </div>
+
+        <p class="pricing-note">
+          Instructors set their own prices, so each course is priced individually.
+          <?php if ($paidCount > 0 && $freeCount > 0): ?>
+            Right now there <?= $freeCount === 1 ? 'is' : 'are' ?> <?= $freeCount ?>
+            free course<?= $freeCount === 1 ? '' : 's' ?> and <?= $paidCount ?>
+            paid course<?= $paidCount === 1 ? '' : 's' ?> available.
+          <?php endif; ?>
+        </p>
       </div>
     </section>
 

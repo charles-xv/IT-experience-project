@@ -1271,7 +1271,6 @@ a.btn-small {
    Interactivity
    ============================================================ */
 
-/* Thin progress bar pinned to the top during navigation */
 /* Buttons mid-submit */
 .is-loading {
   opacity: 0.65;
@@ -1387,13 +1386,13 @@ a.btn-small {
 
 .btn-block-cyan:active,
 .btn-submit:active,
+.btn-small:active {
+  transform: translateY(1px);
+}
+
 .btn-small:hover {
   background: var(--gold-dark);
   box-shadow: 0 4px 12px rgba(247, 195, 49, 0.3);
-}
-
-.btn-small:active {
-  transform: translateY(1px);
 }
 
 /* Table rows respond to the pointer */
@@ -1406,7 +1405,11 @@ a.btn-small {
 
 /* Respect the system setting for reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .reveal,
+  /* .reveal is an animation, so it needs animation:none — transform:none
+     would leave it running. */
+  .reveal {
+    animation: none;
+  }
   .dash-course-card:hover,
   .metric-card:hover,
   .cert-card:hover {

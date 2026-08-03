@@ -1,18 +1,18 @@
 // Course filter on the landing page. The buttons carry data-filter and the
 // cards carry data-cat, both generated from the real category names, so this
 // works whatever categories the instructors actually create.
-document.querySelectorAll(".filter-btn").forEach(function (btn) {
-  btn.addEventListener("click", function () {
+document.querySelectorAll('.filter-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
     var target = btn.dataset.filter;
 
-    document.querySelectorAll(".filter-btn").forEach(function (b) {
-      b.classList.remove("active");
+    document.querySelectorAll('.filter-btn').forEach(function (b) {
+      b.classList.remove('active');
     });
-    btn.classList.add("active");
+    btn.classList.add('active');
 
-    document.querySelectorAll(".course-card").forEach(function (card) {
-      var show = target === "all" || card.dataset.cat === target;
-      card.classList.toggle("is-hidden", !show);
+    document.querySelectorAll('.course-card').forEach(function (card) {
+      var show = target === 'all' || card.dataset.cat === target;
+      card.classList.toggle('is-hidden', !show);
     });
   });
 });
@@ -87,14 +87,7 @@ if (shieldEl) {
   }, 3200);
 }
 
-// Billing Toggle
-function toggleBilling() {
-  const isAnnual = document.getElementById("billingCheck").checked;
-  document.getElementById("proPrice").textContent = isAnnual ? "$15" : "$19";
-  document.getElementById("proPeriod").textContent = isAnnual
-    ? "/ month (billed annually)"
-    : "/ month";
-}
+
 
 // AI Chat Bot
 function toggleAIChat() {
@@ -193,32 +186,28 @@ function checkStrength(val) {
 
 // --- Reveal sections as they scroll into view ------------------------
 // Cheaper and smoother than listening to every scroll event.
-if ("IntersectionObserver" in window) {
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in-view");
-          io.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12 },
-  );
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
 
-  document
-    .querySelectorAll(".course-card, .feature, .plan, .testimonial, .heading")
+  document.querySelectorAll('.course-card, .feature, .plan, .testimonial, .heading')
     .forEach(function (el, i) {
-      el.classList.add("on-scroll");
-      el.style.transitionDelay = (i % 3) * 70 + "ms";
+      el.classList.add('on-scroll');
+      el.style.transitionDelay = ((i % 3) * 70) + 'ms';
       io.observe(el);
     });
 }
 
 // --- Header shrinks once you scroll ----------------------------------
-var masthead = document.querySelector(".masthead");
+var masthead = document.querySelector('.masthead');
 if (masthead) {
-  window.addEventListener("scroll", function () {
-    masthead.classList.toggle("scrolled", window.scrollY > 40);
+  window.addEventListener('scroll', function () {
+    masthead.classList.toggle('scrolled', window.scrollY > 40);
   });
 }
