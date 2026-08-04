@@ -649,6 +649,54 @@ $totalCourses  = count($featured);
       </div>
     </div>
 
+    <!-- AI Support Chatbot Widget -->
+    <button class="chatbot-trigger" id="chatbotTrigger" onclick="toggleChatbot()" aria-label="Open AI Support Chatbot">
+      🤖
+      <span class="chatbot-badge">AI</span>
+    </button>
+
+    <div class="chatbot-window" id="chatbotWindow">
+      <div class="chatbot-header">
+        <div class="chatbot-avatar">🤖</div>
+        <div class="chatbot-title-box">
+          <h4 class="chatbot-title">MechSpec AI Assistant</h4>
+          <div class="chatbot-status">
+            <span class="status-dot"></span>
+            <select id="chatbotModeSelect" class="chatbot-mode-select" onchange="switchChatbotMode(this.value)">
+              <option value="offline">⚡ Mode Local (Sans API)</option>
+              <option value="api">🌐 Mode Gemini AI (Avec API)</option>
+            </select>
+          </div>
+        </div>
+        <button class="chatbot-close" onclick="toggleChatbot()">✕</button>
+      </div>
+
+      <div class="chatbot-messages" id="chatbotMessages">
+        <div class="chat-msg bot">
+          👋 Hello! I am the <strong>MechSpec AI Assistant</strong>. How can I help you explore our secure LMS platform today?
+        </div>
+      </div>
+
+      <div class="chatbot-suggestions">
+        <button class="chip-btn" onclick="sendSuggestion('What courses are available?')">📚 Courses</button>
+        <button class="chip-btn" onclick="sendSuggestion('How does pricing work?')">💰 Pricing</button>
+        <button class="chip-btn" onclick="sendSuggestion('Is the platform secure?')">🛡️ Security</button>
+        <button class="chip-btn" onclick="sendSuggestion('How do I get a certificate?')">🏆 Certificates</button>
+      </div>
+
+      <form class="chatbot-input-form" id="chatbotForm" onsubmit="handleChatSubmit(event)">
+        <input
+          type="text"
+          class="chatbot-input"
+          id="chatbotInput"
+          placeholder="Ask anything about MechSpec LMS..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit" class="chatbot-send" aria-label="Send message">➤</button>
+      </form>
+    </div>
+
     <!-- JavaScript Interactions -->
     <script src="LoadingBar.js"></script>
     <script src="Index.js"></script>

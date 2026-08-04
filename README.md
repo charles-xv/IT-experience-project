@@ -96,7 +96,7 @@ IT-experience-project/
 | 🎓 **Course Showcase** | Featured courses with category filters (Security / Dev / AI) |
 | 💬 **Testimonials** | Learner reviews with animated cards |
 | 💰 **Pricing Toggle** | Monthly / Annual billing switch with discount logic |
-| 🤖 **AI Support Widget** | Floating chatbot interface for platform FAQ |
+| 🤖 **Dual-Mode AI Assistant** | Floating assistant supporting **Local Offline Mode** (fast JS rules) and **Live Gemini AI Mode** (secure PHP backend proxy via `php/ChatbotAPI.php`) |
 | 🔐 **Secure Auth (PHP)** | Login & Signup with bcrypt hashing, CSRF-aware, rate limiting |
 | 🧱 **Role-Based Dashboards** | Separate views for Student, Instructor, and Admin roles |
 | ⏱️ **Session Idle Timeout** | Sessions expire after 30 minutes of inactivity |

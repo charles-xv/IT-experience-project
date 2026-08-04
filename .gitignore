@@ -18,3 +18,7 @@ Thumbs.db
 # PHP error logs — can leak file paths and query fragments
 *.log
 error_log
+
+# API secrets — never commit keys or credentials to the repository.
+# Each developer creates their own php/secrets.php locally from the template.
+php/secrets.php
