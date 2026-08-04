@@ -659,12 +659,12 @@ $totalCourses  = count($featured);
       <div class="chatbot-header">
         <div class="chatbot-avatar">🤖</div>
         <div class="chatbot-title-box">
-          <h4 class="chatbot-title">MechSpec AI Assistant</h4>
+          <h4 class="chatbot-title">SpechBot AI Assistant</h4>
           <div class="chatbot-status">
             <span class="status-dot"></span>
             <select id="chatbotModeSelect" class="chatbot-mode-select" onchange="switchChatbotMode(this.value)">
-              <option value="offline">⚡ Mode Local (Sans API)</option>
-              <option value="api">🌐 Mode Gemini AI (Avec API)</option>
+              <option value="offline">⚡ Local Mode (Offline)</option>
+              <option value="api">🌐 Gemini AI Mode (Live API)</option>
             </select>
           </div>
         </div>
@@ -673,7 +673,7 @@ $totalCourses  = count($featured);
 
       <div class="chatbot-messages" id="chatbotMessages">
         <div class="chat-msg bot">
-          👋 Hello! I am the <strong>MechSpec AI Assistant</strong>. How can I help you explore our secure LMS platform today?
+          👋 Hello! I am <strong>SpechBot</strong>, your AI Assistant. How can I help you explore our secure LMS platform today?
         </div>
       </div>
 
@@ -689,7 +689,7 @@ $totalCourses  = count($featured);
           type="text"
           class="chatbot-input"
           id="chatbotInput"
-          placeholder="Ask anything about MechSpec LMS..."
+          placeholder="Ask SpechBot anything about MechSpec LMS..."
           autocomplete="off"
           required
         />

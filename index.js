@@ -353,7 +353,7 @@ function generateAIResponse(query) {
   }
 
   if (q.includes("hello") || q.includes("hi") || q.includes("hey") || q.includes("bonjour")) {
-    return "👋 Hello! How can I assist you today with Mech Spec LMS?";
+    return "👋 Hello! I am <strong>SpechBot</strong>. How can I assist you today with Mech Spec LMS?";
   }
 
   return "💡 Thanks for your question! I can help you with <strong>Courses</strong>, <strong>Pricing</strong>, <strong>Platform Security</strong>, or <strong>Certificates</strong>. Feel free to try one of the suggestion buttons below!";
