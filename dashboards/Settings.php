@@ -39,23 +39,23 @@ $displayEmail = $account['email'] ?? $email;
 // missed that way. Anything added to a dashboard sidebar belongs here as well.
 $navByRole = [
     'student' => [
-        ['StudentDashboard.php', '📚 My Learning'],
-        ['BrowseCourses.php',    '🔍 Browse Courses'],
-        ['Cart.php',             '🛒 Cart'],
-        ['Certificates.php',     '🏆 Certificates'],
+        ['StudentDashboard.php', 'book', 'My Learning'],
+        ['BrowseCourses.php',    'search', 'Browse Courses'],
+        ['Cart.php',             'cart', 'Cart'],
+        ['Certificates.php',     'award', 'Certificates'],
     ],
     'instructor' => [
-        ['InstructorDashboard.php', '📊 Overview'],
-        ['CreateCourse.php',        '➕ Create Course'],
-        ['Students.php',            '👥 Students'],
+        ['InstructorDashboard.php', 'chart', 'Overview'],
+        ['CreateCourse.php',        'plus', 'Create Course'],
+        ['Students.php',            'users', 'Students'],
     ],
     'admin' => [
-        ['AdminDashboard.php?tab=overview',  '📊 Overview'],
-        ['AdminDashboard.php?tab=users',     '👥 Users'],
-        ['AdminDashboard.php?tab=courses',   '📁 Courses'],
-        ['AdminDashboard.php?tab=purchases', '💳 Purchases'],
-        ['AdminDashboard.php?tab=visitors',  '🌐 Visitor IPs'],
-        ['AdminDashboard.php?tab=security',  '🔐 Security Log'],
+        ['AdminDashboard.php?tab=overview',  'chart', 'Overview'],
+        ['AdminDashboard.php?tab=users',     'users', 'Users'],
+        ['AdminDashboard.php?tab=courses',   'folder', 'Courses'],
+        ['AdminDashboard.php?tab=purchases', 'card', 'Purchases'],
+        ['AdminDashboard.php?tab=visitors',  'globe', 'Visitor IPs'],
+        ['AdminDashboard.php?tab=security',  'shield', 'Security Log'],
     ],
 ];
 $nav = $navByRole[$role] ?? $navByRole['student'];
@@ -85,12 +85,12 @@ if ($role === 'admin')      $avatarClass = 'avatar avatar-admin';
       </div>
       <nav class="sidebar-nav">
         <?php foreach ($nav as $item): ?>
-          <a href="<?= e($item[0]) ?>" class="nav-item"><?= $item[1] ?></a>
+          <a href="<?= e($item[0]) ?>" class="nav-item"><?= ui_icon($item[1]) ?><span class="nav-label"><?= e($item[2]) ?></span></a>
         <?php endforeach; ?>
-        <a href="Settings.php" class="nav-item active">⚙️ Settings</a>
+        <a href="Settings.php" class="nav-item active"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -102,6 +102,9 @@ if ($role === 'admin')      $avatarClass = 'avatar avatar-admin';
           Dashboard <span>/ Settings</span>
         </div>
         <div class="header-actions">
+          <button type="button" class="header-logout-btn" id="logoutTriggerMobile" aria-label="Log out" title="Log out">
+            <?= ui_icon('logout') ?>
+          </button>
           <span class="dash-role-pill dash-role-<?= e($role) ?>"><?= ucfirst(e($role)) ?> Mode</span>
           <div class="user-profile">
             <div class="user-info">
@@ -126,47 +129,103 @@ if ($role === 'admin')      $avatarClass = 'avatar avatar-admin';
 
         <div class="settings-grid">
 
-          <!-- ACCOUNT DETAILS -->
-          <div class="form-panel">
-            <h2 class="section-heading">Account</h2>
+          <!-- LEFT: editable forms -->
+          <div class="settings-main">
 
-            <form method="POST" action="../php/UpdateProfile.php">
+            <!-- ACCOUNT DETAILS -->
+            <div class="form-panel">
+              <h2 class="section-heading">Account</h2>
 
-              <div class="form-row">
-                <label for="full_name">Display Name</label>
-                <input type="text" id="full_name" name="full_name"
-                       value="<?= e($displayName) ?>" maxlength="120" required>
+              <form method="POST" action="../php/UpdateProfile.php">
+
+                <div class="form-row">
+                  <label for="full_name">Display Name</label>
+                  <input type="text" id="full_name" name="full_name"
+                         value="<?= e($displayName) ?>" maxlength="120" required>
+                </div>
+
+                <div class="form-row">
+                  <label for="new_email">Email Address</label>
+                  <input type="email" id="new_email" name="email"
+                         value="<?= e($displayEmail) ?>" maxlength="190" required>
+                </div>
+
+                <div class="form-row">
+                  <label for="confirm_pw">Confirm with your password</label>
+                  <input type="password" id="confirm_pw" name="password"
+                         placeholder="Required to save changes" required>
+                  <span class="form-hint">
+                    Your password is required because changing the email changes how
+                    you sign in. Without it, an unattended logged-in browser could move
+                    the account to a different address.
+                  </span>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn-submit">Save Changes</button>
+                </div>
+              </form>
+
+              <p class="form-hint">
+                Your role is set by an administrator and can't be changed here.
+              </p>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="form-panel">
+              <h2 class="section-heading">Change Password</h2>
+
+              <form method="POST" action="../php/UpdatePassword.php">
+
+                <div class="form-row">
+                  <label for="current_password">Current Password</label>
+                  <input type="password" id="current_password" name="current_password" required>
+                </div>
+
+                <div class="form-row">
+                  <label for="new_password">New Password</label>
+                  <input type="password" id="new_password" name="new_password"
+                         minlength="8" placeholder="At least 8 characters" required>
+                </div>
+
+                <div class="form-row">
+                  <label for="confirm_password">Confirm New Password</label>
+                  <input type="password" id="confirm_password" name="confirm_password"
+                         minlength="8" required>
+                  <span class="form-hint">
+                    Changing your password also clears any failed login attempts on
+                    the account and refreshes your session.
+                  </span>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn-submit">Update Password</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+
+          <!-- RIGHT: profile summary -->
+          <aside class="settings-profile">
+            <div class="<?= $avatarClass ?> settings-profile-avatar"><?= e(strtoupper(substr($displayName, 0, 1))) ?></div>
+            <h3 class="settings-profile-name"><?= e($displayName) ?></h3>
+            <span class="settings-profile-email"><?= ui_icon('card') ?><?= e($displayEmail) ?></span>
+
+            <a href="#" class="settings-logout-btn" id="logoutTriggerProfile"><?= ui_icon('logout') ?> Log Out</a>
+
+            <div class="settings-profile-stats">
+              <div class="settings-profile-stat">
+                <strong><?= ucfirst(e($role)) ?></strong>
+                <span>Role</span>
               </div>
-
-              <div class="form-row">
-                <label for="new_email">Email Address</label>
-                <input type="email" id="new_email" name="email"
-                       value="<?= e($displayEmail) ?>" maxlength="190" required>
+              <div class="settings-profile-stat">
+                <strong><?= e(date('d M Y', strtotime($account['created_at']))) ?></strong>
+                <span>Joined</span>
               </div>
-
-              <div class="form-row">
-                <label for="confirm_pw">Confirm with your password</label>
-                <input type="password" id="confirm_pw" name="password"
-                       placeholder="Required to save changes" required>
-                <span class="form-hint">
-                  Your password is required because changing the email changes how
-                  you sign in. Without it, an unattended logged-in browser could move
-                  the account to a different address.
-                </span>
-              </div>
-
-              <div class="form-actions">
-                <button type="submit" class="btn-submit">Save Changes</button>
-              </div>
-            </form>
+            </div>
 
             <dl class="detail-list detail-readonly">
-              <dt>Role</dt>
-              <dd><span class="status-badge status-<?= e($role) ?>"><?= ucfirst(e($role)) ?></span></dd>
-
-              <dt>Joined</dt>
-              <dd><?= e(date('d M Y', strtotime($account['created_at']))) ?></dd>
-
               <dt>Last login</dt>
               <dd>
                 <?= $account['last_login']
@@ -174,44 +233,7 @@ if ($role === 'admin')      $avatarClass = 'avatar avatar-admin';
                       : 'This is your first session' ?>
               </dd>
             </dl>
-
-            <p class="form-hint">
-              Your role is set by an administrator and can't be changed here.
-            </p>
-          </div>
-
-          <!-- PASSWORD -->
-          <div class="form-panel">
-            <h2 class="section-heading">Change Password</h2>
-
-            <form method="POST" action="../php/UpdatePassword.php">
-
-              <div class="form-row">
-                <label for="current_password">Current Password</label>
-                <input type="password" id="current_password" name="current_password" required>
-              </div>
-
-              <div class="form-row">
-                <label for="new_password">New Password</label>
-                <input type="password" id="new_password" name="new_password"
-                       minlength="8" placeholder="At least 8 characters" required>
-              </div>
-
-              <div class="form-row">
-                <label for="confirm_password">Confirm New Password</label>
-                <input type="password" id="confirm_password" name="confirm_password"
-                       minlength="8" required>
-                <span class="form-hint">
-                  Changing your password also clears any failed login attempts on
-                  the account and refreshes your session.
-                </span>
-              </div>
-
-              <div class="form-actions">
-                <button type="submit" class="btn-submit">Update Password</button>
-              </div>
-            </form>
-          </div>
+          </aside>
 
         </div>
       </div>

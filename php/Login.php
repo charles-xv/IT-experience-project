@@ -85,7 +85,7 @@ try {
     }
 
     // --- Look up the user ---
-    $stmt = $pdo->prepare('SELECT user_id, full_name, email, password_hash, role, status FROM Users WHERE email = ?');
+    $stmt = $pdo->prepare('SELECT user_id, full_name, email, password_hash, role, status, email_verified FROM Users WHERE email = ?');
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
@@ -129,6 +129,15 @@ try {
         fail('This account has been suspended. Please contact an administrator.');
     }
 
+    // Unverified accounts are blocked. Checked after the password so the
+    // message can't be used to discover which emails exist. A pending
+    // instructor approval does NOT block login here — only publishing is
+    // restricted, enforced separately where courses are created.
+    if ((int) ($user['email_verified'] ?? 1) === 0) {
+        log_security_event($pdo, 'access_denied', (int) $user['user_id'], 'Unverified account attempted login');
+        fail('Please verify your email before logging in. Check your inbox for the verification link.');
+    }
+
     // --- Success: establish the session ---
     // Clear this account's recent failures so a correct login wipes the slate —
     // otherwise earlier fails would keep counting toward a lockout for 15 minutes.
@@ -148,6 +157,7 @@ try {
     $_SESSION['last_activity'] = time();
     $_SESSION['full_name'] = $user['full_name'];
     $_SESSION['role']      = $user['role'];
+    $_SESSION['status']    = $user['status'];
     $_SESSION['email']     = $user['email'];
     unset($_SESSION['login_old']);
 

@@ -52,14 +52,14 @@ foreach ($items as $it) { $total += (float) $it['price']; }
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="StudentDashboard.php" class="nav-item">📚 My Learning</a>
-        <a href="BrowseCourses.php" class="nav-item">🔍 Browse Courses</a>
-        <a href="Cart.php" class="nav-item active">🛒 Cart</a>
-        <a href="Certificates.php" class="nav-item">🏆 Certificates</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="StudentDashboard.php" class="nav-item"><?= ui_icon('book') ?><span class="nav-label">My Learning</span></a>
+        <a href="BrowseCourses.php" class="nav-item"><?= ui_icon('search') ?><span class="nav-label">Browse Courses</span></a>
+        <a href="Cart.php" class="nav-item active"><?= ui_icon('cart') ?><span class="nav-label">Cart</span></a>
+        <a href="Certificates.php" class="nav-item"><?= ui_icon('award') ?><span class="nav-label">Certificates</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -92,42 +92,36 @@ foreach ($items as $it) { $total += (float) $it['price']; }
           <span class="checkout-banner-ico">ℹ</span>
           <div>
             <strong>Simulated payment</strong>
-            <p>This is a demonstration checkout. No real payment is taken and no card details are stored. Enter any test numbers.</p>
+            <p>You will be taken to a payment page to enter your card. No real payment is taken, and no card details are stored beyond the last four digits.</p>
           </div>
         </div>
 
         <div class="cart-layout">
 
           <div class="form-panel">
-            <h2 class="section-heading">Payment Details</h2>
-            <form method="POST" action="../php/ProcessPayment.php">
+            <h2 class="section-heading">Confirm Your Details</h2>
+            <form method="POST" action="../php/InitiatePayment.php">
 
               <div class="form-row">
-                <label for="card_name">Name on Card</label>
-                <input type="text" id="card_name" name="card_name" placeholder="John Doe" required>
+                <label for="email">Email for receipt</label>
+                <input type="email" id="email" name="email"
+                       value="<?= e($_SESSION['email'] ?? '') ?>"
+                       maxlength="190" required>
+                <span class="form-hint">
+                  Pre-filled from your account. Payment providers require an email
+                  to identify the payer and send the receipt — change it here if
+                  you would rather the receipt went elsewhere.
+                </span>
               </div>
 
-              <div class="form-row">
-                <label for="card_number">Card Number</label>
-                <input type="text" id="card_number" name="card_number"
-                       inputmode="numeric" maxlength="19"
-                       placeholder="4242 4242 4242 4242" required>
-                <span class="form-hint">Any 12 to 19 digits. Nothing is charged or stored.</span>
-              </div>
-
-              <div class="checkout-split">
-                <div class="form-row">
-                  <label for="card_expiry">Expiry</label>
-                  <input type="text" id="card_expiry" name="card_expiry" placeholder="12/28" maxlength="5">
-                </div>
-                <div class="form-row">
-                  <label for="card_cvc">CVC</label>
-                  <input type="text" id="card_cvc" name="card_cvc" placeholder="123" maxlength="4">
-                </div>
+              <div class="checkout-steps">
+                <div class="checkout-step done"><span>1</span> Review order</div>
+                <div class="checkout-step current"><span>2</span> Confirm details</div>
+                <div class="checkout-step"><span>3</span> Pay securely</div>
               </div>
 
               <div class="form-actions">
-                <button type="submit" class="btn-submit">Pay $<?= number_format($total, 2) ?></button>
+                <button type="submit" class="btn-submit">Continue to payment &rarr;</button>
               </div>
             </form>
           </div>

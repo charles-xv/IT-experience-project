@@ -57,14 +57,14 @@ $isComplete = $course['completed_at'] !== null;
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="StudentDashboard.php" class="nav-item active">📚 My Learning</a>
-        <a href="BrowseCourses.php" class="nav-item">🔍 Browse Courses</a>
-        <a href="Cart.php" class="nav-item">🛒 Cart</a>
-        <a href="Certificates.php" class="nav-item">🏆 Certificates</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="StudentDashboard.php" class="nav-item active"><?= ui_icon('book') ?><span class="nav-label">My Learning</span></a>
+        <a href="BrowseCourses.php" class="nav-item"><?= ui_icon('search') ?><span class="nav-label">Browse Courses</span></a>
+        <a href="Cart.php" class="nav-item"><?= ui_icon('cart') ?><span class="nav-label">Cart</span></a>
+        <a href="Certificates.php" class="nav-item"><?= ui_icon('award') ?><span class="nav-label">Certificates</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 

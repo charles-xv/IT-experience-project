@@ -89,61 +89,39 @@ if (shieldEl) {
 
 
 
-// AI Chat Bot
-function toggleAIChat() {
-  const box = document.getElementById("aiChatBox");
-  box.classList.toggle("open");
-}
 
-function sendAIMessage() {
-  const input = document.getElementById("aiInput");
-  const text = input.value.trim();
-  if (!text) return;
 
-  const body = document.getElementById("aiChatBody");
+// ---------------------------------------------------------------------
+// Theme toggle — shared landing-page preference.
+// The inline initializer in index.php prevents a flash before CSS paints.
+// ---------------------------------------------------------------------
+(function () {
+  var root = document.documentElement;
+  var toggle = document.getElementById('themeToggle');
+  if (!toggle) return;
 
-  // User message
-  const uMsg = document.createElement("div");
-  uMsg.className = "ai-msg user";
-  uMsg.textContent = text;
-  body.appendChild(uMsg);
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    var light = theme === 'light';
+    toggle.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+    toggle.setAttribute('title', light ? 'Switch to dark mode' : 'Switch to light mode');
+    var label = toggle.querySelector('.theme-toggle-label');
+    if (label) label.textContent = light ? 'Dark mode' : 'Light mode';
+    var sun = toggle.querySelector('.theme-icon-sun');
+    var moon = toggle.querySelector('.theme-icon-moon');
+    if (sun) sun.classList.toggle('theme-icon-sun', true);
+    if (moon) moon.classList.toggle('theme-icon-moon', true);
+  }
 
-  input.value = "";
-  body.scrollTop = body.scrollHeight;
+  var saved = localStorage.getItem('mechspec-theme');
+  applyTheme(saved === 'light' ? 'light' : 'dark');
 
-  // Bot answer simulation in English
-  setTimeout(() => {
-    const bMsg = document.createElement("div");
-    bMsg.className = "ai-msg bot";
-
-    const lower = text.toLowerCase();
-    if (
-      lower.includes("register") ||
-      lower.includes("account") ||
-      lower.includes("sign up")
-    ) {
-      bMsg.textContent =
-        "To register, click the 'Sign up' button at the top right, enter your email address and a strong password.";
-    } else if (
-      lower.includes("buy") ||
-      lower.includes("course") ||
-      lower.includes("pay") ||
-      lower.includes("purchase")
-    ) {
-      bMsg.textContent =
-        "To purchase a course, browse our catalog, click 'Enroll Now', and follow the simulated checkout process.";
-    } else if (lower.includes("password")) {
-      bMsg.textContent =
-        "You can evaluate password strength during registration via our real-time visual strength meter.";
-    } else {
-      bMsg.textContent =
-        "I am the Mech Spec support assistant. Feel free to ask me any questions about registration, courses, or navigation!";
-    }
-
-    body.appendChild(bMsg);
-    body.scrollTop = body.scrollHeight;
-  }, 600);
-}
+  toggle.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    localStorage.setItem('mechspec-theme', next);
+    applyTheme(next);
+  });
+})();
 
 // Auth Modal & Password Strength
 function openModal(type) {
@@ -230,18 +208,24 @@ function toggleChatbot() {
 
 function switchChatbotMode(mode) {
   currentChatbotMode = mode;
+
   const container = document.getElementById("chatbotMessages");
   if (!container) return;
 
   const notice = document.createElement("div");
+
   notice.className = "chat-msg bot";
   notice.style.fontStyle = "italic";
   notice.style.borderColor = "var(--cyan-accent)";
 
   if (mode === "api") {
-    notice.innerHTML = "🌐 <strong>Mode Gemini AI activé</strong>. Les questions seront transmises de façon sécurisée au backend PHP <code>php/ChatbotAPI.php</code>.";
+    notice.innerHTML =
+      "<strong>Gemini AI mode enabled.</strong> " +
+      "Your questions are securely sent to the PHP backend.";
   } else {
-    notice.innerHTML = "⚡ <strong>Mode Local activé</strong>. Réponses instantanées hors-ligne (sans API).";
+    notice.innerHTML =
+      "<strong>Local mode enabled.</strong> " +
+      "Responses are generated locally without the Gemini API.";
   }
 
   container.appendChild(notice);
@@ -309,7 +293,8 @@ function handleChatSubmit(e) {
 
       const botBubble = document.createElement("div");
       botBubble.className = "chat-msg bot";
-      botBubble.innerHTML = "⚠️ Connexion à l'API backend impossible. Bascule automatique sur les réponses locales.";
+     botBubble.textContent =
+    "The AI service is currently unavailable. Please try again or switch to Local mode.";
       container.appendChild(botBubble);
       container.scrollTop = container.scrollHeight;
     });
@@ -333,28 +318,28 @@ function generateAIResponse(query) {
   const q = query.toLowerCase();
 
   if (q.includes("course") || q.includes("catalog") || q.includes("learn") || q.includes("class")) {
-    return "📚 We offer top-tier courses including <strong>Ethical Hacking</strong>, <strong>Web Security Basics</strong>, <strong>JavaScript for Beginners</strong>, and <strong>HTML Crash Course</strong>. You can browse them right above in the catalogue!";
+    return "We offer top-tier courses including <strong>Ethical Hacking</strong>, <strong>Web Security Basics</strong>, <strong>JavaScript for Beginners</strong>, and <strong>HTML Crash Course</strong>. You can browse them right above in the catalogue!";
   }
 
   if (q.includes("price") || q.includes("cost") || q.includes("buy") || q.includes("free") || q.includes("pay")) {
-    return "💰 <strong>Flexible Pricing:</strong> We offer free foundational courses ($0) as well as premium courses with lifetime access. No subscription fees — pay once per course and keep it forever!";
+    return "<strong>Flexible Pricing:</strong> We offer free foundational courses ($0) as well as premium courses with lifetime access. No subscription fees — pay once per course and keep it forever!";
   }
 
   if (q.includes("secure") || q.includes("security") || q.includes("password") || q.includes("protection")) {
-    return "🛡️ <strong>Security-First Architecture:</strong> Mech Spec LMS utilizes <code>bcrypt</code> password hashing, strict Rate Limiting against brute-force attacks, Role-Based Access Control (RBAC), and 30-minute session idle timeouts.";
+    return "<strong>Security-First Architecture:</strong> Mech Spec LMS utilizes <code>bcrypt</code> password hashing, strict Rate Limiting against brute-force attacks, Role-Based Access Control (RBAC), and 30-minute session idle timeouts.";
   }
 
   if (q.includes("certificate") || q.includes("diploma") || q.includes("completion")) {
-    return "🏆 <strong>Verified Certificates:</strong> When you complete 100% of a course, a verified completion certificate is automatically generated in your Student Dashboard!";
+    return "<strong>Verified Certificates:</strong> When you complete 100% of a course, a verified completion certificate is automatically generated in your Student Dashboard!";
   }
 
   if (q.includes("login") || q.includes("account") || q.includes("signup") || q.includes("register")) {
-    return "🔐 You can create a free account by clicking <strong>'Sign Up'</strong> at the top right, or log in if you already have an account. We also support instant password resets!";
+    return "You can create a free account by clicking <strong>'Sign Up'</strong> at the top right, or log in if you already have an account. We also support instant password resets!";
   }
 
   if (q.includes("hello") || q.includes("hi") || q.includes("hey") || q.includes("bonjour")) {
-    return "👋 Hello! I am <strong>SpechBot</strong>. How can I assist you today with Mech Spec LMS?";
+    return "Hello! I am <strong>SpechBot</strong>. How can I assist you today with Mech Spec LMS?";
   }
 
-  return "💡 Thanks for your question! I can help you with <strong>Courses</strong>, <strong>Pricing</strong>, <strong>Platform Security</strong>, or <strong>Certificates</strong>. Feel free to try one of the suggestion buttons below!";
-}
+  return "Thanks for your question! I can help you with <strong>Courses</strong>, <strong>Pricing</strong>, <strong>Platform Security</strong>, or <strong>Certificates</strong>. Feel free to try one of the suggestion buttons below!";
+}

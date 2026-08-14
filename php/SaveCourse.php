@@ -84,6 +84,13 @@ if (!in_array($status, ['draft', 'published'], true)) {
     fail('Invalid publish status.');
 }
 
+// Saving as a draft is always fine. Publishing requires admin approval —
+// checked against the DB, not the session, so a same-session approval
+// takes effect immediately.
+if ($status === 'published' && !instructor_can_publish($pdo, $instructorId)) {
+    fail('Your instructor account is still awaiting admin approval, so you can\'t publish yet. You can save this course as a draft in the meantime.');
+}
+
 // A negative price would credit the buyer at checkout instead of charging them.
 if ($price < 0) {
     fail('Price cannot be negative.');

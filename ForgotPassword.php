@@ -3,15 +3,16 @@ session_start();
 
 $error  = $_SESSION['reset_error'] ?? '';
 $notice = $_SESSION['reset_notice'] ?? '';
-// Development only — production emails the link instead of showing it.
-$devLink = $_SESSION['reset_dev_link'] ?? '';
-unset($_SESSION['reset_error'], $_SESSION['reset_notice'], $_SESSION['reset_dev_link']);
+unset($_SESSION['reset_error'], $_SESSION['reset_notice']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function(){try{var t=localStorage.getItem('mechspec-theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();
+  </script>
   <title>Reset Password - Mech Spec LMS</title>
   <link rel="stylesheet" href="Index.css">
   <link rel="stylesheet" href="AuthPage.css">
@@ -30,7 +31,7 @@ unset($_SESSION['reset_error'], $_SESSION['reset_notice'], $_SESSION['reset_dev_
     <div class="auth-form-panel">
       <a href="LoginPage.php" class="auth-back">&larr; Back to login</a>
       <h2>Forgot password?</h2>
-      <p class="auth-subtitle">Enter the email you signed up with</p>
+      <p class="auth-subtitle">Enter your email and we'll send a secure reset link. The link expires in <strong>15 minutes</strong>.</p>
 
       <?php if ($error): ?>
         <div class="form-message error"><?= htmlspecialchars($error) ?></div>
@@ -39,13 +40,7 @@ unset($_SESSION['reset_error'], $_SESSION['reset_notice'], $_SESSION['reset_dev_
         <div class="form-message success"><?= htmlspecialchars($notice) ?></div>
       <?php endif; ?>
 
-      <?php if ($devLink): ?>
-        <div class="form-message dev-link">
-          <strong>Development mode</strong>
-          <span>No mail server is configured, so the link is shown here instead of being emailed:</span>
-          <a href="<?= htmlspecialchars($devLink) ?>"><?= htmlspecialchars($devLink) ?></a>
-        </div>
-      <?php endif; ?>
+
 
       <form method="POST" action="php/RequestReset.php">
         <div class="form-group">

@@ -7,6 +7,7 @@
 require_once __DIR__ . '/SessionGuard.php';
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/Helpers.php';
+require_once __DIR__ . '/Mailer.php';
 require_role('admin');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -24,7 +25,15 @@ function back(string $key, string $message): void {
     exit;
 }
 
-if ($targetId <= 0 || !in_array($action, ['suspend', 'reinstate', 'delete', 'update_user', 'delete_course'], true)) {
+// Approve/reject act from the Pending Instructors queue, so send the admin
+// back there instead of the general Users tab.
+function backPending(string $key, string $message): void {
+    $_SESSION[$key] = $message;
+    header('Location: ../dashboards/AdminDashboard.php?tab=pending');
+    exit;
+}
+
+if ($targetId <= 0 || !in_array($action, ['suspend', 'reinstate', 'delete', 'update_user', 'delete_course', 'approve_instructor', 'reject_instructor'], true)) {
     back('admin_error', 'Invalid request.');
 }
 
@@ -72,7 +81,7 @@ if ($targetId === $adminId && $action !== 'update_user') {
 }
 
 try {
-    $stmt = $pdo->prepare('SELECT full_name, email, role FROM Users WHERE user_id = ?');
+    $stmt = $pdo->prepare('SELECT full_name, email, role, instructor_approval_status FROM Users WHERE user_id = ?');
     $stmt->execute([$targetId]);
     $target = $stmt->fetch();
 
@@ -137,6 +146,56 @@ try {
         }
 
         back('admin_success', "$newName has been updated.");
+    }
+
+    if ($action === 'approve_instructor' || $action === 'reject_instructor') {
+        if ($target['role'] !== 'instructor') {
+            backPending('admin_error', 'That account is not an instructor.');
+        }
+        if ($target['instructor_approval_status'] !== 'pending') {
+            backPending('admin_error', "{$target['full_name']}'s account is already {$target['instructor_approval_status']}, not pending.");
+        }
+
+        if ($action === 'approve_instructor') {
+            $pdo->prepare(
+                'UPDATE Users SET instructor_approval_status = "approved", instructor_rejection_reason = NULL
+                 WHERE user_id = ?'
+            )->execute([$targetId]);
+            log_security_event($pdo, 'instructor_approved', $adminId, "Approved instructor {$target['email']}");
+
+            $html = '<!doctype html><html><body style="margin:0;background:#f5f7fa;font-family:Arial,sans-serif;color:#14233a">'
+                . '<div style="max-width:600px;margin:30px auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:32px">'
+                . '<h2 style="margin-top:0">You\'re approved to publish on Mech Spec LMS</h2>'
+                . '<p>Hello ' . e($target['full_name']) . ',</p>'
+                . '<p>An admin has approved your instructor account. You can now publish your courses so students can enrol.</p>'
+                . '</div></body></html>';
+            send_html_email($target['email'], 'Your instructor account has been approved', $html,
+                'Your Mech Spec LMS instructor account has been approved. You can now publish courses.');
+
+            backPending('admin_success', "{$target['full_name']} has been approved and can now publish courses.");
+        }
+
+        // reject_instructor
+        $reason = trim((string) ($_POST['reason'] ?? ''));
+        $pdo->prepare(
+            'UPDATE Users SET instructor_approval_status = "rejected", instructor_rejection_reason = ?
+             WHERE user_id = ?'
+        )->execute([$reason !== '' ? $reason : null, $targetId]);
+        log_security_event($pdo, 'instructor_rejected', $adminId, "Rejected instructor {$target['email']}" . ($reason !== '' ? ": $reason" : ''));
+
+        $reasonHtml = $reason !== '' ? '<p><strong>Reason:</strong> ' . e($reason) . '</p>' : '';
+        $html = '<!doctype html><html><body style="margin:0;background:#f5f7fa;font-family:Arial,sans-serif;color:#14233a">'
+            . '<div style="max-width:600px;margin:30px auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:32px">'
+            . '<h2 style="margin-top:0">Update on your instructor application</h2>'
+            . '<p>Hello ' . e($target['full_name']) . ',</p>'
+            . '<p>Your instructor account was not approved to publish at this time.</p>'
+            . $reasonHtml
+            . '<p>If you believe this is a mistake, please contact an administrator.</p>'
+            . '</div></body></html>';
+        send_html_email($target['email'], 'Update on your instructor application', $html,
+            'Your Mech Spec LMS instructor account was not approved.' . ($reason !== '' ? " Reason: $reason" : ''));
+
+        backPending('admin_success', "{$target['full_name']}'s instructor account was not approved.");
     }
 
     if ($action === 'suspend') {

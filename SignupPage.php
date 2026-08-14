@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/php/GoogleAuth.php';
 
 $error   = $_SESSION['signup_error']   ?? '';
 $success = $_SESSION['signup_success'] ?? '';
@@ -9,12 +10,17 @@ $old_name  = $_SESSION['signup_old']['full_name'] ?? '';
 $old_email = $_SESSION['signup_old']['email']     ?? '';
 $old_role  = $_SESSION['signup_old']['role']      ?? 'student';
 unset($_SESSION['signup_old']);
+$googleClientId = google_client_id();
+$googleLoginUri = app_url('php/GoogleLogin.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function(){try{var t=localStorage.getItem('mechspec-theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();
+  </script>
   <title>Create Account - Mech Spec LMS</title>
   <link rel="stylesheet" href="Index.css">
   <link rel="stylesheet" href="AuthPage.css">
@@ -31,7 +37,7 @@ unset($_SESSION['signup_old']);
     </aside>
 
     <div class="auth-form-panel">
-      <a href="Index.php" class="auth-back">← Back to Home</a>
+      <a href="index.php" class="auth-back">← Back to Home</a>
       <h2>Create your account</h2>
       <p class="auth-subtitle">Join the secure learning platform</p>
 
@@ -44,14 +50,14 @@ unset($_SESSION['signup_old']);
 
       <form method="POST" action="php/Signup.php">
         <div class="role-toggle">
-          <div class="role-option" data-role="student">🎓 I'm a Student</div>
-          <div class="role-option" data-role="instructor">💼 I'm an Instructor</div>
+          <div class="role-option" data-role="student"><span class="role-icon"><?= ui_icon('graduation') ?></span> I'm a Student</div>
+          <div class="role-option" data-role="instructor"><span class="role-icon"><?= ui_icon('briefcase') ?></span>I'm an Instructor</div>
         </div>
         <input type="hidden" name="role" id="roleInput" value="<?= htmlspecialchars($old_role) ?>">
 
         <div class="form-group">
           <label for="fullName">Full Name</label>
-          <input type="text" id="fullName" name="full_name" placeholder="John Doe"
+          <input type="text" id="fullName" name="full_name" placeholder="Charles Frank"
                  value="<?= htmlspecialchars($old_name) ?>" required>
         </div>
 
@@ -75,12 +81,32 @@ unset($_SESSION['signup_old']);
         <button type="submit" class="auth-btn">Create Account</button>
       </form>
 
+      <?php if ($googleClientId !== '' && !str_contains($googleClientId, 'YOUR_GOOGLE')): ?>
+        <div class="google-divider"><span>or</span></div>
+        <div class="google-auth-block" aria-label="Google account creation">
+          <div class="google-one-tap" id="g_id_onload"
+               data-client_id="<?= htmlspecialchars($googleClientId, ENT_QUOTES) ?>"
+               data-context="signup"
+               data-ux_mode="redirect"
+               data-login_uri="<?= htmlspecialchars($googleLoginUri, ENT_QUOTES) ?>"
+               data-auto_prompt="false"></div>
+          <div class="g_id_signin"
+               data-type="standard"
+               data-shape="pill"
+               data-theme="filled_black"
+               data-text="signup_with"
+               data-size="large"
+               data-logo_alignment="left"></div>
+        </div>
+      <?php endif; ?>
+
       <div class="auth-switch">
         Already have an account? <a href="LoginPage.php">Log in</a>
       </div>
     </div>
   </div>
 
+  <?php if ($googleClientId !== '' && !str_contains($googleClientId, 'YOUR_GOOGLE')): ?><script src="https://accounts.google.com/gsi/client" async defer></script><?php endif; ?>
   <script src="AuthPage.js"></script>
   <script src="LoadingBar.js"></script>
 </body>

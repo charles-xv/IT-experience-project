@@ -11,14 +11,16 @@
 
 USE itexperience_db;
 
-INSERT INTO Users (full_name, email, password_hash, role, status) VALUES
+INSERT INTO Users (full_name, email, password_hash, role, status, email_verified) VALUES
 ('Test Student',
  'student@mechspec.local',
  '$2y$10$U6GpcqoyRnqV4Hm22OK5keBHSojBhOSo8panmajOf9yd.nvugzuSC',
  'student',
- 'active'),
+ 'active',
+ 1),
 ('Test Instructor',
  'instructor@mechspec.local',
  '$2y$10$uwpuot/IsoCDmAN3rKVWjOr5EA921VLuu0ICmv2XzqnXWckTFtEFC',
  'instructor',
- 'active');
+ 'active',
+ 1);

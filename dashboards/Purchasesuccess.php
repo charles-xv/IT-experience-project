@@ -11,20 +11,31 @@ $name  = $_SESSION['full_name'] ?? 'Student';
 $email = $_SESSION['email'] ?? '';
 
 $reference = $_SESSION['purchase_reference'] ?? '';
-$totalPaid = $_SESSION['purchase_total'] ?? '0.00';
-$count     = (int) ($_SESSION['purchase_count'] ?? 0);
-unset($_SESSION['purchase_reference'], $_SESSION['purchase_total'], $_SESSION['purchase_count']);
+unset($_SESSION['purchase_reference']);
 
-// Reached directly rather than through checkout — nothing to show.
+// Reached directly rather than through a completed payment.
 if ($reference === '') {
     header('Location: StudentDashboard.php');
     exit;
 }
 
-// The courses just bought, read back from Purchases so the receipt reflects
-// what was actually recorded rather than what the session remembers.
+// The receipt is built from the Payments record, not from the session, so
+// it always reflects what was actually stored and verified.
 $stmt = $pdo->prepare(
-    'SELECT c.course_id, c.title, p.amount_paid, p.reference, p.purchased_at
+    'SELECT order_reference, amount, email, card_last_four, status, verified_at
+     FROM Payments
+     WHERE order_reference = ? AND student_id = ? AND status = "successful"'
+);
+$stmt->execute([$reference, $studentId]);
+$payment = $stmt->fetch();
+
+if (!$payment) {
+    header('Location: StudentDashboard.php');
+    exit;
+}
+
+$stmt = $pdo->prepare(
+    'SELECT c.title, p.amount_paid
      FROM Purchases p
      JOIN Courses c ON c.course_id = p.course_id
      WHERE p.student_id = ? AND p.reference LIKE ?
@@ -32,6 +43,9 @@ $stmt = $pdo->prepare(
 );
 $stmt->execute([$studentId, $reference . '%']);
 $lines = $stmt->fetchAll();
+
+$totalPaid = number_format((float) $payment['amount'], 2);
+$count     = count($lines);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,14 +66,14 @@ $lines = $stmt->fetchAll();
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="StudentDashboard.php" class="nav-item active">📚 My Learning</a>
-        <a href="BrowseCourses.php" class="nav-item">🔍 Browse Courses</a>
-        <a href="Cart.php" class="nav-item">🛒 Cart</a>
-        <a href="Certificates.php" class="nav-item">🏆 Certificates</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="StudentDashboard.php" class="nav-item active"><?= ui_icon('book') ?><span class="nav-label">My Learning</span></a>
+        <a href="BrowseCourses.php" class="nav-item"><?= ui_icon('search') ?><span class="nav-label">Browse Courses</span></a>
+        <a href="Cart.php" class="nav-item"><?= ui_icon('cart') ?><span class="nav-label">Cart</span></a>
+        <a href="Certificates.php" class="nav-item"><?= ui_icon('award') ?><span class="nav-label">Certificates</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -105,9 +119,18 @@ $lines = $stmt->fetchAll();
               <span>$<?= e($totalPaid) ?></span>
             </div>
 
+            <div class="receipt-row">
+              <span>Paid with</span>
+              <span>Card ending <?= e($payment['card_last_four'] ?? '****') ?></span>
+            </div>
+            <div class="receipt-row">
+              <span>Receipt sent to</span>
+              <span><?= e($payment['email']) ?></span>
+            </div>
+
             <?php if (!empty($lines)): ?>
               <div class="receipt-date">
-                <?= e(date('d M Y, H:i', strtotime($lines[0]['purchased_at']))) ?>
+                <?= e(date('d M Y, H:i', strtotime($payment['verified_at']))) ?>
               </div>
             <?php endif; ?>
           </div>

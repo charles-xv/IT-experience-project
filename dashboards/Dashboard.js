@@ -14,15 +14,17 @@ document.querySelectorAll('.course-progress-fill').forEach(function (bar) {
 //  Logout confirmation
 //  Intercepts the log-out link so an accidental click can't end the session.
 // ---------------------------------------------------------------------
-var logoutTrigger = document.getElementById('logoutTrigger');
+var logoutTriggers = document.querySelectorAll('#logoutTrigger, #logoutTriggerMobile');
 var logoutModal   = document.getElementById('logoutModal');
 var logoutCancel  = document.getElementById('logoutCancel');
 var logoutConfirm = document.getElementById('logoutConfirm');
 
-if (logoutTrigger && logoutModal) {
-  logoutTrigger.addEventListener('click', function (e) {
-    e.preventDefault();
-    logoutModal.classList.add('open');
+if (logoutTriggers.length && logoutModal) {
+  logoutTriggers.forEach(function (trigger) {
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      logoutModal.classList.add('open');
+    });
   });
 
   logoutCancel.addEventListener('click', function () {
@@ -60,7 +62,7 @@ if (logoutTrigger && logoutModal) {
   overlay.className = 'confirm-modal';
   overlay.innerHTML =
     '<div class="confirm-card">' +
-      '<span class="confirm-icon">\u26A0</span>' +
+      '<span class="confirm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 21 20H3L12 3Z"/><path d="M12 9v5"/><path d="M12 17h.01"/></svg></span>' +
       '<h3 id="confirmTitle">Are you sure?</h3>' +
       '<p id="confirmText"></p>' +
       '<div class="confirm-actions">' +

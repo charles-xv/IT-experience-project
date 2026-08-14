@@ -17,6 +17,9 @@ if ($token === '') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function(){try{var t=localStorage.getItem('mechspec-theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();
+  </script>
   <title>Set New Password - Mech Spec LMS</title>
   <link rel="stylesheet" href="Index.css">
   <link rel="stylesheet" href="AuthPage.css">
@@ -34,7 +37,7 @@ if ($token === '') {
 
     <div class="auth-form-panel">
       <h2>Set a new password</h2>
-      <p class="auth-subtitle">This link can only be used once</p>
+      <p class="auth-subtitle">This link can only be used once and expires 15 minutes after it was requested.</p>
 
       <?php if ($error): ?>
         <div class="form-message error"><?= htmlspecialchars($error) ?></div>

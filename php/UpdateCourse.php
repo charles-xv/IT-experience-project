@@ -62,6 +62,10 @@ if (!in_array($status, ['draft', 'published'], true)) {
     fail('Invalid publish status.', $courseId);
 }
 
+if ($status === 'published' && !instructor_can_publish($pdo, $instructorId)) {
+    fail('Your instructor account is still awaiting admin approval, so you can\'t publish yet. Save this as a draft in the meantime.', $courseId);
+}
+
 if ($price < 0) {
     fail('Price cannot be negative.', $courseId);
 }

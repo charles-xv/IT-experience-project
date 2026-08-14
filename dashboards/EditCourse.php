@@ -43,6 +43,10 @@ $val = [
     'price'       => $old['price']       ?? $course['price'],
     'status'      => $old['status']      ?? $course['status'],
 ];
+
+// Same rule as CreateCourse.php: UpdateCourse.php enforces this server-side,
+// this just keeps the form from offering a choice that will be rejected.
+$canPublish = instructor_can_publish($pdo, (int) $_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,13 +67,13 @@ $val = [
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="InstructorDashboard.php" class="nav-item active">📊 Overview</a>
-        <a href="CreateCourse.php" class="nav-item">➕ Create Course</a>
-        <a href="Students.php" class="nav-item">👥 Students</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="InstructorDashboard.php" class="nav-item active"><?= ui_icon('chart') ?><span class="nav-label">Overview</span></a>
+        <a href="CreateCourse.php" class="nav-item"><?= ui_icon('plus') ?><span class="nav-label">Create Course</span></a>
+        <a href="Students.php" class="nav-item"><?= ui_icon('users') ?><span class="nav-label">Students</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -159,8 +163,8 @@ $val = [
                 <option value="draft" <?= $val['status'] === 'draft' ? 'selected' : '' ?>>
                   Draft — only you can see it
                 </option>
-                <option value="published" <?= $val['status'] === 'published' ? 'selected' : '' ?>>
-                  Published — students can enrol
+                <option value="published" <?= $val['status'] === 'published' ? 'selected' : '' ?> <?= $canPublish ? '' : 'disabled' ?>>
+                  Published — students can enrol<?= $canPublish ? '' : ' (awaiting admin approval)' ?>
                 </option>
               </select>
             </div>

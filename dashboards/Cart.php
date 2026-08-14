@@ -51,14 +51,14 @@ foreach ($items as $it) { $total += (float) $it['price']; }
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="StudentDashboard.php" class="nav-item">📚 My Learning</a>
-        <a href="BrowseCourses.php" class="nav-item">🔍 Browse Courses</a>
-        <a href="Cart.php" class="nav-item active">🛒 Cart</a>
-        <a href="Certificates.php" class="nav-item">🏆 Certificates</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="StudentDashboard.php" class="nav-item"><?= ui_icon('book') ?><span class="nav-label">My Learning</span></a>
+        <a href="BrowseCourses.php" class="nav-item"><?= ui_icon('search') ?><span class="nav-label">Browse Courses</span></a>
+        <a href="Cart.php" class="nav-item active"><?= ui_icon('cart') ?><span class="nav-label">Cart</span></a>
+        <a href="Certificates.php" class="nav-item"><?= ui_icon('award') ?><span class="nav-label">Certificates</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -100,7 +100,7 @@ foreach ($items as $it) { $total += (float) $it['price']; }
 
         <?php if (empty($items)): ?>
           <div class="empty-state">
-            <span class="empty-icon">🛒</span>
+            <span class="empty-icon"><?= ui_icon('cart') ?></span>
             <h3>Nothing in your cart</h3>
             <p>Browse the catalogue and add a course to get started.</p>
             <a href="BrowseCourses.php" class="btn-block-cyan empty-action">Browse Courses</a>
@@ -115,7 +115,7 @@ foreach ($items as $it) { $total += (float) $it['price']; }
                     <?php if (!empty($it['thumbnail_url'])): ?>
                       <img src="<?= e($it['thumbnail_url']) ?>" alt="<?= e($it['title']) ?>">
                     <?php else: ?>
-                      <span class="course-thumb-placeholder">🎓</span>
+                      <span class="course-thumb-placeholder"><?= ui_icon('book') ?></span>
                     <?php endif; ?>
                   </div>
                   <div class="cart-info">

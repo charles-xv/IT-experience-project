@@ -66,7 +66,7 @@ $totalCourses  = count($featured);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mech Spec LMS — Learning & Web Security Platform</title>
+    <title>Mech Spec LMS</title>
     <meta
       name="description"
       content="Discover Mech Spec LMS, the secure learning management platform built by Mech Spec Technologies. Master Web Security, AI, and Software Engineering."
@@ -79,8 +79,7 @@ $totalCourses  = count($featured);
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700;800&display=swap"
       rel="stylesheet"
     />
-
-    <link rel="stylesheet" href="LoadingBar.css" />
+<link rel="stylesheet" href="LoadingBar.css" />
     <link rel="stylesheet" href="Index.css" />
   </head>
   <body>
@@ -90,8 +89,8 @@ $totalCourses  = count($featured);
         <a class="brand" href="#">
           <span class="brand-mark">M</span>
           <span>
-            <span class="brand-name">Mech Spec LMS</span>
-            <span class="brand-sub">Security by Design</span>
+            <span class="brand-name">Mech Spec</span>
+            <span class="brand-sub"> L  M  S</span>
           </span>
         </a>
 
@@ -104,6 +103,7 @@ $totalCourses  = count($featured);
         </nav>
 
         <div class="actions">
+         
           <?php if ($isLoggedIn): ?>
           <a class="btn btn-ghost" href="<?= e($myDashboard) ?>">My dashboard</a>
           <a class="btn btn-gold" href="php/Logout.php">Log out</a>
@@ -120,7 +120,7 @@ $totalCourses  = count($featured);
       <div class="wrap">
         <div>
           <div class="badge-security">
-            <span>🔒</span> Role-based access · Encrypted credentials
+            <?= ui_icon('shield') ?> Role-based access · Encrypted credentials
           </div>
 
           <h1>Real projects,<br /><em>Real proof.</em></h1>
@@ -177,13 +177,13 @@ $totalCourses  = count($featured);
           <span class="shape shape-pill" aria-hidden="true"></span>
 
           <div class="float-badge badge-top">
-            <span class="badge-ico">🛡</span> Security-first
+            <span class="badge-ico"><?= ui_icon('shield') ?></span> Security-first
           </div>
           <div class="float-badge badge-mid">
             <span class="badge-ico">&lt;/&gt;</span> Project-based
           </div>
           <div class="float-badge badge-low">
-            <span class="badge-ico">🏅</span> Earn certificates
+            <span class="badge-ico"><?= ui_icon('award') ?></span> Earn certificates
           </div>
         </div>
       </div>
@@ -196,11 +196,12 @@ $totalCourses  = count($featured);
         <!-- Mission — left aligned in its own column, not centred -->
         <div class="about-mission">
           <span class="about-eyebrow">Our mission</span>
-          <h2>To make practical tech education accessible, structured and worth finishing.</h2>
+          <h2>To make practical tech education accessible,
+            <br> structured and worth finishing.</h2>
           <p>
             Too many online courses are started and never completed. Mech Spec LMS
             works the other way round: short practical lessons, a clear order to
-            follow, and visible progress — so what you learn turns into something
+            follow, and visible progress so what you learn turns into something
             you can point to.
           </p>
         </div>
@@ -212,17 +213,18 @@ $totalCourses  = count($featured);
 
         <div class="about-points">
           <div class="about-point">
-            <span class="about-ico">&lt;/&gt;</span>
+            <span class="about-ico"><?= ui_icon('code') ?></span>
             <h4>Learn by building</h4>
             <p>Every course is project-based. You finish with something you made, not just a watch history.</p>
           </div>
           <div class="about-point">
-            <span class="about-ico">🔒</span>
+            <span class="about-ico"><?= ui_icon('shield') ?></span>
             <h4>Secure by design</h4>
-            <p>Role-based access, encrypted passwords and login limiting — decided on the server, not the page.</p>
+            <p>Role-based access, encrypted passwords and login limiting
+               decided on the server, not the page.</p>
           </div>
           <div class="about-point">
-            <span class="about-ico">🏅</span>
+            <span class="about-ico"><?= ui_icon('award') ?></span>
             <h4>Proof at the end</h4>
             <p>Complete a course and your certificate is issued automatically, with its own reference number.</p>
           </div>
@@ -253,7 +255,7 @@ $totalCourses  = count($featured);
 
         <?php if (empty($featured)): ?>
           <div class="landing-empty">
-            <span class="landing-empty-icon">🎓</span>
+            <span class="landing-empty-icon"><?= ui_icon('graduation') ?></span>
             <h3>Courses are on the way</h3>
             <p>Our instructors are putting the first courses together. Create an account and you'll be ready the moment they go live.</p>
             <a href="SignupPage.php" class="btn btn-gold">Create a free account</a>
@@ -268,7 +270,7 @@ $totalCourses  = count($featured);
                   <?php if (!empty($c['thumbnail_url'])): ?>
                     <img class="card-thumb" src="<?= e($c['thumbnail_url']) ?>" alt="<?= e($c['title']) ?>" loading="lazy">
                   <?php else: ?>
-                    <div class="card-thumb-placeholder">🎓</div>
+                    <div class="card-thumb-placeholder"><?= ui_icon('graduation') ?></div>
                   <?php endif; ?>
                   <?php if ($c['category']): ?>
                     <span class="card-tag"><?= e($c['category']) ?></span>
@@ -374,9 +376,8 @@ $totalCourses  = count($featured);
           <div class="testimonial-card">
             <div class="stars">★★★★★</div>
             <p class="testimonial-text">
-              "Mech Spec Tech transformed how our engineering team approaches
-              web application security. The hands-on OWASP labs and interactive
-              security metrics are second to none!"
+              Mech Spec makes learning feel easy and practical. I can learn at my own pace, 
+              track my progress, and build real projects as I learn. Seeing how far I’ve come keeps me motivated.
             </p>
             <div class="testimonial-author">
               <div class="faceless-avatar avatar-cyan">
@@ -392,9 +393,9 @@ $totalCourses  = count($featured);
                 </svg>
               </div>
               <div class="author-info">
-                <h4 class="author-name">Alex R.</h4>
+                <h4 class="author-name">Chukwuma Eze.</h4>
                 <span class="author-role"
-                  >Cybersecurity Analyst &middot; FinTech Security Lab</span
+                  >Software Engineer &middot; Aspiring Security Analyst</span
                 >
               </div>
             </div>
@@ -404,9 +405,8 @@ $totalCourses  = count($featured);
           <div class="testimonial-card">
             <div class="stars">★★★★★</div>
             <p class="testimonial-text">
-              "The Security-by-Design philosophy is embedded everywhere.
-              Learning secure Node.js architecture here gave me the skills to
-              safeguard our production APIs against real-world threats."
+              I like that security is part of the learning from the start. 
+              The practical projects helped me understand secure development and real-world security risks.
             </p>
             <div class="testimonial-author">
               <div class="faceless-avatar avatar-gold">
@@ -422,9 +422,9 @@ $totalCourses  = count($featured);
                 </svg>
               </div>
               <div class="author-info">
-                <h4 class="author-name">Sophia M.</h4>
+                <h4 class="author-name">Olamide Adekunle.</h4>
                 <span class="author-role"
-                  >Full-Stack Developer &middot; CloudScale Systems</span
+                  >Web Development &middot; Junior Security Analyst</span
                 >
               </div>
             </div>
@@ -434,9 +434,8 @@ $totalCourses  = count($featured);
           <div class="testimonial-card">
             <div class="stars">★★★★★</div>
             <p class="testimonial-text">
-              "Outstanding LMS platform! The AI support assistant answered my
-              technical questions instantly, and the progress tracking tools
-              keep me engaged every single day."
+              I love how easy it is to learn and track my progress. The practical data projects and
+               AI assistant help me understand concepts faster and build confidence as a data analyst.
             </p>
             <div class="testimonial-author">
               <div class="faceless-avatar avatar-emerald">
@@ -452,9 +451,9 @@ $totalCourses  = count($featured);
                 </svg>
               </div>
               <div class="author-info">
-                <h4 class="author-name">David K.</h4>
+                <h4 class="author-name">Mirabel Zainab Yusuf.</h4>
                 <span class="author-role"
-                  >DevOps &amp; Cloud Engineer &middot; Nexus Solutions</span
+                  >Data Analytics &middot; Learner</span
                 >
               </div>
             </div>
@@ -483,8 +482,8 @@ $totalCourses  = count($featured);
             <span>Mech Spec LMS</span>
           </div>
           <p class="footer-tagline">
-            Empowering future engineers and cybersecurity experts with
-            Security-by-Design training.
+           Building practical skills in web development,
+           cybersecurity and AI through real projects.
           </p>
         </div>
 
@@ -572,34 +571,7 @@ $totalCourses  = count($featured);
       </div>
     </footer>
 
-    <!-- Floating AI Assistant Widget -->
-    <div class="ai-widget">
-      <div class="ai-chat-box" id="aiChatBox">
-        <div class="ai-chat-header">
-          <span>🤖 Mech Spec Support Assistant</span>
-          <span class="ai-close" onclick="toggleAIChat()">✕</span>
-        </div>
-        <div class="ai-chat-body" id="aiChatBody">
-          <div class="ai-msg bot">
-            Hello! I am the Mech Spec support assistant. How can I help you
-            today? (e.g., "How to register?", "How to purchase a course?")
-          </div>
-        </div>
-        <div class="ai-chat-footer">
-          <input
-            type="text"
-            id="aiInput"
-            placeholder="Ask a question..."
-            onkeypress="if (event.key === 'Enter') sendAIMessage();"
-          />
-          <button onclick="sendAIMessage()">Send</button>
-        </div>
-      </div>
-      <div class="ai-btn" onclick="toggleAIChat()" title="AI Support Chat">
-        💬
-      </div>
-    </div>
-
+    
     <!-- Modal Auth -->
     <div class="modal-overlay" id="modalOverlay">
       <div class="modal-card">
@@ -651,20 +623,20 @@ $totalCourses  = count($featured);
 
     <!-- AI Support Chatbot Widget -->
     <button class="chatbot-trigger" id="chatbotTrigger" onclick="toggleChatbot()" aria-label="Open AI Support Chatbot">
-      🤖
+      <?= ui_icon('bot') ?>
       <span class="chatbot-badge">AI</span>
     </button>
 
     <div class="chatbot-window" id="chatbotWindow">
       <div class="chatbot-header">
-        <div class="chatbot-avatar">🤖</div>
+        <div class="chatbot-avatar"><?= ui_icon('bot') ?></div>
         <div class="chatbot-title-box">
-          <h4 class="chatbot-title">SpechBot AI Assistant</h4>
+         <h4 class="chatbot-title">AI Assistant</h4>
           <div class="chatbot-status">
             <span class="status-dot"></span>
             <select id="chatbotModeSelect" class="chatbot-mode-select" onchange="switchChatbotMode(this.value)">
-              <option value="offline">⚡ Local Mode (Offline)</option>
-              <option value="api">🌐 Gemini AI Mode (Live API)</option>
+             <option value="offline">Local mode</option>
+            <option value="api">Gemini AI</option>
             </select>
           </div>
         </div>
@@ -673,15 +645,15 @@ $totalCourses  = count($featured);
 
       <div class="chatbot-messages" id="chatbotMessages">
         <div class="chat-msg bot">
-          👋 Hello! I am <strong>SpechBot</strong>, your AI Assistant. How can I help you explore our secure LMS platform today?
+          Hello! I am <strong>SpechBot</strong>, your AI Assistant. How can I help you explore our secure LMS platform today?
         </div>
       </div>
 
       <div class="chatbot-suggestions">
-        <button class="chip-btn" onclick="sendSuggestion('What courses are available?')">📚 Courses</button>
-        <button class="chip-btn" onclick="sendSuggestion('How does pricing work?')">💰 Pricing</button>
-        <button class="chip-btn" onclick="sendSuggestion('Is the platform secure?')">🛡️ Security</button>
-        <button class="chip-btn" onclick="sendSuggestion('How do I get a certificate?')">🏆 Certificates</button>
+        <button class="chip-btn" onclick="sendSuggestion('What courses are available?')"><?= ui_icon('book') ?> Courses</button>
+        <button class="chip-btn" onclick="sendSuggestion('How does pricing work?')"><?= ui_icon('money') ?> Pricing</button>
+        <button class="chip-btn" onclick="sendSuggestion('Is the platform secure?')"><?= ui_icon('shield') ?> Security</button>
+        <button class="chip-btn" onclick="sendSuggestion('How do I get a certificate?')"><?= ui_icon('award') ?> Certificates</button>
       </div>
 
       <form class="chatbot-input-form" id="chatbotForm" onsubmit="handleChatSubmit(event)">

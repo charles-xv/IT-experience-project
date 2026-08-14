@@ -38,10 +38,24 @@ CREATE TABLE Users (
   password_hash VARCHAR(255) NOT NULL,          -- bcrypt hash only, never the raw password
   role          ENUM('student','instructor','admin') NOT NULL DEFAULT 'student',
   status        ENUM('active','suspended')      NOT NULL DEFAULT 'active',  -- what the admin Suspend button flips; Login.php must refuse a suspended account
+  -- Separate from `status` above: `status` is account-level (active/suspended,
+  -- applies to everyone). This is instructor-specific — whether an instructor
+  -- may PUBLISH courses. Only meaningful for role = 'instructor'; students and
+  -- admins are always 'approved' and the column is ignored for them. Defaults
+  -- to 'approved' so existing/non-instructor rows need no backfill; Signup.php
+  -- explicitly sets new instructor signups to 'pending'.
+  instructor_approval_status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'approved',
+  instructor_rejection_reason VARCHAR(255) DEFAULT NULL,
   last_login    TIMESTAMP NULL DEFAULT NULL,    -- lets the admin page identify inactive accounts
+  email_verified TINYINT(1) NOT NULL DEFAULT 0,
+  email_verify_token VARCHAR(255) DEFAULT NULL,
+  email_verify_expires DATETIME DEFAULT NULL,
+  google_sub    VARCHAR(255) DEFAULT NULL,
   created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_role (role),
-  INDEX idx_status (status)
+  INDEX idx_status (status),
+  INDEX idx_instructor_approval (role, instructor_approval_status),
+  UNIQUE KEY idx_google_sub (google_sub)
 ) ENGINE=InnoDB;
 
 

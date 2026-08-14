@@ -15,6 +15,11 @@ unset($_SESSION['course_error']);
 // Repopulate the form after a failed submit so nothing has to be retyped.
 $old = $_SESSION['course_old'] ?? [];
 unset($_SESSION['course_old']);
+
+// The Published option is disabled until an admin approves this instructor —
+// SaveCourse.php enforces the same rule server-side, this is just so the
+// form doesn't offer a choice that will be rejected on submit.
+$canPublish = instructor_can_publish($pdo, (int) $_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,13 +40,13 @@ unset($_SESSION['course_old']);
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="InstructorDashboard.php" class="nav-item">📊 Overview</a>
-        <a href="CreateCourse.php" class="nav-item active">➕ Create Course</a>
-        <a href="Students.php" class="nav-item">👥 Students</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="InstructorDashboard.php" class="nav-item"><?= ui_icon('chart') ?><span class="nav-label">Overview</span></a>
+        <a href="CreateCourse.php" class="nav-item active"><?= ui_icon('plus') ?><span class="nav-label">Create Course</span></a>
+        <a href="Students.php" class="nav-item"><?= ui_icon('users') ?><span class="nav-label">Students</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -130,8 +135,8 @@ unset($_SESSION['course_old']);
                 <option value="draft" <?= ($old['status'] ?? 'draft') === 'draft' ? 'selected' : '' ?>>
                   Draft only you can see it
                 </option>
-                <option value="published" <?= ($old['status'] ?? '') === 'published' ? 'selected' : '' ?>>
-                  Published students can enrol
+                <option value="published" <?= ($old['status'] ?? '') === 'published' ? 'selected' : '' ?> <?= $canPublish ? '' : 'disabled' ?>>
+                  Published students can enrol<?= $canPublish ? '' : ' (awaiting admin approval)' ?>
                 </option>
               </select>
             </div>

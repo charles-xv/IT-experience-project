@@ -166,11 +166,11 @@ a {
 }
 
 .brand-sub {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 500;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--cyan-accent);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -428,6 +428,15 @@ a {
 .section-alt {
   background: var(--paper-alt);
 }
+.section-alt {
+  background: var(--paper-alt);
+}
+
+/* EDIT THIS VALUE to move "What Our Learners Say" upward/downward.
+   Smaller value = closer to the section above. */
+#testimonials {
+  padding-top: 25px;
+}
 
 .heading {
   text-align: center;
@@ -487,74 +496,108 @@ a {
 
 .course-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 .course-card {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
+  background: var(--navy-800);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
 }
 .course-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold), 0 0 22px rgba(247, 195, 49, 0.28);
 }
 
 .card-img {
-  height: 180px;
-  background-size: cover;
-  background-position: center;
   position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--navy-800);
 }
 
-.card-badge {
+.card-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 2.4rem;
+  color: var(--muted);
+}
+
+.card-tag {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  background: rgba(11, 23, 40, 0.85);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  top: 10px;
+  right: 10px;
+  width: auto;
+  white-space: nowrap;
+  background: rgba(7, 13, 25, 0.85);
   color: var(--gold);
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 
 .card-body {
-  padding: 24px;
+  padding: 16px 16px 18px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1;
 }
 
 .card-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 8px;
+  color: #fff;
+  font-size: 0.98rem;
+  line-height: 1.3;
+  margin: 0 0 3px;
+}
+
+.card-author {
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-dark);
+  margin-bottom: 10px;
 }
 
 .card-desc {
-  font-size: 0.88rem;
-  color: var(--muted);
-  margin-bottom: 20px;
-  flex-grow: 1;
+  color: var(--muted-light);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0 0 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
+.card-cta {
+  margin-top: auto;
+  color: var(--gold);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.course-card:hover .card-cta {
+  color: var(--gold-dark);
 }
 
 .price-tag {
@@ -1133,45 +1176,8 @@ input:checked + .slider:before {
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 900px) {
-  .hero .wrap {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    padding-top: 56px;
-    padding-bottom: 56px;
-  }
-  .features .wrap {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 28px;
-  }
-  .nav {
-    display: none;
-  }
-  .footer .wrap {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-}
-@media (max-width: 640px) {
-  .plans {
-    grid-template-columns: 1fr;
-  }
-  .features .wrap {
-    grid-template-columns: 1fr;
-  }
-  .section {
-    padding: 60px 0;
-  }
-  .cta .wrap {
-    padding: 32px 26px;
-  }
-  .brand-sub {
-    display: none;
-  }
-  .testimonials-grid {
-    grid-template-columns: 1fr;
-  }
-}
+
+
 /* ---- Course card background images (moved out of inline styles) ---- */
 .card-img-1 {
   background-image:
@@ -1427,20 +1433,6 @@ input:checked + .slider:before {
   color: var(--muted);
 }
 
-.card-tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(7, 13, 25, 0.85);
-  color: var(--gold);
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 5px 11px;
-  border-radius: 6px;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
-
 .card-meta {
   display: block;
   color: var(--muted);
@@ -1481,15 +1473,7 @@ input:checked + .slider:before {
   line-height: 1.6;
 }
 
-@media (max-width: 768px) {
-  .hero-stats {
-    gap: 22px;
-    margin-top: 26px;
-  }
-  .hero-stat strong {
-    font-size: 1.25rem;
-  }
-}
+
 
 /* Completed badge on a course card */
 .tag-done {
@@ -1602,9 +1586,9 @@ input:checked + .slider:before {
   top: 16%;
   left: 18%;
   border-radius: 34px;
-  background: linear-gradient(150deg, var(--gold) 0%, var(--gold-dark) 100%);
+  background: linear-gradient(140deg, var(--cyan-accent) 0%, #0e7490 100%);
   transform: rotate(-8deg);
-  box-shadow: 0 24px 60px rgba(247, 195, 49, 0.22);
+ box-shadow: 0 18px 44px rgba(6, 182, 212, 0.28);
   animation: floatA 9s ease-in-out infinite alternate;
 }
 
@@ -1614,8 +1598,8 @@ input:checked + .slider:before {
   bottom: 10%;
   right: 8%;
   border-radius: 50%;
-  background: linear-gradient(140deg, var(--cyan-accent) 0%, #0e7490 100%);
-  box-shadow: 0 18px 44px rgba(6, 182, 212, 0.28);
+  background:  linear-gradient(150deg, var(--gold) 0%, var(--gold-dark) 100%);
+  box-shadow: 0 24px 60px rgba(247, 195, 49, 0.22);
   animation: floatB 11s ease-in-out infinite alternate;
 }
 
@@ -1729,23 +1713,7 @@ input:checked + .slider:before {
   animation: floatB 9.5s ease-in-out infinite alternate-reverse;
 }
 
-@media (max-width: 900px) {
-  .hero-visual {
-    aspect-ratio: 4 / 3;
-    max-height: 320px;
-    margin-top: 30px;
-  }
-  .float-badge {
-    font-size: 0.76rem;
-    padding: 8px 13px;
-  }
-  .badge-top {
-    right: 0;
-  }
-  .badge-mid {
-    left: 0;
-  }
-}
+
 
 @media (prefers-reduced-motion: reduce) {
   .shape,
@@ -1825,11 +1793,7 @@ input:checked + .slider:before {
   margin-top: -46px;
 }
 
-@media (max-width: 900px) {
-  .hero-visual {
-    margin-top: 20px;
-  }
-}
+
 
 /* ============================================================
    About — mission statement, then the principles behind it
@@ -1837,7 +1801,7 @@ input:checked + .slider:before {
 
 .about-section {
   background: var(--navy-900);
-  padding-top: 44px;
+  padding-top: 10px;
   padding-bottom: 96px;
 }
 
@@ -1948,36 +1912,9 @@ input:checked + .slider:before {
   margin: 0;
 }
 
-@media (max-width: 900px) {
-  .about-mission h2 {
-    font-size: 2.3rem;
-  }
-  .about-stand h3 {
-    font-size: 1.8rem;
-  }
-  .about-mission {
-    margin-bottom: 60px;
-  }
-}
 
-@media (max-width: 768px) {
-  .about-section {
-    padding-top: 64px;
-    padding-bottom: 64px;
-  }
-  .about-mission h2 {
-    font-size: 1.85rem;
-  }
-  .about-mission p {
-    font-size: 1.02rem;
-  }
-  .about-stand h3 {
-    font-size: 1.5rem;
-  }
-  .about-point {
-    padding: 26px 22px;
-  }
-}
+
+
 
 /* ============================================================
    Per-course pricing section
@@ -2051,33 +1988,42 @@ input:checked + .slider:before {
 
 .chatbot-window {
   position: fixed;
-  bottom: 100px;
-  right: 28px;
-  width: 380px;
+  right: 24px;
+  bottom: 88px;
+
+  width: 360px;
+  height: 500px;
   max-width: calc(100vw - 32px);
-  height: 540px;
-  max-height: calc(100vh - 120px);
-  background: rgba(13, 21, 38, 0.95);
+  max-height: calc(100vh - 110px);
+
+  background: rgba(13, 21, 38, 0.97);
   border: 1px solid var(--line-dark);
   border-top: 3px solid var(--gold);
-  border-radius: 20px;
+  border-radius: 18px;
+
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(7, 13, 25, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.45);
+
   z-index: 9998;
+
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(12px) scale(.98);
   pointer-events: none;
-  transition: opacity 0.28s ease, transform 0.28s ease;
+
+  transition:
+    opacity .2s ease,
+    transform .2s ease;
+
   overflow: hidden;
 }
 
 .chatbot-window.open {
   opacity: 1;
   transform: translateY(0) scale(1);
-  pointer-events: all;
+  pointer-events: auto;
 }
 
 .chatbot-header {
@@ -2298,12 +2244,928 @@ input:checked + .slider:before {
   transform: scale(1.05);
 }
 
-@media (max-width: 480px) {
-  .chatbot-window {
-    right: 16px;
-    bottom: 90px;
-    width: calc(100vw - 32px);
-    height: 480px;
+
+
+
+
+/* ============================================================
+   PHASE 3 — CONSISTENT THEME SYSTEM / LIGHT MODE
+   ============================================================ */
+
+
+html[data-theme="light"] body { background: #f3f5f8; color: #14233a; }
+html[data-theme="light"] .masthead {
+  background: rgba(255,255,255,.94);
+  border-bottom-color: #d8dee8;
+  box-shadow: 0 8px 28px rgba(15,32,55,.06);
+}
+html[data-theme="light"] .brand { color: #0b1b33; }
+html[data-theme="light"] .brand-sub { color: #0e7490; }
+html[data-theme="light"] .nav a { color: #617086; }
+html[data-theme="light"] .nav a:hover,
+html[data-theme="light"] .nav a.current { color: #0b1b33; }
+html[data-theme="light"] .theme-toggle { background:#f3f6fa; border-color:#cbd5e1; color:#0b1b33; }
+html[data-theme="light"] .theme-toggle:hover { background:#e9eef5; border-color:#9eacbd; }
+html[data-theme="light"] .theme-toggle .theme-icon-sun { display:none; }
+html[data-theme="light"] .theme-toggle .theme-icon-moon { display:inline-flex; }
+html[data-theme="light"] .hero {
+  color:#14233a;
+  background: linear-gradient(180deg, #f7f9fc 0%, #eef2f7 100%);
+}
+html[data-theme="light"] .hero::before { background: radial-gradient(circle, rgba(6,182,212,.12) 0%, rgba(255,255,255,0) 70%); }
+html[data-theme="light"] .hero h1 { color:#0b1b33; }
+html[data-theme="light"] .lede { color:#5f6f84; }
+html[data-theme="light"] .btn-ghost { color:#0b1b33; border-color:#b8c4d3; background:rgba(255,255,255,.65); }
+html[data-theme="light"] .btn-ghost:hover { background:#fff; border-color:#8e9caf; }
+html[data-theme="light"] .badge-security { background:rgba(16,185,129,.08); border-color:rgba(19,138,99,.24); }
+html[data-theme="light"] .section { background:#f7f8fa; }
+html[data-theme="light"] .section-alt { background:#eef2f6; }
+html[data-theme="light"] .heading h2,
+html[data-theme="light"] .about-mission h2,
+html[data-theme="light"] .about-stand h3 { color:#0b1b33; }
+html[data-theme="light"] .heading p,
+html[data-theme="light"] .about-mission p,
+html[data-theme="light"] .about-stand p,
+html[data-theme="light"] .about-point p { color:#65758a; }
+html[data-theme="light"] .about-point,
+html[data-theme="light"] .course-card,
+html[data-theme="light"] .testimonial-card,
+html[data-theme="light"] .plan { background:#fff; border-color:#d2d9e3; box-shadow:0 8px 24px rgba(15,32,55,.05); }
+html[data-theme="light"] .about-point:hover,
+html[data-theme="light"] .course-card:hover,
+html[data-theme="light"] .testimonial-card:hover,
+html[data-theme="light"] .plan:hover { border-color:#b5c0cf; box-shadow:0 14px 32px rgba(15,32,55,.08); }
+html[data-theme="light"] .about-point h4,
+html[data-theme="light"] .card-title,
+html[data-theme="light"] .testimonial-text,
+html[data-theme="light"] .plan-name { color:#14233a; }
+html[data-theme="light"] .course-card .card-desc,
+html[data-theme="light"] .card-meta,
+html[data-theme="light"] .plan-note,
+html[data-theme="light"] .price span { color:#65758a; }
+html[data-theme="light"] .course-card .card-footer,
+html[data-theme="light"] .plan li,
+html[data-theme="light"] .testimonial-author,
+html[data-theme="light"] .footer,
+html[data-theme="light"] .footer-bottom { border-color:#d2d9e3; }
+html[data-theme="light"] .float-badge { background:rgba(255,255,255,.96); color:#14233a; border-color:#d2d9e3; box-shadow:0 12px 30px rgba(15,32,55,.12); }
+html[data-theme="light"] .landing-empty { background:#fff; border-color:#cbd5e1; }
+html[data-theme="light"] .landing-empty h3 { color:#14233a; }
+html[data-theme="light"] .landing-empty p { color:#65758a; }
+html[data-theme="light"] .footer { background:#f7f8fa; }
+html[data-theme="light"] .footer-links a,
+html[data-theme="light"] .footer-legal { color:#65758a; }
+html[data-theme="light"] .footer-links a:hover { color:#0b1b33; }
+html[data-theme="light"] .ai-chat-box,
+html[data-theme="light"] .chatbot-window { background:#fff; border-color:#d2d9e3; box-shadow:0 24px 70px rgba(15,32,55,.16); }
+html[data-theme="light"] .ai-chat-header,
+html[data-theme="light"] .chatbot-header { background:#0b1b33; color:#fff; }
+html[data-theme="light"] .ai-msg.bot,
+html[data-theme="light"] .chat-msg.bot { background:#f1f4f8; border-color:#d2d9e3; color:#33445b; }
+html[data-theme="light"] .ai-chat-footer,
+html[data-theme="light"] .chatbot-input-form { background:#f7f8fa; border-color:#d2d9e3; }
+html[data-theme="light"] .ai-chat-footer input,
+html[data-theme="light"] .chatbot-input { background:#fff; color:#14233a; border-color:#cbd5e1; }
+html[data-theme="light"] .chip-btn { background:#f4f7fa; border-color:#cbd5e1; }
+html[data-theme="light"] .chatbot-mode-select { background:rgba(255,255,255,.1); }
+
+/* More visible dividers in the light theme — white-on-white lines are gone. */
+html[data-theme="light"] .section,
+html[data-theme="light"] .features { border-color:#d2d9e3; }
+
+/* Small, deliberate icon treatment for the landing page. */
+.badge-security > .nav-icon,
+.badge-ico .nav-icon,
+.about-ico .nav-icon,
+.ai-title-icon .nav-icon,
+.ai-btn .nav-icon,
+.chatbot-trigger .nav-icon,
+.chatbot-avatar .nav-icon,
+.chip-btn .nav-icon { width:18px; height:18px; flex:0 0 18px; }
+.badge-security > .nav-icon svg,
+.badge-ico .nav-icon svg,
+.about-ico .nav-icon svg,
+.ai-title-icon .nav-icon svg,
+.ai-btn .nav-icon svg,
+.chatbot-trigger .nav-icon svg,
+.chatbot-avatar .nav-icon svg,
+.chip-btn .nav-icon svg { width:18px; height:18px; }
+.about-ico .nav-icon { color:inherit; }
+.ai-title-icon { display:inline-flex; margin-right:6px; color:var(--gold); vertical-align:middle; }
+.ai-title-icon .nav-icon { display:inline-grid; }
+.ai-btn .nav-icon, .chatbot-trigger .nav-icon { width:25px; height:25px; flex-basis:25px; }
+.ai-btn .nav-icon svg, .chatbot-trigger .nav-icon svg { width:25px; height:25px; }
+.chatbot-avatar .nav-icon { color:var(--navy-950); }
+.chatbot-avatar .nav-icon svg { width:21px; height:21px; }
+.chip-btn { display:inline-flex; align-items:center; gap:6px; }
+.chip-btn .nav-icon { width:14px; height:14px; flex-basis:14px; }
+.chip-btn .nav-icon svg { width:14px; height:14px; }
+.landing-empty-icon { color:var(--gold); }
+.landing-empty-icon .nav-icon { display:inline-grid; width:42px; height:42px; margin:0 auto; }
+.landing-empty-icon .nav-icon svg { width:42px; height:42px; }
+.card-thumb-placeholder .nav-icon { width:38px; height:38px; display:grid; place-items:center; }
+.card-thumb-placeholder .nav-icon svg { width:38px; height:38px; }
+
+
+
+/* Phase 4 — refined landing authentication controls */
+.masthead .actions .btn { padding:9px 16px; min-height:38px; border-radius:9px; font-size:.82rem; font-weight:700; }
+.masthead .actions .btn-ghost { border-color:rgba(255,255,255,.20); }
+.masthead .actions .btn-gold { box-shadow:0 4px 12px rgba(247,195,49,.18); }
+html[data-theme="light"] .masthead .actions .btn-ghost { background:#fff; }
+
+/* ============================================================
+   MOBILE-FIRST RESPONSIVE SYSTEM
+   Base styles below are the phone layout. Larger layouts are added
+   progressively with min-width queries.
+   ============================================================ */
+
+/* Phone baseline */
+.wrap {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.masthead .wrap {
+  min-height: 66px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  gap: 10px;
+}
+
+.brand { gap: 9px; min-width: 0; }
+.brand-mark { width: 38px; height: 38px; border-radius: 10px; }
+.brand-name { font-size: 1rem; white-space: nowrap; }
+.brand-sub { display: none; }
+
+.nav { display: none; }
+.actions { gap: 7px; flex-shrink: 0; }
+.actions .btn {
+  min-height: 38px;
+  padding: 8px 11px;
+  font-size: .78rem;
+  border-radius: 9px;
+  white-space: nowrap;
+}
+.actions .btn-ghost { color: #fff; }
+.theme-toggle {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  border-radius: 10px;
+}
+.theme-toggle-label { display: none; }
+
+.hero .wrap {
+  display: block;
+  padding-top: 44px;
+  padding-bottom: 42px;
+}
+.hero::before {
+  width: 340px;
+  height: 340px;
+  top: -8%;
+  right: -35%;
+}
+.badge-security {
+  max-width: 100%;
+  margin-bottom: 18px;
+  padding: 6px 11px;
+  font-size: .72rem;
+}
+.hero h1 {
+  font-size: clamp(2.15rem, 11vw, 3rem);
+  line-height: 1.08;
+  margin-bottom: 18px;
+}
+.lede { font-size: .98rem; margin-bottom: 25px; }
+.hero-buttons { flex-direction: column; gap: 10px; }
+.hero-buttons .btn { width: 100%; }
+.hero-stats { gap: 18px; margin-top: 26px; }
+.hero-stat strong { font-size: 1.25rem; }
+.hero-stat span { font-size: .76rem; }
+
+/* Decorative hero artwork is intentionally removed on phones. */
+.hero-visual { display: none; }
+
+.features .wrap {
+  grid-template-columns: 1fr;
+  gap: 22px;
+  padding-top: 34px;
+  padding-bottom: 38px;
+}
+.section { padding: 54px 0; }
+.heading { margin-bottom: 30px; }
+.heading h2 { font-size: 1.65rem; }
+.heading p { font-size: .92rem; }
+.course-filter {
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  padding-bottom: 3px;
+  scrollbar-width: thin;
+}
+.filter-btn { flex: 0 0 auto; padding: 8px 14px; font-size: .8rem; }
+.course-grid { grid-template-columns: 1fr; gap: 18px; }
+.card-img { height: auto; aspect-ratio: 16 / 9; }
+.card-body { padding: 18px; }
+.card-title { font-size: 1rem; }
+.card-desc { font-size: .84rem; }
+.card-footer { gap: 12px; }
+
+.plans { grid-template-columns: 1fr; gap: 18px; }
+.plan { padding: 26px 20px; }
+.price b { font-size: 2.5rem; }
+/* Mobile CTA — compact layout */
+.cta .wrap {
+  padding: 24px 20px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+/* Keep the CTA button compact instead of full-width */
+.cta .btn {
+  width: auto;
+  align-self: center;
+}
+
+.about-section { padding-top: 54px; padding-bottom: 58px; }
+.about-mission { margin-bottom: 52px; }
+.about-mission h2 { font-size: 1.85rem; margin-bottom: 18px; }
+.about-mission p { font-size: .98rem; }
+.about-stand h3 { font-size: 1.5rem; }
+.about-points { grid-template-columns: 1fr; gap: 14px; }
+.about-point { padding: 22px 18px; }
+
+.testimonials-grid { grid-template-columns: 1fr; gap: 16px; }
+.testimonial-card { padding: 22px; }
+
+.footer { margin-top: 56px; }
+.footer .wrap {
+  grid-template-columns: 1fr;
+  gap: 24px;
+  padding-top: 30px;
+  padding-bottom: 24px;
+}
+.footer-links { gap: 14px 20px; }
+.footer-bottom { padding-left: 16px; padding-right: 16px; }
+
+.ai-widget { right: 14px; bottom: 14px; }
+.ai-chat-box {
+  right: 0;
+  width: min(340px, calc(100vw - 28px));
+  max-height: calc(100vh - 100px);
+}
+.chatbot-trigger { right: 14px; bottom: 14px; width: 54px; height: 54px; }
+.chatbot-window {
+  right: 14px;
+  bottom: 80px;
+  width: calc(100vw - 28px);
+  max-width: none;
+  height: min(520px, calc(100vh - 100px));
+}
+
+.modal-card { width: calc(100% - 28px); padding: 26px 20px; }
+
+/* Mobile light theme: visible neutral dividers, never white-on-white. */
+html[data-theme="light"] .masthead { border-bottom-color: #d7dee8; }
+html[data-theme="light"] .section { border-bottom: 1px solid #dce2e9; }
+html[data-theme="light"] .section-alt { border-bottom: 1px solid #d3dbe5; }
+html[data-theme="light"] .card-footer,
+html[data-theme="light"] .testimonial-author,
+html[data-theme="light"] .plan li { border-color: #d7dee8; }
+
+/* Tablet */
+@media (min-width: 600px) {
+  .wrap { padding-left: 22px; padding-right: 22px; }
+  .hero .wrap { padding-top: 58px; padding-bottom: 54px; }
+  .hero-buttons { flex-direction: row; }
+  .hero-buttons .btn { width: auto; }
+  .features .wrap { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .course-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-points { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .testimonials-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footer .wrap { grid-template-columns: 1fr 1fr; }
+}
+
+/* Full landing navigation and hero artwork */
+@media (min-width: 900px) {
+  .wrap { padding-left: 24px; padding-right: 24px; }
+  .masthead .wrap { padding-top: 18px; padding-bottom: 18px; gap: 24px; }
+  .brand-mark { width: 42px; height: 42px; }
+  .brand-name { font-size: 1.25rem; }
+  .brand-sub { display: block; }
+  .nav { display: flex; }
+  .theme-toggle { width: auto; min-width: 40px; padding: 8px 12px; }
+  .theme-toggle-label { display: inline; }
+  .actions .btn { min-height: 40px; padding: 9px 15px; font-size: .82rem; }
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr);
+    gap: 42px;
+    align-items: center;
+    padding-top: 72px;
+    padding-bottom: 48px;
+  }
+  .hero h1 { font-size: clamp(2.7rem, 5vw, 3.6rem); }
+  .lede { font-size: 1.08rem; }
+  .hero-visual {
+    display: block;
+    aspect-ratio: 1 / 1;
+    max-height: 480px;
+    margin-top: 0;
+  }
+  .features .wrap { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .course-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .about-points { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .testimonials-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .footer .wrap { grid-template-columns: 1fr auto auto; }
+  .cta .wrap { flex-direction: row; align-items: center; }
+  .cta .btn { width: auto; }
+}
+
+@media (min-width: 1180px) {
+  .hero .wrap { grid-template-columns: 1.1fr .9fr; gap: 56px; }
+  .section { padding-top: 68px; padding-bottom: 68px; }
+   .about-section {
+    padding-top: 20px;
   }
 }
 
+/* ============================================================
+   SPEECHBOT — COMPACT CUSTOMER SUPPORT WIDGET
+   Final UI override
+   ============================================================ */
+
+.chatbot-window {
+    position: fixed;
+    right: 24px;
+    bottom: 92px;
+
+    width: 350px;
+    height: 430px;
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 120px);
+
+    display: flex;
+    flex-direction: column;
+
+    background: #0d1526;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 2px solid var(--gold);
+    border-radius: 16px;
+
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.45),
+        0 8px 24px rgba(0, 0, 0, 0.2);
+
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+
+    overflow: hidden;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px) scale(.98);
+
+    pointer-events: none;
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease,
+        visibility .2s ease;
+
+    z-index: 9998;
+}
+
+.chatbot-window.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+
+/* ---------- Header ---------- */
+
+.chatbot-header {
+    min-height: 58px;
+    padding: 10px 14px;
+
+    display: flex;
+    align-items: center;
+
+    background: #0b1424;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.chatbot-avatar {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+
+    border-radius: 9px;
+
+    background: linear-gradient(
+        135deg,
+        var(--gold),
+        var(--cyan-accent)
+    );
+
+    display: grid;
+    place-items: center;
+}
+
+.chatbot-avatar .nav-icon {
+    color: #07101f;
+}
+
+.chatbot-avatar .nav-icon svg {
+    width: 19px;
+    height: 19px;
+}
+
+.chatbot-title-box {
+    min-width: 0;
+    flex: 1;
+    margin-left: 10px;
+}
+
+.chatbot-title {
+    margin: 0;
+    color: #fff;
+    font-size: .88rem;
+    line-height: 1.2;
+    font-weight: 750;
+}
+
+.chatbot-status {
+    margin-top: 3px;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #91a1b8;
+    font-size: .68rem;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    flex: 0 0 6px;
+
+    border-radius: 50%;
+    background: #20c997;
+
+    box-shadow: 0 0 7px rgba(32, 201, 151, .6);
+}
+
+.chatbot-mode-select {
+    max-width: 125px;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+    color: #91a1b8;
+
+    font-family: inherit;
+    font-size: .67rem;
+    cursor: pointer;
+}
+
+.chatbot-mode-select option {
+    background: #0d1526;
+    color: #fff;
+}
+
+.chatbot-close {
+    width: 30px;
+    height: 30px;
+
+    margin-left: 8px;
+
+    display: grid;
+    place-items: center;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: transparent;
+    color: #91a1b8;
+
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.chatbot-close:hover {
+    background: rgba(255, 255, 255, .07);
+    color: #fff;
+}
+
+
+/* ---------- Messages ---------- */
+
+.chatbot-messages {
+    flex: 1;
+    min-height: 0;
+
+    padding: 14px;
+
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+
+    scrollbar-width: thin;
+}
+
+.chatbot-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.16);
+    border-radius: 999px;
+}
+
+.chat-msg {
+    max-width: 78%;
+
+    padding: 9px 12px;
+
+    border-radius: 12px;
+
+    font-size: .78rem;
+    line-height: 1.45;
+
+    animation: fadeInMsg .18s ease;
+}
+
+.chat-msg.bot {
+    align-self: flex-start;
+
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,255,255,.08);
+
+    color: #dbe4ef;
+
+    border-bottom-left-radius: 4px;
+}
+
+.chat-msg.user {
+    align-self: flex-end;
+
+    background: var(--gold);
+    color: #07101f;
+
+    font-weight: 650;
+
+    border-bottom-right-radius: 4px;
+}
+
+.chat-msg.typing {
+    padding: 10px 13px;
+
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.typing-dot {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+    background: #8c9ab0;
+
+    animation: typePulse 1.1s infinite ease-in-out;
+}
+
+
+/* ---------- Suggestions ---------- */
+
+.chatbot-suggestions {
+    padding: 8px 12px;
+
+    display: flex;
+    gap: 6px;
+
+    overflow-x: auto;
+
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.chatbot-suggestions::-webkit-scrollbar {
+    display: none;
+}
+
+.chip-btn {
+    flex: 0 0 auto;
+
+    min-height: 30px;
+
+    padding: 5px 9px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.035);
+    color: #9edcea;
+
+    font-size: .68rem;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        background .15s ease,
+        border-color .15s ease;
+}
+
+.chip-btn:hover {
+    background: rgba(6,182,212,.09);
+    border-color: rgba(6,182,212,.35);
+}
+
+
+/* ---------- Input ---------- */
+
+.chatbot-input-form {
+    padding: 9px 10px;
+
+    display: flex;
+    gap: 7px;
+
+    background: #0a1322;
+    border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.chatbot-input {
+    min-width: 0;
+    flex: 1;
+
+    height: 38px;
+
+    padding: 0 11px;
+
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 9px;
+
+    background: rgba(255,255,255,.045);
+    color: #fff;
+
+    font-family: inherit;
+    font-size: .78rem;
+
+    outline: none;
+}
+
+.chatbot-input::placeholder {
+    color: #6f7e94;
+}
+
+.chatbot-input:focus {
+    border-color: rgba(247,195,49,.65);
+}
+
+.chatbot-send {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+
+    display: grid;
+    place-items: center;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: var(--gold);
+    color: #07101f;
+
+    font-size: .95rem;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.chatbot-send:hover {
+    background: #ffd34f;
+    transform: none;
+}
+
+
+/* ============================================================
+   LIGHT MODE
+   ============================================================ */
+
+html[data-theme="light"] .chatbot-window {
+    background: #fff;
+    border-color: #d4dce6;
+    box-shadow: 0 18px 50px rgba(15,32,55,.18);
+}
+
+html[data-theme="light"] .chatbot-header {
+    background: #0b1b33;
+    border-bottom-color: rgba(255,255,255,.10);
+}
+
+html[data-theme="light"] .chatbot-messages {
+    background: #fff;
+}
+
+html[data-theme="light"] .chat-msg.bot {
+    background: #f2f5f8;
+    border-color: #dbe1e8;
+    color: #33445b;
+}
+
+html[data-theme="light"] .chatbot-suggestions {
+    border-top-color: #e0e5eb;
+    background: #fff;
+}
+
+html[data-theme="light"] .chip-btn {
+    background: #f5f7fa;
+    border-color: #d5dce5;
+    color: #14738b;
+}
+
+html[data-theme="light"] .chatbot-input-form {
+    background: #f7f8fa;
+    border-top-color: #dce2e8;
+}
+
+html[data-theme="light"] .chatbot-input {
+    background: #fff;
+    color: #14233a;
+    border-color: #cbd5e1;
+}
+
+
+/* ============================================================
+   SPECHBOT — MOBILE FIRST
+   ============================================================ */
+
+.chatbot-trigger {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+
+  width: 54px;
+  height: 54px;
+
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+
+  background: var(--navy-900);
+  color: var(--gold);
+
+  display: grid;
+  place-items: center;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, .35);
+
+  z-index: 9999;
+}
+
+/* ============================================================
+   SPECHBOT CHAT WINDOW
+   MOBILE FIRST — COMPACT CUSTOMER SUPPORT STYLE
+   ============================================================ */
+
+.chatbot-window {
+    position: fixed;
+
+    /* Compact mobile position */
+    right: 16px;
+    bottom: 78px;
+
+    /* Medium, NOT full screen */
+    width: 320px;
+    max-width: calc(100vw - 32px);
+
+    height: 420px;
+    max-height: calc(100vh - 110px);
+
+    background: rgba(13, 21, 38, 0.98);
+
+    border: 1px solid var(--line-dark);
+    border-top: 3px solid var(--gold);
+
+    border-radius: 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.35);
+
+    z-index: 9998;
+
+    opacity: 0;
+
+    transform:
+        translateY(10px)
+        scale(0.97);
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.chatbot-window.open {
+    opacity: 1;
+
+    transform:
+        translateY(0)
+        scale(1);
+
+    pointer-events: auto;
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+    .chatbot-window {
+        right: 12px;
+        bottom: 72px;
+
+        width: 300px;
+        max-width: calc(100vw - 24px);
+
+        height: 300px;
+        max-height: calc(100vh - 95px);
+
+        border-radius: 16px;
+    }
+
+}
+
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (min-width: 600px) {
+
+    .chatbot-window {
+        right: 20px;
+        bottom: 88px;
+
+        width: 350px;
+        height: 400px;
+
+        max-width: 350px;
+        max-height: 440px;
+
+        border-radius: 18px;
+    }
+
+}
+
+
+/* ============================================================
+   DESKTOP
+   ============================================================ */
+
+@media (min-width: 900px) {
+
+    .chatbot-window {
+        right: 24px;
+        bottom: 94px;
+
+        width: 360px;
+        height: 420px;
+
+        max-width: 360px;
+        max-height: 460px;
+
+        border-radius: 18px;
+    }
+
+}

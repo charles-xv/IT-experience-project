@@ -21,11 +21,12 @@ body {
   padding: 24px;
 }
 
+/* 1. Narrower card overall */
 .auth-card {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
+  grid-template-columns: 0.85fr 1.15fr; /* was: 1fr 1.15fr */
   width: 100%;
-  max-width: 680px;
+  max-width: 560px; /* was: 680px */
   background: var(--navy-900);
   border: 1px solid var(--line-dark);
   border-radius: var(--radius-lg);
@@ -33,10 +34,10 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
-/* Left brand panel */
+/* 2. Tighter aside padding */
 .auth-aside {
   background: linear-gradient(160deg, var(--navy-800), var(--navy-900));
-  padding: 36px 28px;
+  padding: 28px 22px; /* was: 36px 28px */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,55 +47,34 @@ body {
 .auth-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
 }
 
 .auth-brand .brand-mark {
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  background: var(--gold);
-  color: var(--navy-950);
-  font-weight: 800;
-  font-size: 1.4rem;
-  border-radius: 12px;
-  box-shadow: 0 0 24px var(--gold-glow);
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  border-radius: 10px;
 }
 
 .auth-brand-name {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #fff;
+  font-size: 1.2rem;
 }
-
-.auth-brand-name span {
-  color: var(--gold);
-}
-
 .auth-aside p {
-  color: var(--muted-light);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  max-width: 240px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  max-width: 220px;
 }
-
-/* Right form panel */
 .auth-form-panel {
-  padding: 36px 32px;
-}
-
+  padding: 28px 26px;
+} /* was: 36px 32px */
 .auth-form-panel h2 {
-  color: #fff;
-  font-size: 1.45rem;
-  margin-bottom: 6px;
+  font-size: 1.3rem;
+  margin-bottom: 4px;
 }
-
 .auth-subtitle {
-  color: var(--muted);
-  font-size: 0.95rem;
-  margin-bottom: 22px;
+  font-size: 0.88rem;
+  margin-bottom: 18px;
 }
 
 .form-group {
@@ -261,63 +241,8 @@ body {
 
 /* Mobile-first: below 720px the card becomes a single column and the brand
    panel collapses to a slim header bar so the form is what fills the screen. */
-@media (max-width: 720px) {
-  body {
-    padding: 16px;
-    align-items: flex-start;
-    padding-top: 32px;
-  }
-
-  .auth-card {
-    grid-template-columns: 1fr;
-    max-width: 400px;
-  }
-
-  .auth-aside {
-    border-right: none;
-    border-bottom: 1px solid var(--line-dark);
-    padding: 22px 24px;
-    text-align: center;
-    align-items: center;
-  }
-
-  .auth-brand {
-    justify-content: center;
-    margin-bottom: 8px;
-  }
-
-  /* Hide the tagline on phones — it just pushes the form down */
-  .auth-aside p {
-    display: none;
-  }
-
-  .auth-form-panel {
-    padding: 26px 22px;
-  }
-
-  .auth-form-panel h2 {
-    font-size: 1.35rem;
-  }
-
-  /* Role toggle stays two-up but tightens */
-  .role-toggle {
-    gap: 8px;
-  }
-  .role-option {
-    padding: 10px;
-    font-size: 0.85rem;
-  }
-}
 
 /* Very small phones — keep everything comfortably tappable */
-@media (max-width: 380px) {
-  .auth-form-panel {
-    padding: 22px 18px;
-  }
-  .role-toggle {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* ===== Password show/hide toggle ===== */
 .password-wrap {
@@ -427,4 +352,296 @@ body {
   font-size: 0.8rem;
   word-break: break-all;
   font-family: ui-monospace, Menlo, monospace;
+}
+
+/* Phase 4 — Google identity and verification UX */
+.google-auth-block {
+  margin: 0 0 22px;
+  text-align: center;
+}
+.google-auth-block .g_id_signin {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+.google-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: #8a98aa;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.google-divider::before,
+.google-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #d8dee7;
+}
+.google-note {
+  margin: 10px auto 0;
+  max-width: 420px;
+  color: #7a8798;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.verification-resend {
+  margin: 18px 0;
+  padding: 12px 14px;
+  border: 1px solid #dce3ec;
+  border-radius: 10px;
+  background: #f7f9fc;
+  color: #64748b;
+  font-size: 0.78rem;
+  text-align: center;
+}
+.verification-resend form {
+  display: inline;
+}
+.link-button {
+  border: 0;
+  padding: 0;
+  margin-left: 5px;
+  background: none;
+  color: #c67d00;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.link-button:hover {
+  color: #9d5f00;
+  text-decoration: underline;
+}
+.role-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.role-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+}
+.role-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+html[data-theme="dark"] body {
+  background: #070d19;
+  color: #e7edf6;
+}
+html[data-theme="dark"] .google-divider::before,
+html[data-theme="dark"] .google-divider::after {
+  background: rgba(255, 255, 255, 0.12);
+}
+html[data-theme="dark"] .verification-resend {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #aebbd0;
+}
+html[data-theme="dark"] .google-note {
+  color: #8fa0b8;
+}
+
+/* ============================================================
+   MOBILE-FIRST AUTH RESPONSIVE SYSTEM
+   Phones are the baseline; the split authentication card appears
+   progressively on wider screens.
+   ============================================================ */
+
+body {
+  padding: 14px;
+  align-items: flex-start;
+  min-height: 100dvh;
+}
+.auth-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  max-width: 420px;
+  margin: 18px auto;
+}
+.auth-aside {
+  padding: 22px 20px;
+  border-right: 0;
+  border-bottom: 1px solid var(--line-dark);
+  text-align: center;
+  align-items: center;
+}
+.auth-brand {
+  justify-content: center;
+  margin-bottom: 0;
+}
+.auth-aside p {
+  display: none;
+}
+.auth-form-panel {
+  padding: 24px 20px;
+}
+.auth-form-panel h2 {
+  font-size: 1.32rem;
+}
+.auth-subtitle {
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  font-size: 0.82rem;
+}
+.form-group input,
+.form-group select {
+  min-height: 44px;
+  padding: 10px 12px;
+}
+.auth-btn {
+  min-height: 44px;
+}
+.role-toggle {
+  gap: 8px;
+}
+.role-option {
+  min-height: 44px;
+  padding: 10px 8px;
+}
+.auth-switch {
+  margin-top: 18px;
+  font-size: 0.84rem;
+}
+.auth-back {
+  margin-bottom: 16px;
+}
+.form-message {
+  font-size: 0.82rem;
+}
+
+@media (min-width: 721px) {
+  body {
+    padding: 24px;
+    align-items: center;
+  }
+  .auth-card {
+    grid-template-columns: 1fr 1.15fr;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .auth-aside {
+    padding: 36px 28px;
+    text-align: left;
+    align-items: stretch;
+    border-right: 1px solid var(--line-dark);
+    border-bottom: 0;
+  }
+  .auth-brand {
+    justify-content: flex-start;
+    margin-bottom: 20px;
+  }
+  .auth-aside p {
+    display: block;
+  }
+  .auth-form-panel {
+    padding: 36px 32px;
+  }
+  .auth-form-panel h2 {
+    font-size: 1.45rem;
+  }
+}
+
+/* Email verification pages */
+.verification-card {
+  display: block;
+  max-width: 560px;
+}
+
+.verification-panel {
+  text-align: center;
+}
+
+.verification-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #10b981;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.verification-email {
+  margin: -8px 0 18px;
+  color: var(--gold);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.verification-copy {
+  color: var(--muted-light);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.verification-spam {
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.verification-resend-form {
+  margin-top: 8px;
+}
+.verification-link {
+  display: block;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.verification-resend {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(247, 195, 49, 0.22);
+  border-radius: var(--radius);
+  background: rgba(247, 195, 49, 0.05);
+  color: var(--muted-light);
+  text-align: center;
+  font-size: 0.88rem;
+}
+.verification-resend p {
+  margin: 0 0 7px;
+}
+.link-button {
+  border: 0;
+  background: transparent;
+  color: var(--gold);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+.link-button:hover {
+  color: #fff;
+}
+
+@media (max-width: 720px) {
+  .verification-card {
+    max-width: 100%;
+  }
+  .verification-panel {
+    padding: 28px 20px;
+  }
 }

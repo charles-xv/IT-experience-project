@@ -62,7 +62,7 @@ $enrolledCount = (int) $metrics['enrolled_count'];
   <link rel="stylesheet" href="Dashboard.css">
   <link rel="stylesheet" href="../LoadingBar.css">
 </head>
-<body>
+<body class="role-student">
   <div class="app-layout">
 
     <!-- SIDEBAR -->
@@ -72,14 +72,14 @@ $enrolledCount = (int) $metrics['enrolled_count'];
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="StudentDashboard.php" class="nav-item active">📚 My Learning</a>
-        <a href="BrowseCourses.php" class="nav-item">🔍 Browse Courses</a>
-        <a href="Cart.php" class="nav-item">🛒 Cart</a>
-        <a href="Certificates.php" class="nav-item">🏆 Certificates</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="StudentDashboard.php" class="nav-item active"><?= ui_icon('book') ?><span class="nav-label">My Learning</span></a>
+        <a href="BrowseCourses.php" class="nav-item"><?= ui_icon('search') ?><span class="nav-label">Browse Courses</span></a>
+        <a href="Cart.php" class="nav-item"><?= ui_icon('cart') ?><span class="nav-label">Cart</span></a>
+        <a href="Certificates.php" class="nav-item"><?= ui_icon('award') ?><span class="nav-label">Certificates</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -91,6 +91,9 @@ $enrolledCount = (int) $metrics['enrolled_count'];
           Dashboard <span>/ My Learning</span>
         </div>
         <div class="header-actions">
+          <button type="button" class="header-logout-btn" id="logoutTriggerMobile" aria-label="Log out" title="Log out">
+            <?= ui_icon('logout') ?>
+          </button>
           <span class="dash-role-pill dash-role-student">Student Mode</span>
           <div class="user-profile">
             <div class="user-info">
@@ -103,30 +106,54 @@ $enrolledCount = (int) $metrics['enrolled_count'];
       </header>
 
       <div class="dashboard-content">
-        <h1 class="page-title">Welcome back, <?= e(explode(' ', $name)[0]) ?>! 👋</h1>
+        <section class="role-hero">
+          <div class="role-hero-copy">
+            <div class="role-hero-kicker"><?= ui_icon('book') ?> Student Learning Hub</div>
+            <h1>Welcome back, <?= e(explode(' ', $name)[0]) ?>.</h1>
+            <p>
+              <?php if ($enrolledCount === 0): ?>
+                Your learning space is ready. Explore the catalogue and choose your first course.
+              <?php elseif ((int) $metrics['completed_count'] > 0): ?>
+                You've completed <?= (int) $metrics['completed_count'] ?> of your <?= $enrolledCount ?> course<?= $enrolledCount === 1 ? '' : 's' ?>. Keep building your progress.
+              <?php else: ?>
+                You're enrolled in <?= $enrolledCount ?> course<?= $enrolledCount === 1 ? '' : 's' ?>. Continue from where you left off.
+              <?php endif; ?>
+            </p>
+          </div>
+          <div class="role-hero-action">
+            <a href="BrowseCourses.php" class="btn-primary"><?= ui_icon('search') ?> Browse Courses</a>
+          </div>
+        </section>
 
-        <p class="page-sub">
-          <?php if ($enrolledCount === 0): ?>
-            You haven't enrolled in any courses yet. Browse the catalogue to get started.
-          <?php elseif ((int) $metrics['completed_count'] > 0): ?>
-            You've completed <?= (int) $metrics['completed_count'] ?>
-            of your <?= $enrolledCount ?> course<?= $enrolledCount === 1 ? '' : 's' ?>. Keep going.
-          <?php else: ?>
-            You're enrolled in <?= $enrolledCount ?> course<?= $enrolledCount === 1 ? '' : 's' ?>. Pick up where you left off.
-          <?php endif; ?>
-        </p>
+        <div class="quick-grid">
+          <a class="quick-card" href="BrowseCourses.php">
+            <span class="quick-icon"><?= ui_icon('search') ?></span>
+            <span><strong>Explore Courses</strong><span>Find something new to learn</span></span>
+          </a>
+          <a class="quick-card" href="Cart.php">
+            <span class="quick-icon"><?= ui_icon('cart') ?></span>
+            <span><strong>Review Cart</strong><span>Check saved course purchases</span></span>
+          </a>
+          <a class="quick-card" href="Certificates.php">
+            <span class="quick-icon"><?= ui_icon('award') ?></span>
+            <span><strong>Certificates</strong><span>View your earned certificates</span></span>
+          </a>
+        </div>
 
         <!-- METRICS — all three read from the database -->
         <div class="metrics-row">
           <div class="metric-card cyan">
+            <div class="metric-icon"><?= ui_icon('chart') ?></div>
             <span class="metric-label">Overall Progress</span>
             <span class="metric-value"><?= (int) $metrics['overall_progress'] ?>%</span>
           </div>
           <div class="metric-card emerald">
+            <div class="metric-icon"><?= ui_icon('award') ?></div>
             <span class="metric-label">Completed Courses</span>
             <span class="metric-value"><?= (int) $metrics['completed_count'] ?></span>
           </div>
           <div class="metric-card gold">
+            <div class="metric-icon"><?= ui_icon('award') ?></div>
             <span class="metric-label">Certificates Earned</span>
             <span class="metric-value"><?= $certificateCount ?></span>
           </div>
@@ -137,7 +164,7 @@ $enrolledCount = (int) $metrics['enrolled_count'];
         <?php if (empty($activeCourses)): ?>
           <!-- Empty state: shown until the student enrols in something -->
           <div class="empty-state">
-            <span class="empty-icon">📚</span>
+            <span class="empty-icon"><?= ui_icon('book') ?></span>
             <h3>No courses yet</h3>
             <p>You haven't enrolled in any courses. Browse the catalogue and enrol to start learning.</p>
             <a href="BrowseCourses.php" class="btn-block-cyan empty-action">Browse Courses</a>
@@ -151,7 +178,7 @@ $enrolledCount = (int) $metrics['enrolled_count'];
                     <img class="course-thumb" src="<?= e($course['thumbnail_url']) ?>"
                          alt="<?= e($course['title']) ?>">
                   <?php else: ?>
-                    <div class="course-thumb-placeholder">🎓</div>
+                    <div class="course-thumb-placeholder"><?= ui_icon('book') ?></div>
                   <?php endif; ?>
                   <div class="course-progress-overlay">
                     <!-- Width is set from data-progress by Dashboard.js, so the

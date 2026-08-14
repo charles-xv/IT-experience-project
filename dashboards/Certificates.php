@@ -42,14 +42,14 @@ $certificates = $stmt->fetchAll();
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="StudentDashboard.php" class="nav-item">📚 My Learning</a>
-        <a href="BrowseCourses.php" class="nav-item">🔍 Browse Courses</a>
-        <a href="Cart.php" class="nav-item">🛒 Cart</a>
-        <a href="Certificates.php" class="nav-item active">🏆 Certificates</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="StudentDashboard.php" class="nav-item"><?= ui_icon('book') ?><span class="nav-label">My Learning</span></a>
+        <a href="BrowseCourses.php" class="nav-item"><?= ui_icon('search') ?><span class="nav-label">Browse Courses</span></a>
+        <a href="Cart.php" class="nav-item"><?= ui_icon('cart') ?><span class="nav-label">Cart</span></a>
+        <a href="Certificates.php" class="nav-item active"><?= ui_icon('award') ?><span class="nav-label">Certificates</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -82,7 +82,7 @@ $certificates = $stmt->fetchAll();
 
         <?php if (empty($certificates)): ?>
           <div class="empty-state">
-            <span class="empty-icon">🏆</span>
+            <span class="empty-icon"><?= ui_icon('award') ?></span>
             <h3>No certificates yet</h3>
             <p>Certificates are issued automatically when you mark a course as complete.</p>
             <a href="BrowseCourses.php" class="btn-block-cyan empty-action">Browse Courses</a>

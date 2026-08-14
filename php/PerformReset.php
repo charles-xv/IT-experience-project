@@ -1,5 +1,6 @@
 <?php
 // Completes a password reset against a valid, unexpired, single-use token.
+// Reset links are valid for 15 minutes from issuance.
 
 session_start();
 require_once __DIR__ . '/Database.php';

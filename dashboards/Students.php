@@ -67,13 +67,13 @@ foreach ($rows as $r) {
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="InstructorDashboard.php" class="nav-item">📊 Overview</a>
-        <a href="CreateCourse.php" class="nav-item">➕ Create Course</a>
-        <a href="Students.php" class="nav-item active">👥 Students</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="InstructorDashboard.php" class="nav-item"><?= ui_icon('chart') ?><span class="nav-label">Overview</span></a>
+        <a href="CreateCourse.php" class="nav-item"><?= ui_icon('plus') ?><span class="nav-label">Create Course</span></a>
+        <a href="Students.php" class="nav-item active"><?= ui_icon('users') ?><span class="nav-label">Students</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -131,7 +131,7 @@ foreach ($rows as $r) {
 
           <?php if (empty($rows)): ?>
             <div class="empty-state">
-              <span class="empty-icon">👥</span>
+              <span class="empty-icon"><?= ui_icon('users') ?></span>
               <h3>No students yet</h3>
               <p>Students appear here once they enrol in one of your published courses. Make sure at least one course is set to Published.</p>
               <a href="CreateCourse.php" class="btn-block-cyan empty-action">Create a Course</a>

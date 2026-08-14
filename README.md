@@ -182,3 +182,17 @@ As a Security-First platform, the following practices are applied:
 *"Security is not a feature, it's a foundation."*
 
 </div>
+
+## Gmail SMTP configuration
+
+Copy `php/secrets.template.php` to `php/secrets.php` and configure:
+
+- `SMTP_HOST=smtp.gmail.com`
+- `SMTP_PORT=587`
+- `SMTP_ENCRYPTION=tls`
+- `SMTP_USERNAME=your Gmail address`
+- `SMTP_PASSWORD=your Google App Password`
+- `MAIL_FROM_EMAIL=the same Gmail address`
+- `APP_URL=the exact public URL of the application`
+
+The application uses authenticated Gmail SMTP, not PHP `mail()`. A Google App Password requires 2-Step Verification on the Google account. Never commit `php/secrets.php`.

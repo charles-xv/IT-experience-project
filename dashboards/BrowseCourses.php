@@ -50,14 +50,14 @@ $courses = $stmt->fetchAll();
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="StudentDashboard.php" class="nav-item">📚 My Learning</a>
-        <a href="BrowseCourses.php" class="nav-item active">🔍 Browse Courses</a>
-        <a href="Cart.php" class="nav-item">🛒 Cart</a>
-        <a href="Certificates.php" class="nav-item">🏆 Certificates</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="StudentDashboard.php" class="nav-item"><?= ui_icon('book') ?><span class="nav-label">My Learning</span></a>
+        <a href="BrowseCourses.php" class="nav-item active"><?= ui_icon('search') ?><span class="nav-label">Browse Courses</span></a>
+        <a href="Cart.php" class="nav-item"><?= ui_icon('cart') ?><span class="nav-label">Cart</span></a>
+        <a href="Certificates.php" class="nav-item"><?= ui_icon('award') ?><span class="nav-label">Certificates</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -92,18 +92,18 @@ $courses = $stmt->fetchAll();
 
         <?php if (empty($courses)): ?>
           <div class="empty-state">
-            <span class="empty-icon">🔍</span>
+            <span class="empty-icon"><?= ui_icon('search') ?></span>
             <h3>No courses available yet</h3>
             <p>There are no published courses right now. Check back once an instructor publishes one.</p>
           </div>
         <?php else: ?>
           <div class="search-row">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><?= ui_icon('search') ?></span>
             <input type="text" id="courseSearch" placeholder="Search courses, categories or instructors...">
           </div>
 
           <div class="empty-state is-hidden" id="searchEmpty">
-            <span class="empty-icon">🔍</span>
+            <span class="empty-icon"><?= ui_icon('search') ?></span>
             <h3>No matches</h3>
             <p>No courses match that search. Try a different term.</p>
           </div>
@@ -115,7 +115,7 @@ $courses = $stmt->fetchAll();
                   <?php if (!empty($c['thumbnail_url'])): ?>
                     <img class="course-thumb" src="<?= e($c['thumbnail_url']) ?>" alt="<?= e($c['title']) ?>">
                   <?php else: ?>
-                    <div class="course-thumb-placeholder">🎓</div>
+                    <div class="course-thumb-placeholder"><?= ui_icon('book') ?></div>
                   <?php endif; ?>
                 </div>
                 <div class="course-body">

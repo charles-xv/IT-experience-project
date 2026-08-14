@@ -30,6 +30,14 @@ $stmt = $pdo->prepare(
 $stmt->execute([$instructorId]);
 $courseStats = $stmt->fetch();
 
+// Approval status drives the banner below and whether Publish is offered
+// on the course forms. Read fresh from the DB so an admin's decision
+// shows up the moment this instructor next loads the page.
+$stmt = $pdo->prepare('SELECT instructor_approval_status, instructor_rejection_reason FROM Users WHERE user_id = ?');
+$stmt->execute([$instructorId]);
+$approval = $stmt->fetch();
+$approvalStatus = $approval['instructor_approval_status'] ?? 'approved';
+
 // Distinct students across all of this instructor's courses. DISTINCT matters
 // because one student enrolled on three of their courses is still one student.
 $stmt = $pdo->prepare(
@@ -63,7 +71,7 @@ $courses = $stmt->fetchAll();
   <link rel="stylesheet" href="Dashboard.css">
   <link rel="stylesheet" href="../LoadingBar.css">
 </head>
-<body>
+<body class="role-instructor">
   <div class="app-layout">
 
     <aside class="sidebar">
@@ -72,13 +80,13 @@ $courses = $stmt->fetchAll();
         <span>Mech Spec <span class="dash-gold">LMS</span></span>
       </div>
       <nav class="sidebar-nav">
-        <a href="InstructorDashboard.php" class="nav-item active">📊 Overview</a>
-        <a href="CreateCourse.php" class="nav-item">➕ Create Course</a>
-        <a href="Students.php" class="nav-item">👥 Students</a>
-        <a href="Settings.php" class="nav-item">⚙️ Settings</a>
+        <a href="InstructorDashboard.php" class="nav-item active"><?= ui_icon('chart') ?><span class="nav-label">Overview</span></a>
+        <a href="CreateCourse.php" class="nav-item"><?= ui_icon('plus') ?><span class="nav-label">Create Course</span></a>
+        <a href="Students.php" class="nav-item"><?= ui_icon('users') ?><span class="nav-label">Students</span></a>
+        <a href="Settings.php" class="nav-item"><?= ui_icon('settings') ?><span class="nav-label">Settings</span></a>
       </nav>
       <div class="sidebar-footer">
-        <a href="#" class="logout-btn" id="logoutTrigger">🚪 Log Out</a>
+        <a href="#" class="logout-btn" id="logoutTrigger"><?= ui_icon('logout') ?><span class="logout-label">Log Out</span></a>
       </div>
     </aside>
 
@@ -89,6 +97,9 @@ $courses = $stmt->fetchAll();
           Dashboard <span>/ Overview</span>
         </div>
         <div class="header-actions">
+          <button type="button" class="header-logout-btn" id="logoutTriggerMobile" aria-label="Log out" title="Log out">
+            <?= ui_icon('logout') ?>
+          </button>
           <span class="dash-role-pill dash-role-instructor">Instructor Mode</span>
           <div class="user-profile">
             <div class="user-info">
@@ -101,17 +112,34 @@ $courses = $stmt->fetchAll();
       </header>
 
       <div class="dashboard-content">
-        <h1 class="page-title">Welcome back, <?= e(explode(' ', $name)[0]) ?>! 📈</h1>
+        <section class="role-hero">
+          <div class="role-hero-copy">
+            <div class="role-hero-kicker"><?= ui_icon('book') ?> Instructor Workspace</div>
+            <h1>Welcome back, <?= e(explode(' ', $name)[0]) ?>.</h1>
+            <p>
+              <?php if ((int) $courseStats['total_courses'] === 0): ?>
+                Build your first course and start publishing learning content to students.
+              <?php else: ?>
+                You manage <?= (int) $courseStats['total_courses'] ?> course<?= (int) $courseStats['total_courses'] === 1 ? '' : 's' ?> for <?= $totalStudents ?> student<?= $totalStudents === 1 ? '' : 's' ?>.
+              <?php endif; ?>
+            </p>
+          </div>
+          <div class="role-hero-action">
+            <a href="CreateCourse.php" class="btn-primary"><?= ui_icon('plus') ?> Create Course</a>
+          </div>
+        </section>
 
-        <p class="page-sub">
-          <?php if ((int) $courseStats['total_courses'] === 0): ?>
-            You haven't created any courses yet. Create your first one to start teaching.
-          <?php else: ?>
-            You have <?= (int) $courseStats['total_courses'] ?>
-            course<?= (int) $courseStats['total_courses'] === 1 ? '' : 's' ?>
-            and <?= $totalStudents ?> student<?= $totalStudents === 1 ? '' : 's' ?> enrolled.
-          <?php endif; ?>
-        </p>
+        <?php if ($approvalStatus === 'pending'): ?>
+          <div class="form-notice">Your instructor account is awaiting admin approval. You can build and save courses as drafts now &mdash; publishing unlocks once you're approved.</div>
+        <?php elseif ($approvalStatus === 'rejected'): ?>
+          <div class="form-notice error">
+            Your instructor account was not approved to publish.
+            <?php if (!empty($approval['instructor_rejection_reason'])): ?>
+              <strong>Reason:</strong> <?= e($approval['instructor_rejection_reason']) ?>
+            <?php endif; ?>
+            Contact an administrator if you believe this is a mistake.
+          </div>
+        <?php endif; ?>
 
         <?php if ($notice): ?>
           <div class="form-notice success"><?= e($notice) ?></div>
@@ -122,21 +150,40 @@ $courses = $stmt->fetchAll();
 
         <div class="metrics-row">
           <div class="metric-card gold">
+            <div class="metric-icon"><?= ui_icon('users') ?></div>
             <span class="metric-label">Total Students</span>
             <span class="metric-value"><?= $totalStudents ?></span>
           </div>
           <div class="metric-card cyan">
+            <div class="metric-icon"><?= ui_icon('book') ?></div>
             <span class="metric-label">Published Courses</span>
             <span class="metric-value"><?= (int) $courseStats['published_courses'] ?></span>
           </div>
           <div class="metric-card gold">
+            <div class="metric-icon"><?= ui_icon('folder') ?></div>
             <span class="metric-label">Drafts</span>
             <span class="metric-value"><?= (int) $courseStats['draft_courses'] ?></span>
           </div>
           <div class="metric-card emerald">
+            <div class="metric-icon"><?= ui_icon('book') ?></div>
             <span class="metric-label">Total Courses</span>
             <span class="metric-value"><?= (int) $courseStats['total_courses'] ?></span>
           </div>
+        </div>
+
+        <div class="quick-grid">
+          <a class="quick-card" href="CreateCourse.php">
+            <span class="quick-icon"><?= ui_icon('plus') ?></span>
+            <span><strong>Create a Course</strong><span>Publish new learning content</span></span>
+          </a>
+          <a class="quick-card" href="Students.php">
+            <span class="quick-icon"><?= ui_icon('users') ?></span>
+            <span><strong>View Students</strong><span>Review learners on your courses</span></span>
+          </a>
+          <a class="quick-card" href="Settings.php">
+            <span class="quick-icon"><?= ui_icon('settings') ?></span>
+            <span><strong>Account Settings</strong><span>Manage your instructor profile</span></span>
+          </a>
         </div>
 
         <h2 class="section-heading">Course Manager</h2>
@@ -149,7 +196,7 @@ $courses = $stmt->fetchAll();
 
           <?php if (empty($courses)): ?>
             <div class="empty-state">
-              <span class="empty-icon">🎬</span>
+              <span class="empty-icon"><?= ui_icon('book') ?></span>
               <h3>No courses yet</h3>
               <p>Create your first course by pasting a YouTube link — the video and thumbnail are pulled in automatically.</p>
               <a href="CreateCourse.php" class="btn-block-cyan empty-action">Create a Course</a>
