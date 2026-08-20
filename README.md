@@ -308,8 +308,11 @@ https://github.com/charles-xv/IT-experience-project
 [(https://drive.google.com/drive/folders/1zNwU5-EwF6qrgWD5zwVDuWYMMTEqYUBq?usp=sharing)]
 
 
-| **Charles Nnanna**      | **Team Lead / Backend Engineer & Security Lead** | Led backend development, implemented the application's core backend logic and security architecture, developed authentication and access-control mechanisms, implemented account lockout and password-security features, worked on Google authentication and monitoring functionality, contributed to the simulated checkout and administrator dashboard, handled live deployment, and resolved major frontend/UI integration issues including chatbot UI fixes. |
-| **Souley Akewi Raquib** | **Frontend Engineer**                            | Contributed to frontend development and UI design, built the landing page and instructor dashboard frontend, and implemented the Gemini AI chatbot/assistant for platform navigation.                                                                                                                                                                                                                                                                            |
+| **Charles Nnanna**  | **Team Lead / Backend Engineer & Security Lead**
+ | Led backend development, implemented the application's core backend logic and security architecture, developed authentication and access-control mechanisms, implemented account lockout and password-security features, worked on Google authentication and monitoring functionality, contributed to the simulated checkout and administrator dashboard, handled live deployment, and resolved major frontend/UI integration issues including chatbot UI fixes. |
+
+| **Souley Akewi Raquib** | **Frontend Engineer** 
+ | Contributed to frontend development and UI design, built the landing page and instructor dashboard frontend, and implemented the Gemini AI chatbot/assistant for platform navigation.                                                                                                                                                                                                    |
 | **Onishola Timilehin**  | **Frontend / UI/UX**
  | Worked on UI/UX design and contributed frontend code for the student dashboard. Some initial dashboard work was later modified or reassigned during development to maintain project progress and integration consistency.                                                                                                                                                                                                                                        |
 
