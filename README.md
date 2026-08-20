@@ -305,7 +305,7 @@ https://github.com/charles-xv/IT-experience-project
 ## Demo & Presentation
 
 **Demo / Showcase:**
-[Insert the final accessible Google Drive video link here]
+[(https://drive.google.com/drive/folders/1zNwU5-EwF6qrgWD5zwVDuWYMMTEqYUBq?usp=sharing)]
 
 
 | **Charles Nnanna**      | **Team Lead / Backend Engineer & Security Lead** | Led backend development, implemented the application's core backend logic and security architecture, developed authentication and access-control mechanisms, implemented account lockout and password-security features, worked on Google authentication and monitoring functionality, contributed to the simulated checkout and administrator dashboard, handled live deployment, and resolved major frontend/UI integration issues including chatbot UI fixes. |
